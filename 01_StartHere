@@ -1,1 +1,98 @@
-tbd
+// Code here TBD
+
+// NOTES
+Need parent folder to hold all projects called REACT SERIES
+$ node -v
+$ npx create-react-app 01tut
+this process takes few minutes
+Add VSCode Extensions, search for ES7 React Redux GraphQL React Native snippets
+VS Code ES7+ React/Redux/React-Native/JS snippets 	enable this
+File Menu, Preferences, Settings, 
+Emmet Include Langauges 	value javascript should be javascriptreact	OK
+Open Folder VSCode REACT_SERIES
+Open VSCode terminal Control `
+$ cd 01tut
+Now in that folder, you want to open VSCode using 01tut as the Folder
+$ code .	opens new instance VSCode
+Now close previous instance 
+And only 01tut VSCode is open
+
+Create React app creates these folders
+Folder .git		already initialize and has .gitignore file
+B/c you dont want your node_modules to BE XXXXXXXXXX thus its included in .gitignore file
+Open .gitignore file and look at each topic
+	# dependencies
+	# testing
+	# production
+	# misc
+Folder node_modules	included in the .gitignore files
+Folder public		
+Dont do much w/ public folder so skip it for React YouTube series
+
+Folder src with these files
+.gitignore		already initialized thus already has gitignore file
+package-lock.json
+package.json
+README.md
+
+Folder public	we will not do much with this folder
+files inside: favicon.ico, index.html, logo192.png, logo512.png, manifest.json, robots.txt
+Note the index.html here. There is only 1 index.html file that loads into the browser
+Then react takes over and presents the rest of the content
+
+We will work in src folder
+We will not use the App.test.js, reportWebVitals.js, or the setupTests.js
+So we can delete those file. Highlight those file and right click to delete.
+We are not covering those in this tutorial, so you can delete them.
+
+Lets look at package.json file, and this is familiar if you have worked with node.js
+It lists the dependencies so node.js knows which files/packages to pull in.
+
+Scripts are here as well. We use npm start script to show the initial project that
+create React app builds.
+When are finished writing the code, we will use the build script
+README.md explains what the program does
+
+Dont need report WebVitals code, nor do we need its import statement - ok to delete
+
+Look at index.js file v10.18
+Can see index.js changes color
+document.getElementById('root'); 	built in component, 
+This is where react injects our app 
+So this gives us the first component. This is the parent component for all others.
+This is injected into html thus all the other javascript components will be injected
+as well as we build the project
+
+App.js file
+Thus lets look at App.js file now 
+Source code looks a lot like html but its different
+but this is JSX which is being returned by App function
+Very similar to html but not quite the same
+
+Lets now look at the project by running the script. 
+Open terminal CONTROL `
+$ npm start		launches intro project as a development server on port 3000
+Now we can view the initial project setup (ie the LiveServer being rendered)
+Has the react logo and logo text
+
+Now screen set
+VSCode on left, React web page server on right
+Control ~ to open VSCode Terminal
+Hide file tree
+
+make change in App.js
+<p>
+    Edit <code>src/App.js</code> and save to see changes.
+</p>
+
+"and save to reload"
+"and save to see changes"
+We can see the changes automatically when react saves 
+
+How to stop project
+in Terminal, press Control C
+This stops the Local Development Server
+The app is still loaded in the browser
+
+Next tutorial, we start modifying the generalized app that we started with
+and learn how to apply more changes the React app.

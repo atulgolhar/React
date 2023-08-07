@@ -1,1 +1,58 @@
-  
+Explore App component (default component created by a new React project)
+Explore JSX, what is it, what you can do within it?
+
+Start by looking at Create React App then creates an index.js file
+$ node -v
+$ npx create-react-app 01tut
+
+inside index.js 
+we import our App from the App file b/c each component gets its own file
+		import App from './App';
+
+inside ReactDOM.render{}
+our <App /> is injected into the DOM
+and is being into the element that has the id = 'root'
+		document.getElementById('root')
+
+So now lets look at the App component which is App.js
+inside App.js
+
+		import logo from './logo.svg';
+		import './App.css';
+		fuction App(){}
+make changes to this file and those edits will make automatic updates 
+that are rendered on screen on right
+
+		function App() {
+		  return (
+		    <div className="App">
+		      <header className="App-header">
+		        <img src={logo} className="App-logo" alt="logo" />
+		        <p>
+		          Edit <code>src/App.js</code> and save to see changes.
+		        </p>
+		        <a
+		          className="App-link"
+		          href="https://reactjs.org"
+		          target="_blank"
+		          rel="noopener noreferror"
+		        >
+		          Learn React
+		        </a>
+		      </header>
+		    </div>
+		  )
+
+		}
+
+change text here
+		          Edit <code>src/App.js</code> and save to see changes.
+		          Edit <code>src/App.js</code> and save to what I change.
+renders the changed text on the right
+
+Now looking at our App component
+its allowed to import resources so we import image as a logo
+also import a css that goes with the app component
+		import './App.css';
+then notice the component is a function
+		function App() {}

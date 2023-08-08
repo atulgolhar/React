@@ -1,1 +1,228 @@
 
+Chapter 3: Functional Components============================================
+today we add Functional Components to our project
+looked at the App functional component and more specifically we
+looked at JSX within the App
+right now we are looking at function called handleNameChange
+    <p>
+	Hello {}!
+	Hellow {handleNameChange()}!
+    </p> 
+and it loads whatever name is randomly generated with this function
+
+BUT TODAY WE add more functional REUSABLE components to React. 
+
+We will use VSCode ES7 snippets added
+
+Now before we create another functional component, 
+lets look at index.js
+
+Notice that we 
+import App from the './App'; statement
+as its injected into the DOM
+========
+index.js
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+
+ReactDOM.render{
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+  document.getElementById('root')
+};
+========
+
+Now we will do the same thing but import it into the parent App component
+
+v27.13
+Old way 
+Notice we have a div with the className='App'
+and then we have a header className
+so lets get the same result but do it differntly
+
+Lets create a new file
+
+Func App()
+	calcuation of random name
+	div className=App with a <header> tag
+
+So now instead of a header tag, we create a new file Header.js
+New file name is Header.js
+Now we have an empty file Header.js
+
+Use snippets 
+in Windows CONTROL ALT R	Windows CONTRL SHIFT P shows search ES7      Ctrl+Alt+R
+in Mac Linux Command Shift P	search for ES7
+
+_rafce
+Now in Windows press CONTROL ALT R and type _rafce 	
+This generates a generic functional component
+generates the template code (ie boilerplate code)
+_rafce React 17 Arrow Functional Component with ES7 module system
+
+Notice it inserted the name Header in the export default statement 
+b/c we call the file Header.js
+
+const Header = () => {
+    return (
+        <div>
+        </div>
+    )
+}
+export default Header
+
+Note - not bound to use <div> and best to use Semantic html
+We dont need to give up our other practices just b/c we are using React 
+so change <div> element to <header> element
+
+Inside the header, we add <h1> tags with text Groceries List
+	    <h1>Groceries List</h1>
+save
+thats it
+
+Now we have our Header component
+
+Its already exported from here and imported into the App component
+Add import statement to App.js 		import Header from './Header';
+In App.js, we see import Header from './header';
+At this point, we have imported it but not used it yet
+
+const Header = () => {
+    return (
+        <header>
+	    <h1>Groceries List</h1>
+        </header>
+    )
+}
+export default Header
+
+In App.js, we can delete logo import line
+We can also delete SOME of the code inside our JSX here.
+
+Take Header code OUT and 
+add <Header /> custom element in JSX  v29.52
+You can see its a custom element in the JSX
+we import from the top, and now has full color so you know we are using it
+
+Save this. 
+Now we see white screen with Groceries List text at the top
+So we created a seperate functional component and imported that component.
+
+So we created a seperate functional component in a new file called Header.js
+Added the customer element <Header /> inside App.js
+Added import Header statement in App.js
+Deleted the longer original Header code from App.js
+
+Now lets create another one.
+
+Create new file Content.js
+
+Do the same thing
+CONTROL ALT R _rafce to create boilerplate snippet for our content functional component
+Do not use the div, instead use the semantic main element
+so change div to main
+
+Here we paste what we had and then alter it 
+just a little b/c I copied the header element that we didnt need
+
+delete the header elements that we dont need (two lines deleted)
+delete the image
+delete the blank lines
+tab over to keep the code structure
+we dont have handleNameChange here either
+do take the logic out of the App.js component and 
+we can put into directly into the content component<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+										<<
+Add text Hello {handleNameChange()}!						<<
+App.js has handleNameChange logic from Chapter 2 (prior chapter)		<<
+										<<	
+const Content = () => {								<<
+    return (									<<
+        <div>			<main>						<<
+        </div>			</main>						<<
+    )										<<
+}										<<
+export default Content								<<
+										<<
+NOTE handleNameChange logic is from Chapter 2 and put into Content component <<<<<
+  const handleNameChange = () => {						<<
+    const names = ['Bob', 'Kevin', 'Dave'];					<<
+    cont int = Math.floor(Math.random() * 3);					<<
+    return names[int];								<<
+  }										<<
+										<<
+Put this logic into Content component <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+Still need to import into App.js	import Content from './Content';
+Now we can add out Content functional component right underneath the <Header />
+And save. Now the random name changes kick in on the rendered app
+Hello Bob
+Hello Kevin
+
+
+
+So complete code App.js so far
+
+import './App.css';
+import Header from './Header';
+import Content from './Content';
+function App() {
+  return {
+    <div className='App'>
+      <Header />
+      <Content />
+    </div>
+  };
+}
+export default App;
+
+
+
+Now we still need a Footer.js component 		v 32.19
+New file Footer.js
+CONTROL ALT R
+_rafce which gives the generic footer boilerplate template
+semantic html offers a footer element so change the <div> to <footer>
+
+Now we can add just a little more logic to the footer
+define variable called today and set to new Date(); object
+const Footer = () => {
+}
+
+inside Footer add		
+	const today = new Date();
+	<p> tags with Copyright &coy; 
+	add date with expression 		{today.getFullYear()}
+save it
+dont see it rendered yet b/c we need to import it inside App.js
+ie created then imported 	<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+Then we need to put inside the JSX of the app component 	<<<<<<<<<<<<<<<<<
+										<<
+so now App.js has these								<<
+										<<
+import './App.css';								<<
+import Header from './Header';							<<
+import Content from './Content';						<<
+import Footer from './Footer'; 	<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<			<<
+										<<
+return {									<<
+  <div className='App'>								<<
+    <Header />									<<
+    <Content /									<<
+    <Footer /> <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  </div>
+};
+
+and now Copyright renders correctly
+
+Note we see how these encapsulate logic
+handleNameChange is encapsulated inside the Content component
+and we some logic encapsulated inside the Footer component
+The parent component for all three (Header, Content, Footer) is the App component
+and we had to import all three components that we created into the App component
+then we were able to place the three components inside the layout of the JSX
+
+Need to install React Dev Tools v34.43

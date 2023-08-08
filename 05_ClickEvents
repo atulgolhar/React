@@ -1,1 +1,144 @@
+how React responds to events
+React is a javascript library
+
+inside Content.js see line 11 we have the Hello {handleNameChange()}
+
+we see the handleNameChange function that is called into action immediately
+as the function is invoked when the page loads
+its called once, 
+its not responding to a button
+
+Today we are going to create a seperate function called handleClick
+
+const handleClick = () => {
+    console.log('You clicked it')    
+}
+
+and then add a button element 
+
+<button>Click It</button>
+
+but when we click it, we need to add some functionality
+that functionality is called onClick={}
+
+<button onClick={}>Click It</button>
+
+and inside the {} we will put a JavaScript expression thus its a called a JSX expression
+called handleClick
+
+<button onClick={handleClick}>Click It</button>
+
+so now save, then look at the console to see what happening underneath it
+
+Right Click inspect to get DevTools
+Click console, clear out default message to give more room
+
+now click button, then in the console we see the words You clicked it
+So that is how we call a simple button from a button click
+
+What if we wanted to pass in a function as a parameter to handleClick?
+so highlight the handleClick function lines 8 to 10 of Content.js file
+
+SHIFT ALT DOWNARROW to create a copy of the code
+
+const handleClick
+const handleClick2 and pass in parameter called name and need template literal here
+	console.log(`${name} was clicked`)
+
+<button onClick={handleClick}>Click It</button>
+<button onClick={handleClick2}>Click It</button>
+
+now take cursor to line that has the button element and copy it SHIFT ALT DOWNARROW
+now created a second button element called handleClick2 BUT its not passing in the
+parameter so how do we pass in the parameter? need an anonymous function here
+
+so we first take the original code
+add operators and arrow	() =>
+
+<button onClick={handleClick2}>Click It</button>
+<button onClick={() => handleClick2}>Click It</button>
+
+now handleClick2 can be called and thus we can pass in a name handleClick2('Dave')
+
+<button onClick={handleClick2}>Click It</button>
+<button onClick={() => handleClick2}>Click It</button>
+<button onClick={() => handleClick2('Dave')}>Click It</button>
+
+notice that you may be used to seeing {} around it 
+handleClick2('Dave')}
+{handleClick2('Dave')}}
+
+<button onClick={() => handleClick2('Dave')}>Click It</button>
+<button onClick={() => {handleClick2('Dave')}}>Click It</button>
+
+BUT since the expression is on A SINGLE LINE, then these additional {} are not required
+<button onClick={() => {handleClick2('Dave')}}>Click It</button>
+	               ^                     ^			<<< not required
+
+so can leave them out
+<button onClick={() => {handleClick2('Dave')}}>Click It</button>
+<button onClick={() => handleClick2('Dave')}>Click It</button>
+
+but expression itself still needs to be using {}
+<button onClick={() => handleClick2('Dave')}>Click It</button>
+                ^                          ^ 		       <<< yes still need these
+
+so this is how we put in the anonymous function and then 
+we should see a second button render
+yes there it is below
+and when clicking it, the console should show Dave was clicked in the console
+thus we did get the output that was expected
+
+Note 
+putting the operators after it or not IMPORTANT POINT
+by not putting the operators after it, its not called immeidately
+by YES putting the opreators after it, its is YES called immediately
+so then why isnt handleClick2 called immediately b/c it has the operator after it
+which is indicated by ('Dave') immiedately after it.
+
+its not called immediately b/c its INSIDE a function that begins here () =>
+and so this anonymous function is not called into action until the click
+
+so lets have one more example to show this
+handleClick3 and pass in the event e
+
+DRILL DOWN ABILITY REACT - ATUL
+				     
+		    NOTE		    NOTE		     NOTE
+ 		    ======		    ======== 		     ===================
+const handleClick = () => {	console.log('You clicked it')	     use text
+const handleClick2 = (name) => {console.log(`${name}You clicked it`) use template literal
+const handleClick3 = (e) => {	console.log(e) 			     use event e
+const handleClick3 = (e) => {	console.log(e.target) 		     use event e detail
+const handleClick3 = (e) => {	console.log(e.target.innerText)      use event e detail
+
+
+								    console.log
+								========================
+<button onClick={handleClick}>Click It</button>			'You clicked it'
+<button onClick={() => handleClick2('Dave')}>Click It</button>  'Dave'
+<button onClick={(e) => handleClick3(e)}>Click It</button>	full event object logged
+
+notice in full event object logged has several properties
+SyntheticBaseEvent {_reactName: "onClick", _targetInst: null, type: "click",
+nativeEvent: MouseEvent, dtarget: button, _}
+
+notice with the 4th iteration using e.target we get in the console.log
+we just get the event target which is <button>Click It</button> 
+this is the button element itself
+	console.log(e.target.innerText)
+gives us just the text itself 	Click it
+
+Another event we can look for is a Double Click
+<p onDoubleClick={handleClick}> 
+
+save
+then when double clicked Hello, the console log shows clicked it
+then double clicked again, you can see the BLUE CIRCLE # SHOWING logged 2, then 3
+so there are many different events you can explore (ATUL) 
+to put into your application and we will add more as we continue to build out this
+application.
+
+
+
 

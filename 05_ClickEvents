@@ -129,16 +129,25 @@ this is the button element itself
 	console.log(e.target.innerText)
 gives us just the text itself 	Click it
 
+React can listen for other events
 Another event we can look for is a Double Click
 <p onDoubleClick={handleClick}> 
 
 save
-then when double clicked Hello, the console log shows clicked it
+then when double clicked Hello button, the console log shows clicked it
 then double clicked again, you can see the BLUE CIRCLE # SHOWING logged 2, then 3
 so there are many different events you can explore (ATUL) 
 to put into your application and we will add more as we continue to build out this
 application.
+v 51.10
 
+How to click button and change name?
+vanilla JS: we have a function defined above and then when the page loads
+we just call it into action ... very vanilla js.
+
+Lets think in a Reactful way. Want this to respond in React where the FULL page
+does not need re-render. React would instead re-render the component with the random 
+name. State teaches this next, specifically useState Hook.
 
 
 

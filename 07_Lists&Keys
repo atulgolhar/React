@@ -868,6 +868,13 @@ we save there is no change
 but when we make a check, we are saving it to local storage
 which allows us to pull data from local storage (ie updated state) instead pulling default state
 
+
+const handleCheck = (id) => {
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setItems(listItems);
+    localStorage.setItem('shoppinglist', JSON.stingify(listItems));    
+}
+
 now our handleCheck function is complete
 so lets look at the JSX again
 lets add a little more the label element by adding attributes to it
@@ -947,5 +954,167 @@ if we uncheck it nothing happens
 only should drawn through the text description if check the item
 
 Author: with that complete, we are now ready to add the function for deleting an item
+
+underneath handleCheck function we add a new function
+
+const handleDelete = (id) => {
+    console.log(id)
+}
+
+so for now, we just create the handleDelete function and console.log the id
+save that
+
+scroll down to JSX and look for FaTrashAlt
+
+		    <FaTrashAlt
+			role="button'
+			tabIndex="0"
+		    />
+
+add a line to listen for a click event with onClick
+and set this equal to an expression.
+We cant just put handleDelete here b/c we need to pass that item id reference
+
+		    <FaTrashAlt
+			onClick={}
+			role="button'
+			tabIndex="0"
+		    />
+
+so we start out with the anonymous function
+onClick will feed an anonymous function handleDelete that receives the item.id
+
+		    <FaTrashAlt
+			onClick={() => handleDelete(item.id}
+			role="button'
+			tabIndex="0"
+		    />
+
+save it
+scroll back up and look at the handleDelete just logs the id for now
+now that we have saved this, lets go back to the console in DevTools
+clear screen
+click Trash Can for Item 3 in Development server app
+DevTools console shows 3 now (was 2 but then clicked and now its a 3)
+or if we click the second trash can we get a 2 so its working as expected
+
+Now lets put the details of handleDelete inside the function
+Scroll back up to the handleDelete and delete the console.log code line
+
+const handleDelete = (id) => {
+    console.log(id)
+}
+
+const handleDelete = (id) => {
+
+}
+
+and now define the listItems inside the function
+
+const handleDelete = (id) => {
+    const listItems =
+}
+
+and now instead of map we going to use another higher order function called filter
+
+const handleDelete = (id) => {
+    const listItems = items.filter()
+}
+
+and inside this we will work with each item thus need another set ()
+
+const handleDelete = (id) => {
+    const listItems = items.filter(())
+}
+
+const handleDelete = (id) => {
+    const listItems = items.filter((item))
+}
+
+and now we check to see if the item id is not equal to the id
+
+const handleDelete = (id) => {
+    const listItems = items.filter((item) => item.id !== id )
+}
+
+what this does is create a new array
+(MDN and higher order functions tutorial)
+this will create a new array that has "filtered out" the item id that IS equal
+so in other words
+the new array will only have ids that are NOT EQUAL to the item id that we pass in
+
+after that our handleDelete function is just like our handleCheck function
+and so we set the state with the listItems and save to the same local storage shoppinglist
+
+const handleCheck = (id) => {
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setItems(listItems);
+    localStorage.setItem('shoppinglist', JSON.stingify(listItems));    
+}
+
+const handleDelete = (id) => {
+    const listItems = items.filter((item) => item.id !== id )
+    setItems(listItems);
+    localStorage.setItem('shoppinglist', JSON.stingify(listItems));    
+}
+
+so now we can save this
+and click a trash can
+this should allow us to delete a trash can
+lets try it on item 2
+click on delete trash can icon
+yes item 2 is gone
+lets try on item 3 trash can
+yes that also work
+notice now our list is empty
+notice we dont get a message if the list is empty
+maybe should change that too
+
+below <main> element but before the code block starts, lets include
+an expression to check for the items.length
+we dont need to say if its greater than 0
+b/c if its 0 then its automatically equal to false
+use ternary operator
+{items.length ? 
+
+and include the opening () as well but we dont the closing () or close {} yet
+
+now take full unordered list, highlight it all, tab it over
+add a line underneath the ul
+and add closing )
+then add : of the ternary statement
+then ( 
+then add message if there are no items ie if items length is equal to 0
+<p style={}
+so one {} is for the expression
+a second {} is for the style
+so need a second {}
+<p style={{}}
+
+<p style={{ marginTop: '2rem' }}>Your list is empty.</p>
+)}
+
+
+so review of this code
+if true includes the ul
+but if false it includes the empty list message
+
+if this works then when we save this
+we should see a Your list is empty message in the web application
+yes it works.
+
+Now when we reload, we will go back to the default state.
+b/c we have put in any "loading state" yet.
+ie loading the state from the local storage.
+
+we dont want to eliminate the default items just yet
+b/c we have not yet added the form to add new items
+
+and even before that we need to learn about Props and Prop Drilling in React
+why is this needed? some other components will need to access properties from
+our list and for now its soley contained within this Content.js component file
+and we need to share some this data to other components.
+
+See next lecture for this Props and Prop Drilling
 
 

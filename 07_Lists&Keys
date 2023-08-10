@@ -1,1 +1,951 @@
+(01:03:23) ======Chapter 7: Lists & Keys=====================================================
+App.js open in VSCode, Chrome rendered, DevTools open showing Console
+
+App.js
+
+import Header from './Header';
+import Content from './Content';
+import Footer from './Footer';
+
+function App() {
+  return (
+    <div className="App">
+      <Header />
+      <Content />
+      <Footer />
+    </div>
+  );
+}
+
+export default App;
+
+Author
+now as we have looked at App.js over these lectures, 
+we have added a Header component,
+a Content component, and a Footer component.
+
+Now lets go the file tree and click on Content.js
+
+File Tree
+App.js
+Content.js 	<<<<<<<<<<<<<<<<<<<<<<<<
+Footer.js
+Header.js
+index.css
+index.js
+.gitignore
+package-lock.json
+package.json
+README.md
+
+we recently learned about click events and the useState hook in React
+we will DELETE the code (as it was added just to introduce concepts)
+so we delete the code blocks for functions handleNameChange, handleClick and handleClick2
+as they were used simply to explain the concepts.
+we will also DELETE the JSX code except for the main opening and closing tags
+
+OLD
+
+import { useState } from 'react';
+const Content = () => {
+    const [name, setName] = useState('Dave');
+    const [count, setCount] = useState(0);
+
+    const handleNameChange = () => {			<<<<<<<<<<<<<<<<DELETE
+        const names = ['Bob', 'Kevin', 'Dave'];		<<<<<<<<<<<<<<<<DELETE
+        const int = Math.floor(Math.random() * 3);	<<<<<<<<<<<<<<<<DELETE
+        setName(names[int]);				<<<<<<<<<<<<<<<<DELETE
+    }							<<<<<<<<<<<<<<<<DELETE
+							<<<<<<<<<<<<<<<<DELETE
+    const handleClick = () => {				<<<<<<<<<<<<<<<<DELETE
+        setCount(count + 1)				<<<<<<<<<<<<<<<<DELETE
+        setCount(count + 1)				<<<<<<<<<<<<<<<<DELETE
+        console.log(count)				<<<<<<<<<<<<<<<<DELETE
+    }							<<<<<<<<<<<<<<<<DELETE
+							<<<<<<<<<<<<<<<<DELETE
+    const handleClick2 = () => {			<<<<<<<<<<<<<<<<DELETE
+        console.log(count)				<<<<<<<<<<<<<<<<DELETE
+    }							<<<<<<<<<<<<<<<<DELETE
+							<<<<<<<<<<<<<<<<DELETE
+    return {
+        <main>						
+            <p onDoubleClick={handleClick}>Hello {name}!	<<<<<<<<<<<<<<<<DELETE
+            </p>						<<<<<<<<<<<<<<<<DELETE
+            <button onClick={handleNameChange}>Change It	<<<<<<<<<<<<<<<<DELETE
+            <button onClick={handleClick}>Change It		<<<<<<<<<<<<<<<<DELETE
+            <button onClick={handleClick2}>Change It		<<<<<<<<<<<<<<<<DELETE
+        </main>							
+    }
+}
+
+export default Content
+
+We can also remove the second useState hook for count as we only need one useState hook
+
+    const [name, setName] = useState('Dave');		<<<KEEP THIS
+    const [count, setCount] = useState(0);		<<<<<<<<<<<<<<<<DELETE
+
+
+So, lets start with this
+
+import { useState } from 'react';
+const Content = () => {
+    const [name, setName] = useState('Dave');		<<<change from name, setName to items, setItems
+
+    return {
+        <main>
+        </main>
+    }
+}
+
+export default Content
+
+Lets look at our useState hooks were we have the 
+default state for count and name
+
+we can remove the count line as well (removed above)
+
+now we change name and setName to 
+items and setItems
+
+
+import { useState } from 'react';
+const Content = () => {
+    const [items, setItems] = useState('Dave');		<<<change from name, setName to items, setItems
+
+    return {
+        <main>
+        </main>
+    }
+}
+
+export default Content
+
+
+Right now the default state is a string 'Dave'
+but we want to change this from a string
+the default state can also be an array
+
+    const [items, setItems] = useState('Dave');			<<<change this line
+    const [items, setItems] = useState([]);			<<<change to an array
+    const [items, setItems] = useState([ {}, {}, {} ]);		<<<change to an array with 3 objects
+
+
+
+import { useState } from 'react';
+const Content = () => {
+    const [items, setItems] = useState([ {}, {}, {} ]);		<<<change to an array with 3 objects
+
+    return {
+        <main>
+        </main>
+    }
+}
+
+export default Content
+
+
+
+
+    const [items, setItems] = useState([ {}, {}, {} ]);		<<<change to an array with 3 objects
+
+
+Author pastes this in we have an array that contains 3 objects
+
+import { useState } from 'react';
+const Content = () => {
+    const [items, setItems] = useState([
+    {
+      id: 1,
+      checked: false,
+      item: "One half pound bag of Cocoa Almonds Unsalted"
+    },
+    {
+      id: 2,
+      checked: false,
+      item: "Item 2"
+    },
+    {
+      id: 3,
+      checked: false,
+      item: "Item 3"
+    }
+    ]);
+
+    return {
+        <main>
+        </main>
+    }
+}
+
+export default Content
+
+in the array, we have 3 objects		const [items, setItems] = useState([ {}, {}, {} ]);
+each object has 3 items			const [items, setItems] = useState([ {id, checked, item}, {id, checked, item}, {id, checked, item} ]);
+each items has as an id property, checked property, and an item property
+
+id property is a value and its numeric 						id: 1,
+checked property is a boolean so it true or false				checked: false,
+item property is a string (ie that describes the groceries we shop for)		item: "One half pound bag of Cocoa Almonds Unsalted"
+
+but since these 3 are examples, I just used default Item 2 and Item 3 		item: "Item 2"       
+for the 3rd item in objects 2 and 3						item: "Item 3"
+
+now we save our changes to Content.js 
+and that will reflect in the right rendered webpage
+
+DevTools Console
+
+drag up the console to give more room
+warnings arise that items and setItems are not used at this point
+
+Clear the console warnings
+
+
+in DevTools click on >> two arrows and look at the options offered
+Elements 
+Console 
+Sources 
+Network 
+Performance 
+Memory 
+Application 
+Security 
+Lighthouse 
+Components 	<<<<<<<CHOOOSE THIS ONE to look at the details
+Profiler
+
+Choose Components
+This shows all the Componets lists
+and we highlight the Content component
+
+Choose Content
+scroll until State is showing		*** Now we have confirmed our default items state
+
+State is an array that shows 3 objects
+We can expand this 
+to show each object in the array
+
+*** Now we have confirmed our default items state by seeing them
+    how? we just did it, we just confirmed it
+    how?
+    in Components, choose Content, choose the 3 objects and expand
+
+
+Our challenge now is to display the list items inside of the JSX
+
+    return {
+        <main>
+        </main>
+    }
+
+we display the list items using an UNORDERED LIST
+
+    return {
+        <main>
+	// UNORDERED LIST
+        </main>
+    }
+
+so we focus in the code on the JSX portion where we have the return statement
+
+we do this by adding or using ul elements (ie use an unordered list)
+we use both ul opening and ul closing tags <ul> </ul>
+
+but now in the JSX, we need an expression
+the way to display a list in JSX is 
+to work thru the list using map
+
+items.map is a higher order function (see MDN) v01.07.51
+
+https://legacy.reactjs.org/docs/higher-order-components.html
+"A higher-order component (HOC) is an advanced technique 
+in React for reusing component logic. 
+HOCs are not part of the React API, per se. 
+They are a pattern that emerges from React’s compositional nature."
+
+also see
+https://legacy.reactjs.org/docs/react-api.html
+
+
+back to author
+
+build up the element
+{}
+{items.map}
+{items.map()}
+{items.map(())}
+
+with map, we go thru each item
+{items.map((item))}
+
+add arrow function
+{items.map((item) => )}
+
+then need another parenthesis as we iterate thru the items as each item will be list item
+{items.map((item) => ())}
+
+as we iterate thru the item, each item will be a LIST ITEM just like in HTML
+{items.map((item) => (
+		<li>
+		</li>
+	))}
+
+
+each li has a className equal to "item"
+{items.map((item) => (
+		<li className="item">
+		</li>
+	))}
+
+inside each li element, we have an input element
+{items.map((item) => (
+		<li className="item">
+			<input
+		</li>
+	))}
+
+
+and each input element will be an attribute
+{items.map((item) => (
+		<li className="item">
+			<input
+			   type="checkbox"
+
+the first attribute is named type		type
+inside the expression will be item.checkbox	type="checkbox"
+
+the second attrbute is named checked and 	=
+this will be equal to an expression {}		{}
+inside the {} expression is item.checked is a boolean value	{item.checked}
+then I will close it where the indent started 
+and I will close it with a />			/>
+so that is the end of the input
+
+{items.map((item) => (
+		<li className="item">
+			<input
+			   type="checkbox"
+			   checked={item.checked}
+			/>
+		</li>
+	))}
+
+
+now we need a label for the input		<label></label>
+
+{items.map((item) => (
+		<li className="item">
+			<input
+			   type="checkbox"
+			   checked={item.checked}
+			/>
+			<label></label>
+		</li>
+	))}
+
+
+inside the label, we will label it with 	<label>{}</label>
+item.item which is inside an expresion {}	<label>{item.item}</label>
+
+
+finally, we will have a button			<button></button>
+with the text Delete				<button>Delete</button>
+
+{items.map((item) => (
+		<li className="item">
+			<input
+			   type="checkbox"
+			   checked={item.checked}
+			/>
+			<label></label>
+			<button></button>
+		</li>
+	))}
+
+
+
+add the Delete text
+here is the completed code this
+
+{items.map((item) => (
+		<li className="item">
+			<input
+			   type="checkbox"
+			   checked={item.checked}
+			/>
+		<label>{item.item}</label>
+		<button>Delete</buton>
+		</li>
+	))}
+
+
+still missing a key
+	        <li className>
+
+each list item in React
+	        <li className="item">
+
+each list item in React needs a key 			v01.09.47
+	        <li className="item" key>
+
+which is equal to an {} expression
+	        <li className="item" key={}>
+
+inside the {} expression is an item.id			v01.09.54
+	        <li className="item" key={item.id}>
+
+Here we use the id number to identify the key
+Why?
+React needs keys for each item and this helps React identify 
+which item have been changed, 
+which item have been added, 
+or which items have been removed
+
+b/c React will react or respond to CHANGES IN STATE and it re-renders the JSX
+ 
+so React does need to keep track of those things
+
+and that is why a list item needs to have a KEY ATTRIBUTE in React
+
+so the final code block is
+
+	        <li className="item" key={item.id}>
+		    <input
+			type="checkbox"
+			checked={item.checked}
+		    />
+		    <label>{item.item}</label>
+		    <button>Delete</button>
+		</li>
+
+
+now when we save it
+
+    return (
+        <main>
+	  <ul>
+	    {items.map((item) => (
+	        <li className="item" key={item.id}>
+		    <input
+			type="checkbox"
+			checked={item.checked}
+		    />
+		    <label>{item.item}</label>
+		    <button>Delete</button>
+		</li>
+	    ))}
+	  </ul>
+        </main>
+    )
+
+
+Now after saving, we see in rendered website
+
+item text then button		One half pound bag of Cocoa Covered Almonds Unsalted DeleteButton
+item text then button		Item 2 DeleteButton
+item text then button		Item 3 DeleteButton				v01.10.41
+
+Now before applying css styles, author wants to replace the Delete button
+with an icon we can use as a Delete button
+v01.10.58
+thus need to find an icon
+https://www.npmjs.com/
+search react-icons
+$ npm i react-icons
+package added
+
+VSCode terminal window
+
+CONTROL C to stop react app
+$ npm i react-icons --D		this is the same as $ npm install react-icons --save
+
+Font Awesome icon
+
+add in Content.js
+add trash icon
+import { FaTrashAlt } from 'react-icons/fa';
+
+now we have imported this FaTrashAlt icon
+we need to use the element in the code so copy it
+close terminal window
+scroll down to the JSX
+highlight the <button>Delete</button> code
+delete the html button icon
+and add the FaTrashAlt icon like this
+give it a role attribute equal to button
+include it in the tabIndex
+close out the tab
+<FaTrashAlt 
+<FaTrashAlt role=
+<FaTrashAlt role="button" 
+<FaTrashAlt role="button" tabIndex="0"
+<FaTrashAlt role="button" tabIndex="0" />
+
+better to put above code on separate lines as its easier to read
+and when we need to add more attributes then it will be easier to see
+what is needed and what is not yet there
+this especially important if they are responding to a click event as 
+an anonymous function (b/c the code gets very crowded)
+
+<FaTrashAlt 
+	role="button" 
+	tabIndex="0" 
+	/>
+
+save file
+remember that we stopped the app so any changes wont be visible yet
+we need to open up terminal window again
+start the app again
+$ npm run start 
+(its possible $ npm start
+ would accomplish the same thing)
+
+app loads in a new window
+terminal output shows "Development server starting"
+
+now we see Trash Can icons instead of the Delete buttons
+now right click inspeact Dev Tools
+Console
+clear out
+now we continue to build out this application
+
+Next step is to apply css to this 
+v01.15.52
+These icons are svg icons
+
+Close terminal window
+Control B to show file tree
+Open index.css
+
+all the css for the project is added to this index.css file
+see tutorial for index.css 
+
+index.css file code here
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 22px;
+}
+
+body {
+  min-height: 100vh;
+  font-family: 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fire Sans', 'Droid Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  max-width: 500px;
+  border: 1px solid mediumblue;
+  margin: auto;
+}
+
+header {
+  width: 100%;
+  padding: 0 0.25em;
+  background-color: mediumblue;
+  color: aliceblue;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+  overflow: auto;
+}
+
+footer {
+  width: 100%;
+  padding: 0.25em;
+  background-color: mediumblue;
+  color: aliceblue;
+  display: grid;
+  place-content: center;
+}							59 author
+							60 just below the footer 
+ul {							61 we paste in some css 
+  width: 100%;						62 that will handle the list
+  list-style: none;					63
+  padding: 0 0.25rem 0.25rem				64 unordere list with styles
+}							65
+							66
+ul li::before {						67 include a before
+  content: "\2000";					68
+}							69
+							70
+.item {							71 and then we have an item class
+  display: flex;					72 for each list item
+  justify-content: flex-start;				73 and you can see the different 
+  align-items: center;					74 things that we apply
+  padding: 0.5rem 0 0.5rem 0.5rem			75 here
+  margin: 0.25rem 0;					76
+  background-color: #eee;				77
+}							78
+							79
+.item:first-child {					80
+  margin: 0;						81
+} 							82
+							83
+.item input[type="checkbox"] {				84 here is the input type checkbox
+  text-align: center;					85
+  width: 2.5rem;					86
+  width: 48px;						87
+  min-width: 48px;					88
+  height: 2.5rem;					89
+  height: 48px;						90
+  min-height: 48px;					91
+  cursor: pointer;					92
+  margin-right: 0.5rem;					93
+} 							94
+							95
+.item input[type="checkbox"]:focus + label {		96 once again the type checkbox for 
+  text-decoration: underline;				   for a focus and possibly the
+}							   label where we will give it
+							   an underline if it has focus
+.item > label {						   here is some more styling 
+  font-size: 0.75em;					   just for the label
+}
+
+.item svg {						   here is some styling for 
+  width: 48px;						   the svg
+  min-width: 48px;					   and that svg icon is a button
+  height: 36px;
+  font-size: 1rem;
+  color: steelblue;
+  cursor: pointer;
+}
+
+.item svg:focus,					   and we apply style for
+.item svg:hover {					   focus and hover
+  color: red;
+  outline: none;
+}
+
+author see link in guthub or type it all in
+focus on react now
+
+save and see re-rendering on the right
+items now look much better
+big checkbox on the left
+they are highlight with a little bit of different
+background color 
+and we even changed the size and color of the trash icons  v01.18.05 of 08.49.06 
+trash icons turn red when we hover over them with our mouse
+and our mouse turns into a pointer
+
+when they have focus and thus get underlined then
+note boxes are not allowed to check yet
+why? b/c in our content component where we assigned 
+the item is assigned check
+which comes from our state
+and all the default states are false
+so if we change the default state to true 
+then the checkbox can render an actual check
+
+we do this by working with the state
+and we work with the state by adding a handler
+for the click in the checkbox
+
+v01.19.05
+last code line was line 21, line 22 blank
+lets create a function underneath thus on code line 23
+create a const handleCheck
+and we pass in an id as a key for each item
+
+file Content.js
+accepts id which is the key of the listItem
+lets see what the console logs
+
+const handleCheck = (id) => {				handleCheck accepts the id
+    console.log(`key: $(id)`)
+}
+
+now for the info with the checkbox we dont want to add an onClickEvent
+but we need with the checkBox is an onChange event
+and inside the {} expression for the onChange we can NOT just call handleCheck
+b/c we need to pass in the id
+			onChange={handleCheck}
+so we need an anonymous function 
+			onChange={() => handleCheck}
+and now with the anonymous function, we can call another function inside of it
+and we can now pass in the item.id
+			onChange={() => handleCheck(item.id)}	<<<<<<<<< item.id
+									<<	
+									<<
+    return (								<<
+        <main>								<<
+	  <ul>								<<
+	    {items.map((item) => (					<<
+	        <li className="item" key={item.id}>		<<<<<<<<<< item.id
+		    <input						<<
+			type="checkbox"					<<
+			onChange={() => handleCheck(item.id)}	<<<<<<<<<< item.id
+			checked={item.checked}
+		    />
+		    <label>{item.item}</label>
+		    <button>Delete</button>
+		</li>
+	    ))}
+	  </ul>
+        </main>
+    )
+
+save this
+test out by checking another box
+need to look at console.log output
+CLICK ON THE BOX but no checkmark?
+notice that clicking on the box did NOT change the checkbox out b/c
+we didnt change the state and the state is what is being assigned here
+from the default state.
+
+LETS NOW change the state function so we DO SEE THE STATE change
+
+BEFORE
+const handleCheck = (id) => {				handleCheck accepts the id
+    console.log(`key: $(id)`)
+}
+
+AFTER
+const handleCheck = (id) => {				handleCheck accepts the id
+    console.log(`key: $(id)`)
+    listItems = items.map
+}
+
+by using .map we create a new array
+remember we DONT want to change the state directly
+
+map is higher order function
+map is a declarative way to write code
+
+note if we didnt use map and instead we wrote code in a more imperative line by line
+step by step way, then we would want to create listItems equal to the current state and 
+
+create a SHALLOW copy of the array like this
+    const listItems = [...items]
+this means this is a new array created from the state items
+
+however we will use map and write code in a more declarative way
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setItems(listItems);
+
+now checkbox works.
+
+declarative code allows us to write a single line of code
+imperative code forces us to write many lines of code
+
+Explained in detail
+
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setItems(listItems);
+
+we can say items.map and then
+    const listItems = items.map()
+
+refer to each item in the list (item)
+    const listItems = items.map((item))
+
+and from there look at the item.id
+    const listItems = items.map((item) => item.id )
+
+and see if it is strictly equal to === 
+    const listItems = items.map((item) => item.id === )
+
+and see if it is strictly equal to === the id passed in with the change event
+    const listItems = items.map((item) => item.id === id )
+
+when handleCheck is called
+
+		const handleCheck = (id) => {				handleCheck accepts the id
+		    console.log(`key: $(id)`)
+		    listItems = items.map
+		}
+
+from there lets go ahead and return a new item if 			? refers to the if
+    const listItems = items.map((item) => item.id === id ? {})
+
+so here we can just spread out the current item like this 		{ ...item }
+    const listItems = items.map((item) => item.id === id ? { ...item })
+
+but then we can change the checked status like this   checked:
+    const listItems = items.map((item) => item.id === id ? { ...item, checked:  })
+
+and using the ! means it will be the opposite of what it currently is
+    const listItems = items.map((item) => item.id === id ? { ...item, checked: !item.checked })
+
+!item.checked means the oppostive of item.checked since its a boolean
+
+otherwise 	refer to otherwise using the :
+    const listItems = items.map((item) => item.id === id ? { ...item, checked: !item.checked } : )
+
+ternary operator is the question mark		?
+check what we are looking for 			if the item.id === id
+if that is true then return the new item	...item
+if that is not true ie otherwise return the OPPOSITE of the new item !item.checked
+this is the same item BUT FLIPPING THE CHECKED STATUS
+and if not then return the item that is already existing there 		ie item
+									   ^^^^
+    const listItems = items.map((item) => item.id === id ? { ...item, checked: !item.checked } : item)
+												 ^^^^
+and then end that line by adding ; at the end
+    const listItems = items.map((item) => item.id === id ? { ...item, checked: !item.checked } : item);
+
+
+=========
+complete statemet for reference
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+=========
+
+this is using a higher order function map
+rather than writing a for loop for for each loop that would take up more space
+
+so we are not finished yet
+we have created our new listItems 
+using map
+and we have altered that item that matches in order to change the status of it
+
+once we have done this, we can use our setItems to change the state by passing in
+the new listItems arraythat we just created 
+now save this
+reload
+clear out console
+check an item
+now the checkbox works
+we are changing the state now (ATUL ie flipping the state)
+lets check the state in DevTools by pulling up the Components
+
+			console.log shows
+BOX1 not checked	checked: false
+BOX2 yes checked	checked: true
+BOX3 not checked	checked: false
+
+now lets check BOX3 and see if the state changes in the hooks below.
+Author - hooks seems to refer to the console.log details.
+
+Note - its important to note that this does NOT change the default state of the component
+so if we reload the application, it (the app) will come back to the default state 
+
+code shows default BOX1 true, BOX2 false, BOX3 false
+and rendered web app shows BOX1 CHECKED, BOX2 empty, BOX3 empty
+
+so far we have
+
+OLD
+const handleCheck = (id) => {				handleCheck accepts the id
+    console.log(`key: $(id)`)
+    listItems = items.map
+}
+
+NEW
+const handleCheck = (id) => {				handleCheck accepts the id
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setItems(listItems);
+}
+
+now lets add one last line to the handleCheck function
+need to add local storage
+
+localStorage.setItem('shoppinglist', JSON.stingify(listItems));
+
+we save there is no change
+but when we make a check, we are saving it to local storage
+which allows us to pull data from local storage (ie updated state) instead pulling default state
+
+now our handleCheck function is complete
+so lets look at the JSX again
+lets add a little more the label element by adding attributes to it
+add the DoubleClick from the check box and 
+add this to the the label as a new attribute
+What does this do?
+when double clicking on the text, then the checkbox get a blue check
+whereas before doubleclicking had no effect
+
+ie doubleclicking works when mouse on text
+ie single clicking the checkbox works as well
+
+OLD
+label attributes on seperate lines
+
+    return (
+        <main>
+	  <ul>
+	    {items.map((item) => (
+	        <li className="item" key={item.id}>
+		    <input
+			type="checkbox"
+			onChange={() => handleCheck(item.id)}
+			checked={item.checked}
+		    />
+		    <label>{item.item}</label>		<<<<<<<<<<<<CHANGES HERE
+		    <FaTrashAlt
+			role="button'
+			tabIndex="0"
+		    />
+		</li>
+	    ))}
+	  </ul>
+        </main>
+    )
+
+NEW
+    return (
+        <main>
+	  <ul>
+	    {items.map((item) => (
+	        <li className="item" key={item.id}>
+		    <input
+			type="checkbox"
+			onChange={() => handleCheck(item.id)}
+			checked={item.checked}
+		    />
+		    <label
+			onDoubleClick={() => handleCheck(item.id)}	<<<<<add attribute
+		    >{item.item}</label>				
+		    <FaTrashAlt
+			role="button'
+			tabIndex="0"
+		    />
+		</li>
+	    ))}
+	  </ul>
+        </main>
+    )
+
+
+now lets add one more attribute to the label
+use a ternary statement here
+style = {}
+style = {(items.checked)}
+if true ?
+style = {(items.checked) ? }
+if true yes, then set text decoration
+style = {(items.checked) ? {} }
+style = {(items.checked) ? { textDecoration: 'line-through'} }
+but if false then set it to null which set no style at all
+style = {(items.checked) ? { textDecoration: 'line-through'} : null}
+
+save it and see if it works
+what is the effect? if we check a box then we get a line crossing through the text description
+if we uncheck it nothing happens
+only should drawn through the text description if check the item
+
+Author: with that complete, we are now ready to add the function for deleting an item
+
 

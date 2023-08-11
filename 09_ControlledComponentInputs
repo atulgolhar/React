@@ -1,1 +1,137 @@
+(02:01:19) ======Chapter 9: Controlled Component Inputs======================================
+
+controlled components are inputs in React forms
+inputs are controlled thus try to use one source of truth
+one source of truth is tied to the state
+
+========seup and cleanup========
+look at file package.json dependencies
+accidently installed as a dev dependency but should be a production dependency
+open terminal CONTROL `
+continue to keep React icons, but 
+need to move them from dev dependency to production dependency
+open new terminal to handle this b/c already running React in another terminal
+
+$ npm i react-icons --save-prod
+this will move it to a production dependency instead of dev dependency
+now close that terminal window
+verify the change as dev dependencies are empty 
+and React icons are now in prod dependency
+
+also from props tutorial, inside the ItemList, we are 
+adding the key as we should for each line item right here line 8 	key={item.id}
+but b/c author had pasted key={item.id} into the LineItem.js file line 5 
+it did not cause any error but it should not be there
+so you can delete this code in line 5	 key={item.id}
+b/c we already have it in ItemList.js in line 8
+(ie 1) dont need it in both places 
+and 2) we map thru the LineItems in a specific place
+and that specific place is in the ItemList.js file in lines 6 to 12)
+
+OLD EXPLANATION NOT AS CLEAR can remove the key attribute 
+b/c we already have it inside ItemList component
+========end of seup and cleanup========
+
+Now ready for Controlled Inputs
+
+click on App.js
+running on right in Chrome
+using a default state so when we re-load we get the original default state back
+we have been updating the items in local storage 
+why still using a defaut state? for now we have no way to add a new item.
+the way we starting with adding new items was to add at the creation using the default state
+but now that default state exits, we have NO NEW WAY to add items
+so we need to add form to add the new items
+and we can do this with a new component called AddItems.js
+
+new file 
+AddItem.js	we will do this AddItem.js new file
+use the react snippets extension via CONTROL ALT R _rafce press enter and thus gives the snippet
+snippet gives boilerplate code but uses div tags
+need to turn <div> element into <form> element 
+give className attribute inside <form> 
+
+we need a label attribute htmlForm		<label htmlForm
+use label called htmlForm
+cant use Form b/c Form is reserved word in html
+add text Add Item and close the label tag with </label>
+
+const AddItem = () => {
+    return (
+        <form className='addForm'>
+        </form>
+    )
+}
+
+now inside the form, add
+	    <label htmlForm	use capital F in Form b/c we cant use For 
+				b/c Form is a reserved word in html
+						
+const AddItem = () => {
+    return (
+        <form className='addForm'>
+	    <label htmlFor='addItem'>Add Item</label>
+        </form>
+    )
+}
+
+we will probably hide this label off the screen but screen readers will still read it
+you always want to have a label for every input on your form
+
+now for the input, I will put each attribute on a seperate line
+<input 
+	autoFocus		we add autoFocus, make sure to capitalie the F
+	id='addItem'		we make the id as addItem
+	type='text'		the type will be text
+	placeholder='Add Item'	for the placeholder we want Add Item
+	required		make this a required input
+	/>			and then we wait on the rest and will add them later
+	<button			also need a button and put the button attribute on seperate lines
+		type='submit'	type is submit which is the default type and the only button in the form			
+		aria-label='Add Item'	this attribute in JSX still uses hyphen instead of camelcase
+	>				in aria-lebal we use an icon instead of lettering or words
+					for the actual button
+	</button>			add the closing button
+
+need the import statement at the top so we can use it on the button
+import FaPlus Font Awesome Plus from react fa file directory
+import { FaPlus } from 'react-icons/fa';
+
+need to put the <FaPlus /> icon inside the button as well
+
+	<button	
+		type='submit'
+		aria-label='Add Item'
+	>				
+		<FaPlus />		add this line of code here after inputting above block
+	</button>			
+    </form>
+  )
+}
+
+export default AddItem			now with this complete we can see we are exporting 
+					the default AddItem component
+
+now go to App.js and just underneath import Header statement we add import Additem component like this
+import AddItem from './AddItem';
+
+now need to add the AddItem component in the JSX just below the Header component
+
+return (
+  <div className="App">
+    <Header title="Grocery List" />
+    <AddItem />				<<<<<<<<<<here
+    <Content
+      items={items}
+      handleCheck={handleCheck}
+      handleDelete={handleDelete}
+    />
+    <Footer length={items.length} />
+  </div>
+  );
+}
+
+
+
+v02.08.41
 

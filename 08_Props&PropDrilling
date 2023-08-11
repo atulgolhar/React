@@ -1,1 +1,97 @@
 
+(01:35:50) ======Chapter 8: Props & Prop Drilling============================================
+
+Props = Properties
+Prop Drilling allow us to pass that data from parent components to child components
+
+Work with Header and props inside the header
+
+in App.js
+<Header>				OLD
+<Header title="Groceries" />		NEW
+save
+
+now in Header.js file
+remember this a component function, so we can pass in props
+
+const Header = () => {			OLD
+const Header = (props) => {			NEW
+
+    <h1>Groceries List</h1>		OLD	
+    <h1>{props.title}</h1>		NEW
+
+props hold all the different properties from the parent component that have been
+passed to the child component
+and we can subsequently reference the specific property via the passed in property attribute
+
+Destructuring from JavaScript can help here.  v01.38.45
+
+destructuring occurs as the data is passed in thru the anonymous function
+just need to add an extra set of {}
+allows to get rid of props. text
+
+const Header = () => {			OLD
+const Header = ({}) => {		NEW
+    <h1>{props.title}</h1>		NEW
+
+const Header = ({ title }) => {		NEW
+    <h1>{title}</h1>			NEW
+
+
+Need to discuss Default Props
+Default Props allow us set values for the props expected in the component
+and if those are not provided then the default values will take over.
+
+Good to do when first specing a component. Maybe your not receiving the data
+from an API or even a local storage list.
+
+OLD					NEW
+const Header = ({ title }) => {
+    return (
+        <header>
+            <h1>{title}<h1>
+        </header>
+    )
+}
+->					Header.defaultProps = {
+->					    title: "Default Title"
+->					}
+export default Header;
+
+Now save this. 
+No change yet b/c we are still providing the prop from the parent.
+Lets delete the title from the parent. Save.
+Now we see Default Title in web app b/c Header.defaultProps title gets passed in.
+Then if put Parent Title back in, then that Parent Title will override the Default Title.
+v01.40.25
+
+Now lets look at Content component and Footer component.
+Lets display total count of list items in the Footer. v01.40.50
+So Footer needs access to the list items 
+but the list items are all stored in Content component.
+These are sibling components 
+they can NOT just reach into each other and get the needed data.
+
+So we need to take data in Component, move it up to App component and
+then move down (ie drill it down) to the Conent and Footer components.
+
+Originally, 
+Content component had 3 Item properties: id, checked, item.
+Auther cut them from Content component and pasted into App component.
+
+App.js has a useState with items and setItems
+
+Then in App.js return statement for Content, we update the code and pass in 
+that data from the App.js thru the App.js return statement like this
+	<Content
+	  items={items}
+	  setItems={setItems}
+	/>
+
+but that is not all b/c Content.js handleCheck and handleDelete also need access.
+And so cut those from Content.js and paste into App.js
+Then we add the handleCheck and handleDelete to the Content.js return statement.
+
+Now Content.js		
+Notice that Content.js used to hold that data but it got moved to App.js.
+What we can do is take that App.js parent data DESTRUCTURE IT BACK into Content.js

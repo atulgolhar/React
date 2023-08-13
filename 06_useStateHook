@@ -1,1 +1,164 @@
 
+(00:51:55) ======Chapter 6: useState Hook====================================================
+
+Look at the Content.js component
+
+prior looked at how to handle click events
+we have a handleNameChange function that randomly generates a name
+we see 3 handleClick functions here (3 lines code, define names, math line, return line)
+this is done in a very vanilla js way
+- define the handleNameChange
+- when page loads, its called into action using button onClick handleClick3
+React way
+- we need to handle the state of our component and 
+- React gets its name as it changes to the state of the component
+- when there are changes, React re-renders the JSX in <main>
+
+1) import React hook
+import { useState } from 'react';
+
+now we can use the useState hook inside of our component
+
+2) so start by defining what we will use for state
+const [name, setName]
+
+the 1st value name will provide the current state at any given point in time
+the 2nd value setName allows us to set the Name
+so name is a GETTER and setName is a SETTER from vanilla javasript objects 	<<<***
+we can put default data inside the () of useState when the component loads
+the default state is the same thing as the original state
+const [name, setName] = useState()
+so we can use default name of 'Dave'
+const [name, setName] = useState('Dave');
+
+now that we have a default name, we can replace part of the code in the JSX
+so we replace handleNameChange with the value of the current state
+Old	Hello {handleNameChange}!
+New	Hello {name}!		
+this will now render Hello Dave! in the rendered application
+
+Now notice that Dave will not change, so we need to change our handleNameChange function
+how?
+
+OLD						NEW / UPDATED
+const Content () => {
+						const [name, setName] = useState('Dave')
+    const handleNameChange = () => {
+        const name = ['Bob', 'Kevin', 'Dave']
+        const int = Math.floor(Math.random() * 3);
+        return names[int];
+    }
+}
+
+
+return {
+    <main>
+        <p onDoubleClick=(handleClick)>
+            Hello {handleNameChange}!				Hello {name}!
+        </p>
+        <button onClick={handleClick}>Click It</button>
+        <button onClick={() => handleClick2('Dave')}>Click It</button>
+        <button onClick={(e) => handleClick3(e)}>Click It</button>
+
+how?
+instead of returning the names value (ie OLD way)
+we can use the setName from the useState (ie NEW way)
+so we pass in the value of the current State 
+ATUL the difference is the calling function at the return step
+     we dont use the vanilla JS way of passing in the value
+     we do use the new dynamic way of passing in the current state value
+how does this happen? handleNameChange will set the current state
+
+        return names[int];			      setNames(names[int]);
+
+so now instead of 
+button onClick=(handleClick)
+we have handleNameChange in the button so it should be
+button onClick=(handleNameChange)
+and change the text of the button to from Click It to Change Name 
+
+
+return {
+    <main>
+        <p onDoubleClick=(handleClick)>
+            Hello {handleNameChange}!				Hello {name}!
+        </p>
+        <button onClick={handleClick}>Click It</button>		<button onClick={handleNameChange}>Change Name</button>
+        <button onClick={() => handleClick2('Dave')}>Click It</button>
+        <button onClick={(e) => handleClick3(e)}>Click It</button>
+
+so before the rendered white app showed
+
+OLD				NEW
+Groceries List
+	Hello Dave!
+	 Click it		Change Name
+	 Click it
+	 Click it
+
+so when we click the Change Name button, it will call the handleNameChange function
+which will change the state
+EACH click on button in video will trigger the random name to re-choose a random name
+
+so the button works. By changing the state, React re-renders very quickly our Content component
+directly modified by the setName (ie SETTER) in the useState function.
+
+There are some gotchas
+const [count, setCount] = useState(0);		// set initial useState counter to 0
+
+now in handleClick code, we need to account for this the change.
+
+
+OLD									NEW
+const handleClick = () => {
+    console.log('Your clicked it')			    		console.log(count)
+}
+
+const handleClick2 = () => {
+    console.log('Your clicked it')
+}
+
+const handleClick3 = () => {
+    console.log('Your clicked it')
+}
+
+
+return {
+    <main>
+        <p onDoubleClick=(handleClick)>
+            Hello {handleNameChange}!					Hello {name}!
+        </p>
+        <button onClick={handleClick}>Click It</button>			<button onClick={handleNameChange}>Change Name</button>
+
+        <button onClick={() => handleClick2('Dave')}>Click It</button>	<button onClick={handleClick}>Click It</button>	
+			 () => handleClick2('Dave')					 handleClick
+
+        <button onClick={(e) => handleClick3(e)}>Click It</button>
+
+
+now notice we change the 
+this code 		() => handleClick2('Dave')
+to this code		handleClick
+and then handleClick will refer to the above code (see here)
+
+const handleClick = () => {
+    console.log(count)
+}
+
+and this button handleClick will link to the count which is defaulted to the initial value of 0 from
+const [count, setCount] = useState(0);
+
+Now the gotcha. 
+ATUL - So far we have NOT incremented anything. So the count wont change. We need remedy this.
+
+add a line
+setCount(count + 1)
+
+
+const handleClick = () => {
+    setCount(count + 1)				NEW LINE
+    console.log(count)
+}
+
+Key here is state is the value you bring into the function.
+In our case, it was the default case = 0.

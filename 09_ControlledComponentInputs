@@ -135,3 +135,180 @@ return (
 
 v02.08.41
 
+now we put in css to add the styling
+add css in index.css
+
+its not DRY as its was created inside one file on a per component basis so we could
+pull each component out and create seperate files for each component (each have their own .css file)
+
+line 120
+.addForm {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin: 0.5rem 0 0;
+  padding: 0 0.5rem 0.25rem;
+  border-bottom: 1px solid #eee;
+}
+
+line 129
+.addForm label {
+  position: absolute;
+  left: -99999px;
+}
+
+line 134
+.addForm input[type='text'] {
+  flex-grow: 1;
+  max-width: calc(100% - 50px);
+  min-height: 48px;
+  font-size: 1rem;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  margin-right: 0.25rem;
+  outline: none;
+}
+
+line 145
+button {
+  height: 48px;		this is finger size dont want to ever go less than 48 by 48
+  min-width: 48px;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  background-color: aliceblue;
+  color: mediumblue;
+  cursor: pointer;
+}
+
+button:focus,
+button:hover {
+  color: white;
+  background-color: limegreen;
+  outline: none;  
+}
+
+v02.10.14
+
+submit button turns green when we hover over it
+
+to make this a controlled input, we need to tie it to state
+one source of truth
+and change state as the input changes
+
+now in App.js, we can see the default useState for items and setItems
+code block ends in line 24
+so in line 25 type
+new Item and setNewItem will also useState and set this to empty ''
+empty quotes means it will be blank to start out with
+save this
+const [newItem, setNewItem] = useState('')
+
+scroll up and add lines in 39
+need to create a handleSubmit function that receives the event object e
+and inside we will console.log
+
+const handleSubmit = (e) => {
+    console.log('submitted')
+}
+
+then once we have saved this, we need to pass 
+newItem, setNetItem, and handleSubmit 		lines 25 and 39
+need to pass all three of these as props to our JSX return statement AddItem
+old line 46
+<AddItem />
+new line 46
+<AddItem 
+  newItem={newItem}
+  setNewItem={setNewItem}
+  handleSubmit={handleSubmit}
+/>
+
+save this			v 02.12.23
+
+now to go AddItem.js component and destructure what we just created
+old line 3
+const AddItem = () => {}
+new line 3
+const AddItem = ({ newItem, setNewItem, handleSubmit }) => {}
+
+save
+now lets make the input a controlled input or actually a controlled component to be more accurate
+we do this by setting the state to be the one soure of truth for this input 
+we do this with a value attribute 
+line 13
+value={newItem}
+but this is not enough to change the items
+so we also need an onChange 
+onChange={(e)} = setNewItem(e.target.value)}
+what is this for? so as we type inside the field at top of Grocery List,
+it will set the new state for newItem and that will be represented as well
+now right here we could show the state using console.log OR
+we could look at the state in the DevTools
+right click, choose inspect
+inside DevTools, go to Components, AddItem, State listed as newItems
+then when we type inside the search box, those typed letter also show inside
+the DevTools AddItem field.
+New state is being shown in DevTools using React DevTools to show the components
+
+Does this now update our list? No. But this does handle the submit.
+And now we are linked to one source of the truth for this input.
+Thus, it is now a controlled input.
+
+Now in DevTools, leave Components area and go to Elements.
+Notice this is still an HTML form
+and as you may know when you submit an HTML form, it reloads the page.
+As type in pizza and hit enter, the elemets will flash in DevTools.
+This flashing in DevTools is just the reloading happening very fast.
+We want to prevent the reload.
+We can prevent reloads by preventing default behavior of Submit Event		v02.15.50
+But we do not do it right here on the onSubmit b/c we need 
+to call the handleSubmit function that we have passed in 	<<<<<<<<<<<<<<<<
+
+AddItem.js
+
+import { FaPlus } from 'react-icons/fa';
+
+const AddItem = ({ newItem, setNewItem, handleSubmit }) => {
+    return (
+        <form className='addForm' onSubmit={handleSubmit}	<<<<<<<<<<<<<<<<
+            <label htmlFor='addItem'>Add Item</label>
+            <input
+                autoFocus
+                id='addItem'
+                type='text'
+                placeholder='Add Item'
+                required
+                value={newItem}
+                onChange={(e) => setNetItem(e.target.value)}
+            />
+            <button
+                type='submit'
+                aria-label='Add Item'
+            >
+                <FaPlus />
+            </button>
+        </form>
+    )
+}
+
+onSubmit={handleSubmit} 		from above copied here
+you may see some code where people do it this way 
+with handleSubmit inside and passing in the event
+onSubmit={(e) => handleSubmit(e)}
+but dont need to do this as the event is IMPLICITLY passed without you EXPLICITLY showing
+that it is passed, so handleSubmit will still receive the event and we can work with it IMPLICTLY
+so this the correct way
+onSubmit={handleSubmit} 
+
+now we go back to App.js and we can define this function
+right now all we see is console.log('submitted');
+
+App.js 
+lines 39 to 41
+const handleSubmit = (e) => {
+  console.log('submitted')
+}
+
+now lets go the console v02.16.56
+and we type in pizza in white text box in dev server app

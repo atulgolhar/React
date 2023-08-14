@@ -131,8 +131,6 @@ return (
   );
 }
 
-
-
 v02.08.41
 
 now we put in css to add the styling
@@ -311,4 +309,609 @@ const handleSubmit = (e) => {
 }
 
 now lets go the console v02.16.56
-and we type in pizza in white text box in dev server app
+and we type in pizza in white text box in dev server app v02.17.00
+and its flashed quickly on screen "submitted" in the DevTools Console Filter
+but b/c of the page reload we did NOT see the word submitted 
+so we need to stop that default page reload
+we can do this by adding code here
+
+const handleSubmit = (e) => {
+  e.preventDefault();			<<< add this line
+  console.log('submitted')
+}
+
+then we should be able to see the word submitted in the console and thus
+it will not automatically reload the page.
+
+so now if we type pizza in the white text box, we get submitted as output in
+the console and pizza text is still in the white text box b/c the page
+did not reload. (ATUL - Note before when we typed pizza in the text box
+it was there for a second then was automatically deleted from the text box.)
+
+Thus if we call this code first
+e.preventDefault() 
+then we should be able to see the word submitted and it wont reload the page.
+So now if we type pizza, we get submitted in the console, and pizza text is still
+here b/c it did not reload.
+
+B/c we used the "required" attribute in the input
+
+            <input
+                autoFocus
+                id='addItem'
+                type='text'
+                placeholder='Add Item'
+                required		<<<<<<<<<<<<<<<<<<<<<<<<<<
+                value={newItem}
+                onChange={(e) => setNetItem(e.target.value)}
+            />
+
+we should not get a blank value submitted (ie user enters nothing and hits submit)
+(ie error checking) but we can check for this 
+
+const handleSubmit = (e) => {
+  e.preventDefault();	
+  if (!newItem) return;		<<< add this line
+  console.log('submitted')
+}
+
+this means if we do not have a newItem
+ie if its undefined or false
+then we can return (ie or exit this function)
+
+after that we do want to call an addItem function that we need to define	v02.18.04
+
+const handleSubmit = (e) => {
+  e.preventDefault();	
+  if (!newItem) return;		<<< add this line
+  // need to define addItem function
+  console.log('submitted')
+}
+
+so remove console.log and replace with
+  setNewItem('');
+this will reset the newItem to empty
+which will replace the word pizza in the text box
+with an empty text box
+
+const handleSubmit = (e) => {
+  e.preventDefault();	
+  if (!newItem) return;		<<< if nothing enter, then exit function using return
+  // need to define addItem function
+  setNewItem('');		<<< otherwise continue with function and set state to empty
+}
+
+so if we test this again, we type pizza and hit enter
+then pizza text disappears 
+this is b/c code above executes setNewItem to an empty box
+this is b/c the state is set back to "empty"
+
+to verify that we are receiving pizza from the text input 
+we can log the state here by console.log(newItem) BEFORE we
+define the addItem function
+
+const handleSubmit = (e) => {
+  e.preventDefault();	
+  if (!newItem) return;		
+  console.log(newItem);		<<< log the state here to verify
+  // addItem function
+  setNewItem('');
+}
+
+now lets remove that console statement
+
+const handleSubmit = (e) => {
+  e.preventDefault();	
+  if (!newItem) return;		<<< log the state here to verify
+  // addItem function
+  setNewItem('');
+}
+
+but note that we still need to define the addItem function
+so that we can call it as part of our handleSubmit  	v02.19.08
+
+scroll up above the handleCheck and handleDelete
+and add to line 27 we addItem and this receives an (item)
+
+const addItem = (item) => {
+
+and then inside the anonyomous function we need to think about
+
+how we are constructing this item.
+We can see that items have an id, checked value, and item itself
+      id: 2,
+      checked: false,
+      item: "Item 2"
+so id is the first thing to concern ourselves with
+so how do we increment the item id
+
+lets write some code 
+
+const addItem = (item) => {
+  const id = items.length 
+
+so if the items themselves or items state is NOT zero 
+then ? ternary statement			v 02.20.02
+
+const addItem = (item) => {
+  const id = items.length ? 	
+
+so if there are items in the list (ie the current state)
+
+const addItem = (item) => {
+  const id = items.length ? items[]
+
+then we pass the items.length -1 
+but referring to -1 this should be the last item in the list
+remeber length starts at 1 and tells use how many items
+but when we are looking at the position of an array it starts at zero
+so we always have to take the length -1
+
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1]
+
+so then we get the .id of the last item
+
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1].id
+
+then we increment the id by 1 which gives us the new value
+
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1].id + 1
+
+howver is the :
+however if items has no length that means it should be zero 
+then we just need the item id to be 1 (ie increment from 0 to 1)
+thus this gives us the ternary statement that sets the id value
+
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1].id + 1 : 1;
+
+now lets define this new item b/c we are working with a new item state
+so lets call this myNewItem
+
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1].id + 1 : 1;
+  const myNewItem = 
+
+and this will be an object so use {}
+
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1].id + 1 : 1;
+  const myNewItem = {}
+
+so we have the id
+checked will always be false when it starts
+and then we have the item that is passed in
+thus we have the object for the new item
+
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1].id + 1 : 1;
+  const myNewItem = { id, checked: false, item };
+
+now we need that new array to update the state list
+so we call this listItems
+and its an array so use [] 
+
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1].id + 1 : 1;
+  const myNewItem = { id, checked: false, item };
+  const listItems = []
+
+we use the spread operator here for items 			...items
+then also have myNewItem at the very end			myNewItem
+thus we have our new listItems
+
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1].id + 1 : 1;
+  const myNewItem = { id, checked: false, item };
+  const listItems = [...items, myNewItem];
+}
+
+then we need to update the state
+when we do this, it is exactly like the last two lines 		<<<<<<<<<<< here
+in handleCheck and handleDelete
+
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1].id + 1 : 1;
+  const myNewItem = { id, checked: false, item };
+  const listItems = [...items, myNewItem];
+}
+
+const handleCheck = (id) => {
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setItems(listItems);						<<<<<<<<<<< here
+    localStorage.setItem('shoppinglist', JSON.stringify(listItems));    	<<<<<<<<<<< here
+}
+
+const handleDelete = (id) => {
+    const listItems = items.filter((item) => item.id !== id )
+    setItems(listItems);						<<<<<<<<<<< here
+    localStorage.setItem('shoppinglist', JSON.stringify(listItems));  	<<<<<<<<<<< here 
+}
+
+now notice that handleCheck and handleDelete both have the same last two lines
+
+    setItems(listItems);						<<<<<<<<<<< here
+    localStorage.setItem('shoppinglist', JSON.stringify(listItems));  	<<<<<<<<<<< here 
+
+so copy those and paste into addItem
+
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1].id + 1 : 1;
+  const myNewItem = { id, checked: false, item };
+  const listItems = [...items, myNewItem];
+  setItems(listItems);							<<<<<<<<<<< here
+  localStorage.setItem('shoppinglist', JSON.stringify(listItems));  	<<<<<<<<<<< here 
+}
+
+but this is not very DRY
+as it repeasts these same two lines in all three functions: 
+
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1].id + 1 : 1;
+  const myNewItem = { id, checked: false, item };
+  const listItems = [...items, myNewItem];
+  setItems(listItems);							<<<<<<<<<<< here
+  localStorage.setItem('shoppinglist', JSON.stringify(listItems));  	<<<<<<<<<<< here 
+}
+
+const handleCheck = (id) => {
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setItems(listItems);						<<<<<<<<<<< here
+    localStorage.setItem('shoppinglist', JSON.stringify(listItems));    	<<<<<<<<<<< here
+}
+
+const handleDelete = (id) => {
+    const listItems = items.filter((item) => item.id !== id )
+    setItems(listItems);						<<<<<<<<<<< here
+    localStorage.setItem('shoppinglist', JSON.stringify(listItems));  	<<<<<<<<<<< here 
+}
+
+so it would make much more sense if we just broke those out
+and created a function that we can call every time
+so lets copy those two lines 
+
+    setItems(listItems);						<<<<<<<<<<< here
+    localStorage.setItem('shoppinglist', JSON.stringify(listItems));  	<<<<<<<<<<< here 
+
+and just above these 3 functions lets create a new function called
+setAndSaveItems
+and then we pass in 
+setAndSaveItems = (newItems) => {
+}
+
+and now lets just paste in those two lines
+
+setAndSaveItems = (newItems) => {
+    setItems(listItems);						<<<<<<<<<<< here
+    localStorage.setItem('shoppinglist', JSON.stringify(listItems));  	<<<<<<<<<<< here 
+}
+
+but here instead of listItems we change it to newItems
+
+setAndSaveItems = (newItems) => {
+    setItems(newItems);
+    localStorage.setItem('shoppinglist', JSON.stringify(newItems));
+}
+
+then we need to change the reference in handleCheck and handleDelete
+from setItems to setAndSaveItems
+
+    setItems(listItems);						<<<<<<<<<<< here
+    localStorage.setItem('shoppinglist', JSON.stringify(listItems));  	<<<<<<<<<<< here 
+
+    xxxxxxxx(listItems);						<<<<<<<<<<< here
+    localStorage.setItem('shoppinglist', JSON.stringify(listItems));  	<<<<<<<<<<< here 
+
+    setAndSaveItems(listItems);						<<<<<<<<<<< here
+    localStorage.setItem('shoppinglist', JSON.stringify(listItems));  	<<<<<<<<<<< here 
+
+then completely delete the localStorage line
+
+    setAndSaveItems(listItems);						<<<<<<<<<<< here
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+so we just have 
+    setAndSaveItems(listItems);						<<<<<<<<<<< here
+
+and we take this 1 line here and replace the last 2 lines in handleCheck and handleDelete
+and we also delete the last line in both functions at the same time so we have
+
+setAndSaveItems = (newItems) => {
+    setItems(newItems);
+    localStorage.setItem('shoppinglist', JSON.stringify(newItems));
+}
+
+const handleCheck = (id) => {
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setAndSaveItems(listItems);						<<<<<<<<<<< here
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+}
+
+const handleDelete = (id) => {
+    const listItems = items.filter((item) => item.id !== id )
+    setAndSaveItems(listItems);						<<<<<<<<<<< here
+    xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+}
+
+thus we end up with this
+
+setAndSaveItems = (newItems) => {
+    setItems(newItems);
+    localStorage.setItem('shoppinglist', JSON.stringify(newItems));
+}
+
+const handleCheck = (id) => {
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setAndSaveItems(listItems);						<<<<<<<<<<< here
+}
+
+const handleDelete = (id) => {
+    const listItems = items.filter((item) => item.id !== id )
+    setAndSaveItems(listItems);						<<<<<<<<<<< here
+}
+
+now we add setAndSaveItems at the end of both of these functions
+instead of having those two lines that are identical in every function
+
+now lets scroll back down to our handleSubmit function
+where now we are ready to actually call the addItem function
+and we do this with the newItem state and save
+
+const handleSubmit = (e) => {
+  e.preventDefault();	
+  if (!newItem) return;	
+  // addItem function		<<< here
+  setNewItem('');
+}
+
+const handleSubmit = (e) => {
+  e.preventDefault();	
+  if (!newItem) return;	
+  addItem(newItem); 		<<< here
+  setNewItem('');
+}
+
+lets look DevTools Console
+clear it out
+and reload just to see if we have any other warnings or errors
+nope so everything looks like its handled alright now
+lets try to add some new items in the white text box
+add pizza
+and it works as pizza shows up as an item in our Grocery List
+lets add almonds and chips
+yes that works as it shows up as an item in out Grocery List
+so we have 5 items total
+now lets delete 3 items
+still works
+add Milk
+still works
+but right now we are still our default state
+so when we reload we are back to those same values from the beginning of this exercise
+so now that we can add new items we can also now start loading from the local storage
+instead of loading from the default state thus we remove this default state
+need to scroll up and see how we save to localStorage
+
+    localStorage.setItem('shoppinglist', JSON.stringify(listItems));  	<<<<<<<<<<< here 
+
+so when we save we use JSON.stringify with localStorage to set that item
+we need to remove this default state now and instead pull the value
+out of local storage that we have saved
+
+App.js
+
+function App() {
+  const [items, setItems] = useState();		<<<<< here pull the value out of local storate
+  const [newItem, setNewItem] = useState('');
+
+setAndSaveItems = (newItems) => {
+    setItems(newItems);
+    localStorage.setItem('shoppinglist', JSON.stringify(newItems));
+}
+
+setAndSaveItems = (newItems) => {
+    setItems(newItems);
+    localStorage.setItem('shoppinglist', JSON.stringify(newItems));
+}
+
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1].id + 1 : 1;
+  const myNewItem = { id, checked: false, item };
+  const listItems = [...items, myNewItem];
+  setItems(listItems);							
+  localStorage.setItem('shoppinglist', JSON.stringify(listItems)); 
+
+const handleCheck = (id) => {
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setAndSaveItems(listItems);
+}
+
+const handleDelete = (id) => {
+    const listItems = items.filter((item) => item.id !== id )
+    setAndSaveItems(listItems);
+}
+
+so here
+
+App.js
+
+function App() {
+  const [items, setItems] = useState();		<<<<< here pull the value out of local storate
+  const [newItem, setNewItem] = useState('');
+
+so add useState(JSON.parse())
+and the inside that we use localStorage.getItem()
+
+App.js
+
+function App() {
+  const [items, setItems] = useState(JSON.parse());		<<<<<
+  const [newItem, setNewItem] = useState('');
+
+
+App.js
+
+function App() {
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem));		<<<<<
+  const [newItem, setNewItem] = useState('');
+
+then we specify the 'shoppinglist' that we saved the items under
+in local storage
+
+App.js
+
+function App() {
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')));		<<<<<
+  const [newItem, setNewItem] = useState('');
+
+and we save this,
+so now, after we save, we see that we have milk and bread
+which was currently in local storage under shopping list
+and now we can delete the remaining items and are not worried about running 
+out of items b/c we can add more items back in.
+so delete both remainging items thus the list is empty.
+now add pizza
+milk
+bread
+Almonds, Chocolate Covered, Unsalted, you know the ones in the blue bag
+this long item works as well
+then we reload, that same state should come back from local storage
+reload in DevTools
+and it works. That same state came back from local storage as opposed to 
+coming back from the default state which we wanted to stop.
+try reloading again to check it.
+it works. nothing has changed upon executing the reload.
+the items that were checked are still checked
+the items that we deleted are not coming back
+this works
+lets close DevTools now
+and we need to implement one more form that will work just a little differently
+lets add a search component to our Application
+b/c if the existing Grocery List is really long, we need a way to find existing items
+
+CONTROL B to show the file tree
+existing files and folders are
+
+.git folder
+.node_modles folder
+public folder
+src folder
+within src
+Additem.js
+App.js
+Content.js
+Footer.js
+Header.js
+index.css
+index.js
+ItemList.js
+LineItem.js
+files are main level are
+.gitignore
+packag-local...
+package.json
+README.md
+
+so now lets add another new component
+this is a new file within src folder
+lets call this new file
+SearchItem.js
+
+our SearchItem component is also a functional component so we can press CONTROL ALT R
+which brings up the search snippet 
+type _rafce
+and that gives us the outline of our functional component
+
+const SearchItem = () => {
+    return (
+        <div>
+        </div>
+    )
+}
+
+export default SearchItem
+
+this will also be a form like our last one was so we replace div with form
+
+const SearchItem = () => {
+    return (
+        <form>			<<<here
+        </form>			<<<here
+    )
+}
+
+export default SearchItem
+
+lets give this a className
+and set it equal to 'searchForm'
+
+        <form className='searchForm'>			<<<here
+	</form>
+
+and now for the onSubmit, this will be a little different from before
+our onSubmit listener here is just going to handle that prevent default right away
+so we pass in the event e
+
+        <form className='searchForm' onSubmit={(e)}>	
+	</form>
+
+and we focus on e.preventDefault()
+
+        <form className='searchForm' onSubmit={(e) => e.preventDefault()}>	
+	</form>
+
+that way when someone presses enter, we wont even have a button for this form
+thus when someone presses enter, it will NOT reload the page
+so now we have our preventDefault with the onSubmit
+so now we can add a label
+
+        <form className='searchForm' onSubmit={(e) => e.preventDefault()}>	
+	    <label 
+	</form>
+
+the label will have another htmlFor and we set that equal to 'search'
+
+        <form className='searchForm' onSubmit={(e) => e.preventDefault()}>	
+	    <label htmlFor='search'
+	</form>
+
+Note as you hit enter or tab the ending </label> appears
+
+       <label htmlFor='search'></label>
+
+and then on the label we will say Search
+and we hide this label off the screen
+
+        <form className='searchForm' onSubmit={(e) => e.preventDefault()}>	
+	    <label htmlFor='search'>Search</label>
+	</form>
+
+now lets include the attributes for the input
+each attribute gets its own line
+we have an id equal to search
+and a type equal to text
+and a role for this b/c its a search box so that gives the proper role regarding the html
+and a placeholder set this equal to Search Items so we can search our list
+now the last two we wont put in right away
+so lets just save this much 
+we dont even need a submit button for this 
+b/c it will handle the search just a little differently
+differently how?
+before when we created a new item, we didnt want to add to the list until
+we actually completed typing that new item
+but now in this case we want to it search right away with each keystroke
+as soon as the user begins to type v02.28.59
+
+        <form className='searchForm' onSubmit={(e) => e.preventDefault()}>	
+	    <label htmlFor='search'>Search</label>
+	    <input
+	        id='search'
+		type='text'
+		role='searchbox'
+		placeholder='Search Items'
+	</form>
+
+v02.28.59
+

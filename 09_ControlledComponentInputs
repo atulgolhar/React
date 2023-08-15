@@ -992,3 +992,97 @@ line 163
   border-radius: 0.25rem;
   outline: none;
 }
+
+save and now we see the search box spans the entire application
+dont need a button now as we just type
+as we look back to the SearchItem, we still to link it 
+to our state that we have set and we need to destructure that as well
+
+so now we link it to the search state that we have set 
+so lets receive the search and the setSearch
+with the destructuring at the top of the component
+
+SearchItem.js
+
+const SearchItem = () => {					<<<<<<<<<<<<<<<<<<<HERE
+    return (
+        <form className='serachForm' onSubmit={(e) = > ...ADD CODE HERE}
+            <label htmlFor='search'>Search</label>
+            <input
+                id='search'
+                type='text'
+                role='searchbox'
+                placeholder='Search Items'			<<<<<<<<<<<<<<<<<<<HERE
+            />							<<<<<<<<<<<<<<<<<<<HERE
+        </form>
+    )
+}
+
+								// destructure at top of the component
+const SearchItem = ({ search, setSeach }) => { 			// receive the search and the setSearch
+
+then inside the input 
+we set the value equal to the current state of search
+we also want the onChange and 
+now here is where we pass in the event to anonymous function and 
+then we set the search equal to the event.target.value
+
+                placeholder='Search Items'			<<<<<<<<<<<<<<<<<<<HERE
+		search={search}					<<<<<<<<<<<<<<<<<<<HERE
+		onChange={(e) => setSearch(e.taget.value)}	<<<<<<<<<<<<<<<<<<<HERE
+            />							<<<<<<<<<<<<<<<<<<<HERE
+
+
+so we get this
+
+const SearchItem = ({ search, setSeach }) => {			<<<<<<<<<<<<<<<<<<<HERE
+    return (
+        <form className='serachForm' onSubmit={(e) = > ...ADD CODE HERE}
+            <label htmlFor='search'>Search</label>
+            <input
+                id='search'
+                type='text'
+                role='searchbox'
+                placeholder='Search Items'			<<<<<<<<<<<<<<<<<<<HERE
+		search={search}					<<<<<<<<<<<<<<<<<<<HERE
+		onChange={(e) => setSearch(e.taget.value)}	<<<<<<<<<<<<<<<<<<<HERE
+            />							<<<<<<<<<<<<<<<<<<<HERE
+        </form>
+    )
+}
+
+then we want to come back to the App.js b/c this was put in the wrong order
+originaly had			but should be
+SearchItem			AddItem
+AddItem				SearchItem
+Content				Content
+Footer				Footer
+
+so now it looks like this
+
+return (
+  <div className="App">
+    <Header title="Grocery List" />
+    <AddItem
+	newItem={newItem}
+	setNewItem={setNewItem}
+	handleSubmit={handleSubmit}
+    />	
+    <SearchItem			
+	search={search}					
+	setSearch={setSearch}		
+    />
+    <Content
+      items={items}
+      handleCheck={handleCheck}
+      handleDelete={handleDelete}
+    />
+    <Footer length={items.length} />
+  </div>
+  );
+}
+
+and notice after saving 
+the boxes now follow that order and the spacing, margin looks better
+
+but now being tied to the state v 02.32.06

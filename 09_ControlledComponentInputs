@@ -1168,3 +1168,18 @@ notice that the button still has focus
 b/c we have hover and focus style 
 when I click the button, the button retains the focus 
 so we need to shift the focus back to the input
+how? use a react HOOK called useRef
+import in Additem.js
+
+import { useRef } from 'react';
+
+this is the most common use for useRef
+
+line 4
+const AddItem.js = ({ newItem, setNetItem, handleSubmit }) => {
+	const inputRef = useRef();
+
+then also add after line 11 the autoFocus
+ref={inputRef}
+
+we can save this but it still does not fix our problem v02.36.57

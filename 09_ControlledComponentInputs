@@ -915,3 +915,49 @@ as soon as the user begins to type v02.28.59
 
 v02.28.59
 
+lets go back to the App.js and we need to use state here as well
+and set useState to empty string to start out with.
+
+App.js
+
+function App() {
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')));		<<<<<
+  const [newItem, setNewItem] = useState('');
+  const [search, setSearch] = useState('');		<<<<<<<
+
+Note we need to import this as well
+so underneath Header in line 1, we add line 2
+and this [search and setSearch] is what we want to pass to the new component
+
+plus dont forget to import it in App.js
+
+import SearchItem from './SearchItem';
+
+App.js
+
+import Header from './Header';
+import SearchItem from './SearchItem';		<<<<<<<<<<<NEW
+import Content from './Content';
+import Footer from './Footer';
+import useState from './react';		
+
+After importing, then we can add it to our JSX here
+by adding SearchItem and let search = {search} and let setSearch = {setSearch}
+
+return (
+  <div className="App">
+    <Header title="Grocery List" />
+    <SearchItem						<<<<<<<<<<here
+	search={search}					<<<<<<<<<<here
+	setSearch={setSearch}				<<<<<<<<<<here
+    />
+    <AddItem />
+    <Content
+      items={items}
+      handleCheck={handleCheck}
+      handleDelete={handleDelete}
+    />
+    <Footer length={items.length} />
+  </div>
+  );
+}

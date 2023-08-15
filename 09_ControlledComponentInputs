@@ -1086,3 +1086,85 @@ and notice after saving
 the boxes now follow that order and the spacing, margin looks better
 
 but now being tied to the state v 02.32.06
+when we search, need to look at DevTools, Console, Components, SearchItems, Search State
+so when we type into white text box 
+piz
+we see "piz" in the state details
+for now its not YET filtering the list so we need to address that 
+and put our search into action
+but we are getting the search state now
+so close DevTools
+now we can filter the items that 
+are passed to the Content component	<<<<<<<<<<<<<<<<<<<<<<<Content Component
+this will filter the items as they are typed into the search box
+lets implement this now with the higher order function filter  v02.33.03
+
+now when we pass in the items
+we instead want to pass in items.filter
+and within filter
+we are going to pass in something thus need ()
+and inside the () is an item
+which we implement as an anonymous function
+thus inside the filter we need TWO of the parenthesis (())
+we put inside (()) so that it does not think its another part of the object
+(ATUL ie 1st set of outer () for the object, but the inside (()) tells React this 
+is NOT another part of that object but in fact its something additional
+and inside that we have item.item
+then we can add .toLowerCase b/c we know we are working with strings in that field
+then we need to close out that toLowerCase so we add a .includes
+something which we capture by adding ()
+and inside we include the search state 
+and we need to again add the conditional toLowerCase() to get it to match
+by getting everything toLowerCase we make sure that P is the same as p
+then save
+
+from App.js
+
+      items={items}			<<<<<<<<<<<<<<<<<<<<<<Content Component
+      items={items.filter}		
+      items={items.filter()}			
+      items={items.filter(item)}			
+      items={items.filter(item => )}			
+      items={items.filter(item => (()) )}
+      items={items.filter(item => ((item.item)) )}
+      items={items.filter(item => ((item.item).toLowerCase.) )}
+      items={items.filter(item => ((item.item).toLowerCase.includes) )}
+      items={items.filter(item => ((item.item).toLowerCase.includes() ) )}
+      items={items.filter(item => ((item.item).toLowerCase.includes(search) ) )}
+      items={items.filter(item => ((item.item).toLowerCase.includes(search.toLowerCase() ) ) )}
+
+now notice as we delete the letters in the text search box from piz to empty 
+then the items listed again show up.
+Then as we type B we get potential items to be included in the search 
+B gets us Bread or blue or bag
+then typing in ba again changes the output
+so we filter each item in the grocery list based upon each letter typed  v02.34.55
+so now the search items box that we pass display and filter and pass is now working
+so quick recap for what we did for the two controlled components
+addItem.js has the value equal to the state 
+and the onChange=
+see line 13 value={newItem}
+see line 14 onChange we set the state with e.target.value
+
+		search={search}					<<<<<<<<<<<<<<<<<<<HERE
+		onChange={(e) => setSearch(e.taget.value)}	<<<<<<<<<<<<<<<<<<<HERE
+
+and then its the same with SearchItem.js			v 02.35.21
+and with onChange where we set the new state to e.target.value
+
+
+		search={search}					<<<<<<<<<<<<<<<<<<<HERE
+		onChange={(e) => setSearch(e.taget.value)}	<<<<<<<<<<<<<<<<<<<HERE
+
+and this gives us one source of truth for the input 
+which is the state 
+and this is how to handle input in a form in react
+ie controlled components input
+
+now lets go back to the AddItem.js
+type into Search text box Sushi but instead of pressing enter
+I instead click the + plus green button
+notice that the button still has focus 
+b/c we have hover and focus style 
+when I click the button, the button retains the focus 
+so we need to shift the focus back to the input

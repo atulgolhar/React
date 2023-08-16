@@ -1,1 +1,17 @@
 tbd
+Then we need to put inside the JSX of the app component 	<<<<<<<<<<<<<<<<<
+										<<
+so now App.js has these								<<
+										<<
+import './App.css';								<<
+import Header from './Header';							<<
+import Content from './Content';						<<
+import Footer from './Footer'; 	<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<			<<
+										<<
+return {									<<
+  <div className='App'>								<<
+    <Header />									<<
+    <Content /									<<
+    <Footer /> <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  </div>
+};

@@ -1,1 +1,19 @@
 
+now go to App.js and just underneath import Header statement we add import Additem component like this
+import AddItem from './AddItem';
+
+now need to add the AddItem component in the JSX just below the Header component
+
+return (
+  <div className="App">
+    <Header title="Grocery List" />
+    <AddItem />				<<<<<<<<<<here
+    <Content
+      items={items}
+      handleCheck={handleCheck}
+      handleDelete={handleDelete}
+    />
+    <Footer length={items.length} />
+  </div>
+  );
+}

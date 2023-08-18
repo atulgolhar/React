@@ -1179,7 +1179,26 @@ line 4
 const AddItem.js = ({ newItem, setNetItem, handleSubmit }) => {
 	const inputRef = useRef();
 
+AddItem.js
+
+import { FaPlus } from 'react-icons/fa';
+import { useRef } from 'react';
+
+const AddItem = () => {
+    const inputRef = useRef();
+    return (
+    <form className='addForm' onSubmit={handleSubmit}>
+        <label htmlFor='addItem'>Add Item</label>
+        <input
+           autoFocus
+           ref{}			<<<<<<<<<<here
+    )
+}
+
+
+
 then also add after line 11 the autoFocus
 ref={inputRef}
 
 we can save this but it still does not fix our problem v02.36.57
+

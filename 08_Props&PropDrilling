@@ -95,3 +95,33 @@ Then we add the handleCheck and handleDelete to the Content.js return statement.
 Now Content.js		
 Notice that Content.js used to hold that data but it got moved to App.js.
 What we can do is take that App.js parent data DESTRUCTURE IT BACK into Content.js
+
+
+/////////////
+
+add new file ItemList component  _rafce  Prop drilling (2 levels down)
+	receiving from Content.js parent (items, handleCheck, handleDelete) need to passed down
+	dont need div, prefer semantic html
+import itemList from ./itemList
+pass down the props inside Content
+move trash icon
+
+need to make reusable line item component
+
+start to App component (parent) 
+then we moved down to Content component 
+then we moved down to ItemList component
+now we need to go one more level down as we create a LineItem.js new file
+CONTROL ALT R _rafce
+copy trash icon and add to ItemList
+then we need it in the LineItem
+item.map cut and paste into LineItem
+dont need items but do need item
+error each child should have a unquie key prop
+key={item.id}
+***now we have created a reusable component for each item in our list***
+
+essentially its a function passed down as a property or "props"
+add aria-label={`Delete ${item.item}`}
+
+

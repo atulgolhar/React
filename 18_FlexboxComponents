@@ -1,1 +1,10 @@
 tbd
+<Content 
+  items={Items}
+  handleCheck={handleCheck}
+  handleDelete={handleDelete}
+/>
+<Footer length={items.length} /> 
+
+save
+go to Footer.js

@@ -1202,3 +1202,30 @@ ref={inputRef}
 
 we can save this but it still does not fix our problem v02.36.57
 
+we have applied the ref to the input now and we have imported useRef to use
+BUT we are still not setting the focus back to the Add Item white box after we click
+the button, so lets go ahead and do that in the button click event
+set onClick equal to and using an anonymous function 
+Inside the anonymous function, we will say inputRef
+.current b/c the Ref always has the current property and thats what you want to refer to
+and then .focus()
+and now when the button is clicked, it will set the focus back to the input 
+so now when we type in the white box like Crackers and click our button
+the Crackers are added as an Item
+and we have focus back in the white text box
+and note that the button was white until my cursor hovered over the button and
+then that button turned green. The moment you click the button the focus has moved
+back to the white search box.
+ATUL - what happens when you click the button without moving the cursor?
+
+	<button
+	   type='submit'
+	   aria-label='Add Item'
+	   onClick={() => }
+	   onClick={() => input Ref}
+	   onClick={() => input Ref.current}
+	   onClick={() => input Ref.current.focus()}
+
+We have come a long way and learned v02.38.09 a lot about the Grocery app 
+but there is still much more to learn where we interact with some data from a server
+or on the backend  v 02.38.26

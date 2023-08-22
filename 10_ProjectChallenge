@@ -649,7 +649,7 @@ function App() {
     </div>
   );
 }
-
+export default App;
 
 so for Square now put attributes on seperate line
 b/c Square will not have more attributes
@@ -760,8 +760,223 @@ then when this finishes, it will have been added to our project
                 onChange={(e) => setColorValue(e.target.value)}
 		onChange={(e) => {setColorValue(e.target.value)}}
 		onChange={(e) => {
-			setColorValue(e.target.value);
-			
+			setColorValue(e.target.value);			
 		}}
 
 v02.56.45
+install is complete
+can close 2nd bash terminal window
+1st bash still running for react so can X out of it (it still works)
+CONTROL B to show file tree
+click on package.json and can see we added 
+colorNames have been added to dependencies
+
+back to Input.js component
+now we need to import colorNames
+
+import colorNames from './colornames'
+now that we have import colornames, we can use it
+what does it do? takes as input the name of the color and translates
+that name into a hex for us
+
+so update onChange
+			setColorValue(e.target.value);			
+to
+			setColorValue(colorNames(e.target.value));
+so this take the e.target.value and translates that using colorNames into the Hex value
+and then sets that into the setHexValue state
+
+                onChange={(e) => setColorValue(e.target.value)}
+		onChange={(e) => {setColorValue(e.target.value)}}
+		onChange={(e) => {
+			setColorValue(e.target.value);			
+			setHexValue(colorNames(e.target.value));  <<<<<<<<HERE
+		}}
+
+once we save this we should test it
+
+in chrome text box
+try magenta, yes works
+try papawhip, yes works
+try dodgerblue, yes works
+try #333, yes works
+try black, yes works
+try gray, yes works
+but notice that the darker colors, like black, then this results in not being
+able to see the black text inside the black square.
+
+so would be helpful to have a button to toggle the color of the text inside the square
+
+show file tree
+click on App.js
+to do the toggle button, we need one more piece of state 
+
+const []
+
+call this isDarkText b/c the default will be dark text
+also add setIsDarkText
+
+const [isDarkText, setIsDarkTest]
+
+and then this will be a boolean value 
+for our useState, and we need to set the boolean value to true
+so we have
+
+const [isDarkText, setIsDarkTest] = useState(true)
+
+save, so we have
+
+function App() {
+  const [colorValue, setColorValue] = useState('')
+  const [hexValue, setHexValue] 		
+  const [isDarkText, setIsDarkTest] = useState(true)		<<<<<<<<<<add here
+  return (
+    <div className="App">
+      <Square 
+	colorValue={colorValue}/>
+	hexValue={hexValue}
+      <Input 
+        colorValue={colorValue}
+        setColorValue={setColorValue}
+	setHexValue={setHexValue}
+      />
+    </div>
+  );
+}
+export default App;
+
+so we use dark text as the default
+next, we need to decide where are we going to pass this to 	v02.59.21
+
+the square is where it will be displayed.
+and here we will need to know if it is dark text or not
+ie create a boolean test to output true or false
+so we pass that into the Square
+
+old
+      <Square 
+	colorValue={colorValue}/>
+	hexValue={hexValue}
+
+new
+      <Square 
+	colorValue={colorValue}/>
+	hexValue={hexValue}
+	isDarkText={isDarkText}			<<<<<<<<<<<<<HERE
+
+now for input, we need to pass in both
+so we need isDarkText
+
+      <Input 
+        colorValue={colorValue}
+        setColorValue={setColorValue}
+	setHexValue={setHexValue}
+	isDarkText={isDarkText}			<<<<<<<<<<<<<HERE
+	setIsDarkText={setIsDarkText}		<<<<<<<<<<<<<HERE
+      />
+
+
+save, so we have
+
+function App() {
+  const [colorValue, setColorValue] = useState('')
+  const [hexValue, setHexValue] 		
+  const [isDarkText, setIsDarkTest] = useState(true)		<<<<<<<<<<add here
+  return (
+    <div className="App">
+      <Square 
+	colorValue={colorValue}/>
+	hexValue={hexValue}
+	isDarkText={isDarkText}			<<<<<<<<<<<<<HERE
+      <Input 
+        colorValue={colorValue}
+        setColorValue={setColorValue}
+	setHexValue={setHexValue}
+	isDarkText={isDarkText}			<<<<<<<<<<<<<HERE
+	setIsDarkText={setIsDarkText}		<<<<<<<<<<<<<HERE
+      />
+    </div>
+  );
+}
+export default App;
+
+
+so then now lets go the Square.js component and destructure the isDarkText
+and put style on seperate lines
+and add coma after colorValue
+use a ternary statement
+so here the color will be a boolean isDarkText thus ? if 
+true then set text to a predetermined dark color "#000" black
+and then if not then set it to a predetermined light color #FFF" white
+
+const Square = ({ colorValue, hexValue, isDarkText }) => {	<<<<<<<<<<<<<HERE
+    return (
+        <Section
+            className="square"            
+            style={{ 						<<<<<<<<<<<<<HERE
+	        backgroundColor: colorValue,			<<<<<<<<<<<<<HERE
+		color: isDarkText ? "#000" : "#FFF"
+	    }}							<<<<<<<<<<<<<HERE
+        >
+            <p>{colorValue ? colorValue : "Empty Value"}</p>
+            <p>{hexValue ? hexValue : null}</p>
+        </Section>
+    )
+}
+
+Square.defaultProps = {
+    colorValue: "Empty Color Value"
+}
+
+export default Square
+
+save it
+then go to Input.js component
+
+const Input = ({ colorValue, setColorValue, setHexValue }) => { 
+    return (
+        <form onSubmit={(e) => e.preventDefault()}>
+            <label>Add Color Name:</label>
+            <input
+                autoFocus
+                type="text"
+                placeholder="Add color name"
+                required 
+                value={colorValue}
+		onChange={(e) => {
+			setColorValue(e.target.value);			
+			setHexValue(colorNames(e.target.value));
+		}}
+            />
+        </form>
+    )
+}
+
+export default Input
+hide file tree
+break props down to individual lines where 
+we destructure b/c we need to add 2 more
+isDarkText and isSetDarkText that will be received as inputs
+
+old
+const Input = ({ colorValue, setColorValue, setHexValue }) => { 
+
+new
+const Input = ({ 
+    colorValue, setColorValue, setHexValue, isDarkText,  isSetDarkText
+    }) => { 
+
+and now we need an actual button to actually toggle these values
+and it will have several different attributes v03.01.26		<<<<<<<<<<<<<<<<<<<<
+
+old
+            />
+        </form>
+
+new
+
+            />
+	  <button 
+        </form>
+
+v03.01.26							<<<<<<<<<<<<<<<<<<<<<

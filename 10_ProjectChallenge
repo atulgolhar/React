@@ -1,1 +1,767 @@
-tbd
+(02:38:25) ======Chapter 10: Project Challenge===============================================
+
+two boxes, one square showing results of text "Empty Value"
+one input field "Add color name" 
+already has focus
+pause video and create
+
+create REACT-SERIES same naming convention
+note: no new folder yet created for this, we will create using VSCode terminal 
+
+$ npx create-react-app 10tut
+Enter
+happy hacking! message in console
+go to file menu in VSCode and open the folder that we just created
+so its REACT-SERIES then 10tut 
+Enter
+that should open in VSCode
+go to src folder
+we can remove some files that are not needed
+FOLDER src contains
+App.css
+App.js
+App.test.js
+index.css
+index.js
+logo.svg
+reportWebVitals.js
+setupTest.js
+
+select App.css, then hold down control key and select App.test.js, logo.svg,
+reportWebVitals.js, and the setupTests.js
+delete all these files
+
+now we make some adjustments to the remaining files
+App.js
+index.css
+index.js
+
+Inside index.js, you should select all the code from line 13 to 18
+delete those
+remove the import line for reportWebVitals
+save the index.js file
+
+Index.js file contains
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css'
+import App from './App'
+
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
+
+now go to the App.js file
+
+remove both imports at top
+import logo from './logo.svg'
+import './App.css'
+
+and remove all code between the <div> tags 
+so delete lines 4 thru 17
+
+so App.js shows
+
+function App() {
+  return (
+    <div className="App">
+      
+    </div>
+  );
+}
+
+export default App;
+
+save this
+now we will add code 
+
+in App.js
+add <h1>Hello!</h1>
+save
+
+function App() {
+  return (
+    <div className="App">
+      <h1>Hello!</h1>      
+    </div>
+  );
+}
+
+export default App;
+
+press CONTROL ` to open terminal in VSCode
+in terminal
+$ npm start
+enter			lauches React app
+should show blank page that says Hello!
+default app has now lauched and we can Hello! in Chrome new tab
+click on the other Chrome tab to see the project goal that we want to create
+
+Break down how to build this
+couple of components that are nested within the App component
+so delete the h1 Hello line now
+
+create new file in src folder
+call new file Square.js
+CONTROL ALT R to see React snippets extension for ES7
+type _rafce to find the snippet
+this creates a functional component
+
+const Square = () => {
+    return (
+    <div>
+    
+    </div>
+    )
+}
+
+export default Square
+
+this snippet is a shortcut to get boilerplate, otherwise you can type it out
+
+now lets to same thing for the input file
+create new file in src called input.js
+CONTROL ALT R
+_rafce
+
+const Input = () => {
+    return (
+    <div>
+    
+    </div>
+    )
+}
+
+export default Input
+
+we can see the const keyword so this is a functional component
+and we can see the export statement
+we will export both Input.js and Square.js into the App.js component
+
+now in Input.js
+lets add an <h2>Input</h2>
+save
+
+now in Square.js
+lets add an <h2>Square</h2>
+save
+
+now back in the App.js file
+we can import both of these
+
+import Square from './Square'
+import Input from './Input'
+
+function App() {
+  return (
+    <div className="App">
+      <h1>Hello!</h1>      
+    </div>
+  );
+}
+
+export default App;
+
+now save
+
+now need to put these into our JSX
+
+function App() {
+  return (
+    <div className="App">
+      <Square />
+      <Input />
+    </div>
+  );
+}
+
+export default App;
+
+now if we save our JSX then we can see the rendering in Chrome
+
+now lets go back to our Square component
+and we need to pass in a prop
+the prop is colorValue and that is destructured
+then turn the div into a Semantic section element 
+
+const Square = () => {
+    return (
+        <div>
+    
+        </div>
+    )
+}
+
+export default Square
+
+
+const Square = () => {
+const Square = ({}) => {
+const Square = ({ }) => {
+const Square = ({ colorValue }) => {
+
+        <div>    
+        </div>
+
+        <Section>    
+        </Section>
+
+            <h1>Hello!</h1>
+            <h2>Square</h2>
+
+and this Section element is going to have a couple of attributes
+the 1st prop is className camel case 
+className is square
+the 2nd attribute is style
+this {} allows for an expression 
+but remember we have to put a 2nd set of {} curly braces to then pass in the style
+and here will have backgroundColor camel case
+without an hyphen b/c remember this is still JavaScript in the JSX
+and here we will use the colorValue attribute that is being passed in
+put the closing /> on a seperate line
+
+const Square = ({ colorValue }) => {
+    return (
+        <Section
+            className="square"            
+            style={{ backgroundColor: colorValue }}
+        >
+            <h2>Square</h2>
+        </Section>
+    )
+}
+
+export default Square
+
+now lets change the 
+            <h2>Square</h2>
+
+and instead of the h2, we will have an expression 
+lets add the <p> tages
+replace the h2 with <p> tags
+with an expression so add {}
+and here will add colorValue
+and if we have a colorValue 
+using ternary operator ?
+if we have a colorValue (ie true) then we want that colorValue
+but if we dont have a colorValue then (ie false) then we want to display "Empty Value"
+Control B to hide file tree
+then end the expression with a }
+so this will type out whatever the color value is
+
+            {}
+            <p>{}</p>
+            <p>{colorValue}</p>
+            <p>{colorValue ? }</p>
+            <p>{colorValue ? colorValue }</p>
+            <p>{colorValue ? colorValue : "Empty Value"}</p>
+
+now notice that we are not yet passing in a colorValue yet
+so lets give a default prop called Square.defaultProps
+and we can add the colorValue here
+and we can say "Empty Color Value"
+and notice that "Empty Value" is different than "Empty Color Value"
+so we will know which text is being used when we see it
+
+Square.defaultProps = {
+    colorValue: "Empty Color Value"
+}
+
+
+code so far is
+
+const Square = ({ colorValue }) => {
+    return (
+        <Section
+            className="square"            
+            style={{ backgroundColor: colorValue }}
+        >
+            <p>{colorValue ? colorValue : "Empty Value"}</p>
+        </Section>
+    )
+}
+
+Square.defaultProps = {
+    colorValue: "Empty Color Value"
+}
+
+export default Square
+
+save this
+
+now we go into the Input component
+
+Input.js
+
+const Input = () => {
+    return (
+        <div>
+            <h2>Input</h2>
+        </div>
+    )
+}
+
+export default Input
+
+
+the Input component is going to receive the colorValue state
+in the same way the Square component did
+and the Input component also receives the setColorValue so we can change the state
+
+const Input = () => {
+const Input = ({}) => { 
+const Input = ({ colorValue}) => { 
+const Input = ({ colorValue, setColorValue}) => { 
+
+so we have
+
+const Input = ({ colorValue, setColorValue}) => { 
+    return (
+        <div>
+            <h2>Input</h2>
+        </div>
+    )
+}
+
+export default Input
+
+and we need to add those the App also as they are not yet there
+we also need to change the <div>
+for the input component to turn it into a form
+and immediately we put an onSubmit
+and we handle that submission 	ie ={}
+with an anonymous function {() => }
+that receives the event object 	e
+and we want e.preventDefault
+we want to call that into action right away  ()
+and if you remember, an HTML submits by default
+and that submit will reload the page
+we dont want that to happen (ie reload) so e.preventDefault will prevent that
+
+        <div>
+        <form>
+        <form onSubmit>
+        <form onSubmit={}>
+        <form onSubmit={() => }>
+        <form onSubmit={(e) => }>
+        <form onSubmit={(e) => e.preventDefault}>
+        <form onSubmit={(e) => e.preventDefault()}>
+
+
+const Input = ({ colorValue, setColorValue}) => { 
+    return (
+        <form onSubmit={(e) => e.preventDefault()}>
+            <h2>Input</h2>
+        </div>
+    )
+}
+
+export default Input
+
+now we can remove the h2 Input element 
+            <h2>Input</h2>
+and we need to add a label here b/c every input needs a label
+            <label></label>
+add the text Add Color Name:
+            <label>Add Color Name:</label>
+
+
+now we have an input
+
+const Input = ({ colorValue, setColorValue}) => { 
+    return (
+        <form onSubmit={(e) => e.preventDefault()}>
+            <label>Add Color Name:</label>
+        </div>
+    )
+}
+
+export default Input
+
+now we can add the input after the label
+and this input will have several attributes
+the 1st is autoFocus 
+next is type and we make this a "text" type attribute
+next we have a placeholder which says the same thing as our label Add color name
+then we make this a required input
+and notice its the only input so it needs to be required
+then the value will be the colorValue
+this is how we make this a Controlled Input
+then we add an onChange{}
+                onChange={}
+and here we have an anonymous function () =>
+                onChange={() => }
+using the event e
+                onChange={(e) => }
+
+and inside the anonymous function we can setColorValue()
+and we pass in e.target.value
+this will set the state of the color value to whatever is typed in
+after this is completed, we just need to close out the input 	/>
+
+            <label>Add Color Name:</label>
+            <input
+                autoFocus
+                type="text"
+                placeholder="Add color name"
+                required 
+                value={colorValue}
+                onChange={(e) => setColorValue(e.target.value)}
+            />
+
+save this 
+
+so now we have
+
+const Input = ({ colorValue, setColorValue}) => { 
+    return (
+        <form onSubmit={(e) => e.preventDefault()}>
+            <label>Add Color Name:</label>
+            <input
+                autoFocus
+                type="text"
+                placeholder="Add color name"
+                required 
+                value={colorValue}
+                onChange={(e) => setColorValue(e.target.value)}
+            />
+        </form>
+    )
+}
+
+export default Input
+
+so save it
+but we are not yet passing these in yet so we need to work on the App.js now
+
+App.js
+
+import Square from './Square'
+import Input from './Input'
+
+function App() {
+  return (
+    <div className="App">
+      <Square />
+      <Input />
+    </div>
+  );
+}
+
+export default App;
+
+in App.js, the 1st thing we need to do is import useState from React
+
+import Square from './Square'
+import Input from './Input'
+import { useState } from 'react'
+
+
+then after we have imported the useState, we are going to
+use it immediately right inside of the app functions
+
+function App() {
+  HERE<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  return (
+    <div className="App">
+      <Square />
+      <Input />
+    </div>
+  );
+}
+
+lets build up this code now
+its a const
+lets add the colorValue
+and we have our setColorValue
+and there we will    =
+have useState
+and just set the state to an empty string
+
+  HERE<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+  const []
+  const [colorValue,]
+  const [colorValue, setColorValue]
+  const [colorValue, setColorValue] = 
+  const [colorValue, setColorValue] = useState
+  const [colorValue, setColorValue] = useState('')
+
+so we have 
+
+function App() {
+  const [colorValue, setColorValue] = useState('')
+  return (
+    <div className="App">
+      <Square />
+      <Input />
+    </div>
+  );
+}
+
+now we need to remember what (ie the state) we were passing to each component
+for Square we passed in the colorValue
+and this will receive ={}
+the colorValue state
+
+      <Square />
+      <Square colorValue/>
+      <Square colorValue=/>
+      <Square colorValue={}/>
+      <Square colorValue={colorValue}/>
+
+and Input will receive a little bit more so lets give it seperate lines  v02.50.19
+colorValue equals {} colorValue
+and also setColorValue equals {} setColorValue
+and save
+
+      <Input 
+        colorValue={colorValue}
+        setColorValue={setColorValue}
+      />
+
+
+so we have 
+
+function App() {
+  const [colorValue, setColorValue] = useState('')
+  return (
+    <div className="App">
+      <Square colorValue={colorValue}/>
+      <Input 
+        colorValue={colorValue}
+        setColorValue={setColorValue}
+      />
+
+    </div>
+  );
+}
+
+we can see our saved changes rendering in the localhost:3000
+we have the top box with		Empty Value
+the bottom text field with 		Add Color Name: with input to Add color name
+so if we input dodgerblue
+then the top box (1 line across) changes to background color dodgerblue with black text
+backspace the text box and see as you type each letter
+magenta
+so the app is functioning as we expected it to, we just need to add css styles
+
+Control B to show file tree
+select index.css file
+default styles are showing, delete them all and paste in pre-made styles
+saving this will show the app with styles
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 36px;
+}
+
+body {
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;  
+}
+
+.App {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.square {
+  width: 400px;
+  height: 400px;
+  border: 2px solid #000;
+  box-shadow: 2px 2px 5px #000;
+  border-radius: 0.25rem;
+  display: grid;			// allows easily centered with 1 thing in square
+  place-content: center;
+}
+
+.square p {
+  text-align: center;
+}
+
+form {
+  width: 400px;				// so this matches the square
+}
+
+label {
+  position: absolute;
+  left: -99999px;
+}
+
+input[type="text"] {
+  margin-top: 0.5rem;
+  padding: 0.25rem;
+  width: 100%;
+  font-size: 1rem;
+  box-shadow: 2px 2px 5px #000;
+  border-radius: 0.25rem;
+  outline: none;
+}
+
+
+so if we test it, should work ok
+dodgerblue
+steelblue
+aliceblue
+oldlace
+
+so this shows examples of 
+1) use of state and 
+2) controlled inputs and 
+3) passing props down to components
+
+now there are a couple of things we can do to level up this application
+
+go back to App.js component
+underneath the colorValue state 
+add const hexValue and setHexValue
+and do the same thing for the default state
+as it will be = to an empty string 
+  const [hexValue, setHexValue] = useState('')
+and after that, we need to pass these values down as well
+
+function App() {
+  const [colorValue, setColorValue] = useState('')
+  const [hexValue, setHexValue] 				<<<<<<<<<<here
+  return (
+    <div className="App">
+      <Square colorValue={colorValue}/>
+      <Input 
+        colorValue={colorValue}
+        setColorValue={setColorValue}
+      />
+
+    </div>
+  );
+}
+
+
+so for Square now put attributes on seperate line
+b/c Square will not have more attributes
+lets pass in the hexValue 
+also for the Input, it will need to receive the setHexValue
+
+      <Square colorValue={colorValue}/>
+
+      <Square 
+        colorValue={colorValue}
+        hexValue={hexValue}
+        />
+
+      <Input 
+        colorValue={colorValue}
+        setColorValue={setColorValue}
+        setHexValue={setHexValue}
+      />
+
+lets save this.
+Now we go to the Square component
+and we need to destructure hexValue at the top
+by destructuring we are now receiving hexValue
+
+const Square = ({ colorValue }) => {
+const Square = ({ colorValue, hexValue }) => {
+
+and we want to put a second paragraph
+and we have hexValue ternary statement
+so if there is a hexValue, then we should display the hexValue
+otherwise  :
+and not then we wont display anything 	null
+
+            <p></p>
+            <p>{hexValue}</p>
+            <p>{hexValue ? }</p>
+            <p>{hexValue ? hexValue }</p>
+            <p>{hexValue ? hexValue : }</p>
+            <p>{hexValue ? hexValue : }</p>
+            <p>{hexValue ? hexValue : null}</p>
+
+so we have 
+
+const Square = ({ colorValue, hexValue }) => {
+    return (
+        <Section
+            className="square"            
+            style={{ backgroundColor: colorValue }}
+        >
+            <p>{colorValue ? colorValue : "Empty Value"}</p>
+            <p>{hexValue ? hexValue : null}</p>
+        </Section>
+    )
+}
+
+Square.defaultProps = {
+    colorValue: "Empty Color Value"
+}
+
+export default Square
+
+
+then we go to the Input.js
+
+const Input = ({ colorValue, setColorValue}) => { 
+    return (
+        <form onSubmit={(e) => e.preventDefault()}>
+            <label>Add Color Name:</label>
+            <input
+                autoFocus
+                type="text"
+                placeholder="Add color name"
+                required 
+                value={colorValue}
+                onChange={(e) => setColorValue(e.target.value)}
+            />
+        </form>
+    )
+}
+
+export default Input
+
+
+we need to destructure setHexValue 
+
+const Input = ({ colorValue, setColorValue}) => { 
+const Input = ({ colorValue, setColorValue, setHexValue }) => { 
+
+then we need to use the setHexValue in the onChange
+we need to put {} around the function
+then break onto seperate lines
+add ; at end of setColorValue
+add setHexValue 
+and normally we would have setHexValue(e.target.value);
+but we need translate the color name INTO a hex value
+color name is here e.target.value
+and to make the translation occur, we need to import another package
+To import another package CONTROL ` (ie backtick) to open Bash window
+but we are already running react here so we need another fresh Bash window
+so press + button so open a 2nd bash window
+and type
+$ npm i colornames -S
+press Enter
+note -S saves to production dependencies instead of our dev dependencies
+then when this finishes, it will have been added to our project
+
+
+                onChange={(e) => setColorValue(e.target.value)}
+		onChange={(e) => {setColorValue(e.target.value)}}
+		onChange={(e) => {
+			setColorValue(e.target.value);
+			
+		}}
+
+v02.56.45

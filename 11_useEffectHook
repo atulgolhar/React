@@ -140,4 +140,47 @@ and notice still no inside useEffect console output
 b/c useEffect was not called into action 
 b/c we didnt change the state of items
 so we only see text "inside useEffect" when we change the state of the items
-now we have a very clear idea of when useEffect is called into action.
+
+now we have a very clear idea of when useEffect is called into action. v03.09.15
+
+Next discuss how we can apply useEffect to our application
+
+0) local storage exists so able to see current state of memory
+1st) useEffect render--> each key stroke (no memory updates as array [] never changes)
+1.5) when dependency changes then useEffect runs the anonymous function
+2nd) useEffect render--> each time the app is re-loaded
+
+useEffect is called into action when the state changes
+state changes only upon re-loading of the application
+
+Lets set useEffect to run only at load time
+so we set the state of our application to:
+	- the shopping list sitting inside
+	- local storage
+
+v03.06.33 now lets add [items] inside useEffect
+note items = is the list itself, not when we type a letter, but actually 
+when we add or delete the item
+
+OLD
+useEffect(() -> {
+  console.log('load time')
+}, [])
+
+NEW 
+useEffect(() -> {
+  console.log('updating items state')
+}, [items])
+
+
+now clear console
+reload app
+
+console shows "updating items state" this output shows only when the app loads
+then anytime we delete an item, the "updating items state" will increment
+also anytime we add an item, the "updating items state" will increment
+
+so now useEffect only looks at its dependency when it runs this function
+and it only runs this function when the dependency changes
+
+Now we have discussed the different times useEffect may run v03.07034

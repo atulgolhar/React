@@ -1,1 +1,143 @@
+need to import useEffect right after useState
 
+in App.js
+import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+and after our import statement then we can begin to work with it
+and one of the things we need to look at is when useEffect runs
+
+so if I have useEffect and we just take the simpliest version
+which is useEffect takes in an anonymous function
+this will run at every render
+
+funtion App() {
+ const [items, setItems] = useState(JSON.parse(localStorage.getItem('shopppinglist)))
+ const [newItem, setNewItem] = useState('')
+ const [search, setSearch] = useState('')
+}
+
+useEffect(() => {})		<<<<<<<<<<<<<<<<<<<<<<<<<<<HERE
+
+const setAndSaveItems = () => {
+  setItems(newItems);
+  localStorage.setItem('shoppinglist', JSON.stringify(newItems));
+}
+
+so lets add code to it
+to show how it runs at every component render
+ie each time we save, the component re-renders in the browser and we see that 
+output in the DevTools console
+and so any time we type a letter, we get new render text in the console
+notice how the render blue circle number is rising? thats for each letter typed
+
+useEffect(() => {
+  console.log('render')
+})		
+
+now we dont want the component to render so frequently
+so usually we need to look at the useEffect dependencies  v03.05.26
+and if we add an empty array [] as a dependency then the re-rendering will
+only happen at load time
+
+useEffect(() => {
+  console.log('load time')
+},[])		
+
+so lets save again, clear console, re-load the app again, and
+you can see the text load time in the DevTools console.
+And now, if we type letters in the search box, notice there is nothing 
+happening in the console. This is b/c useEffect will only run at the app load time.
+So now we have seen examples when useEffect runs all the time at every render OR
+when the app loads at load time.
+
+B/c this array [] never changes, and this array is a dependency, 
+and so what useEffect does is that it looks to its dependency and
+if the dependency changes then useEffect will run this anonymous function again.
+
+In other words, useEffect only runs when the dependency changes.  v03.06.32
+
+So lets add items (which is a state) inside the dependency array.
+items is out item list
+the state does not change when we type a letter
+the state does yes change when we add an new item to the list or remove an item from the list
+so lets change console log
+  console.log('load time')
+  console.log('updating items state')
+
+so we have this
+
+
+function App() {
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')));	<<<<<<<<<<<<<<<<<items
+  const [newItem, setNetItem] = useState('')
+  const [search, setSearch] = useState('')
+
+useEffect(() => {
+  console.log('updating items state')	<<<<<<<<<<<<<<<<<new text
+},[items])				<<<<<<<<<<<<<<<<<items	
+
+
+lets clear the console and re-load the app
+so now you get it once 
+it = updating items state
+
+and now item state is set when the app loads
+but now anytime we delete an item, then notice the console blue circle number increases
+as the app reloads and indicates "updating items state" in the console
+so delete again and the app reloads again
+then add items and the app reloads again
+so useEffect is looking at its dependencies and useEffect runs only when the
+dependencies change.
+
+Now that we have discussed the different times useEffect may run,
+lets now discuss WHEN useEffect runs in the Order Of Rendering.
+need to add code now
+
+App.js
+
+import Header from './Header';
+import SearchItem from './SearchItem';
+import AddItem from './AddItem';
+import Content from './Content';
+import Footer from './Footer';
+import { useState, useEffect } from 'react';		
+
+function App() {
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')));
+  const [newItem, setNetItem] = useState('')
+  const [search, setSearch] = useState('')
+
+console.log('before useEffect');			<<<<<<<<<<<<HERE
+
+useEffect(() => {
+  console.log('inside useEffect')			<<<<<<<<<<<<HERE
+},[items])
+
+console.log('after useEffect);				<<<<<<<<<<<<HERE
+
+
+now clear console
+re-load app in browser
+now we get output in the console
+					before useEffect
+					after useEffect
+					inside useEffect
+why is inside 3rd? It should be 2nd?
+why? useEffect is not synchronous
+useEffect is asynchronous thus is non-blocking architecture so task run simultaneously
+
+useEffect runs after everything else has rendered.
+
+notice - if there is a need to re-render (example is typing now into the search box)
+results in console log output
+before useEffect
+after useEffect
+then type again
+before useEffect
+after useEffect
+and notice still no inside useEffect console output
+b/c useEffect was not called into action 
+b/c we didnt change the state of items
+so we only see text "inside useEffect" when we change the state of the items
+now we have a very clear idea of when useEffect is called into action.

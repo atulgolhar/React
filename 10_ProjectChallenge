@@ -953,6 +953,7 @@ const Input = ({ colorValue, setColorValue, setHexValue }) => {
 }
 
 export default Input
+
 hide file tree
 break props down to individual lines where 
 we destructure b/c we need to add 2 more
@@ -967,7 +968,19 @@ const Input = ({
     }) => { 
 
 and now we need an actual button to actually toggle these values
-and it will have several different attributes v03.01.26		<<<<<<<<<<<<<<<<<<<<
+so we start with a button
+and it will have several different attributes v03.01.26
+the default attribute of a button is submit but we need more
+1st attribute is type="button"
+2nd attribute is onClick set equal to an expression {}
+inside the expression we have an anonymous function using setIsDarkText
+and inside this expression we will setIsDarkText
+but we want the opposite of whatever setIsDarkText is equal to 
+thus we use ! for the boolean
+so we have setIsDarkText(!setIsDarkText)
+thus if its dark text then it changes to the opposite, ie light
+and if its light text then it changes to the opposite, ie dark
+now we need to still close out the button 
 
 old
             />
@@ -977,6 +990,92 @@ new
 
             />
 	  <button 
+		type="button"
+		onClick={}
         </form>
 
-v03.01.26							<<<<<<<<<<<<<<<<<<<<<
+
+	  <button 
+		type="button"
+		onClick={}
+		onClick={() => }
+		onClick={() => setIsDarkText()}
+		onClick={() => setIsDarkText(!setIsDarkText)}
+
+now we need to still close out the button 
+	  ></button>
+still need to have text on the button
+	  ></button>
+	  >Toggle Text Color</button>
+ 
+so Chrome dev_server renders 3 boxes now
+1st box Empty Value showing the text and actual color
+2nd box Text Field for user to type the requsted color
+3rd box is a button for Toggle Text Color
+
+so now we have 
+
+const Input = ({ 
+    colorValue, setColorValue, setHexValue, isDarkText,  isSetDarkText
+    }) => { 
+
+    return (
+        <form onSubmit={(e) => e.preventDefault()}>
+            <label>Add Color Name:</label>
+            <input
+                autoFocus
+                type="text"
+                placeholder="Add color name"
+                required 
+                value={colorValue}
+		onChange={(e) => {
+			setColorValue(e.target.value);			
+			setHexValue(colorNames(e.target.value));
+		}}
+            />
+	  <button 
+		type="button"
+		onClick={() => setIsDarkText(!setIsDarkText)}
+	  >
+	        Toggle Text Color
+	  </button>
+        </form>
+    )
+}
+
+export default Input
+
+so now we need to style the Toggle Text Color button
+
+Control B to see file tree
+click on index.css to see style sheets
+and just underneath the other styles, add code on line 59
+
+button {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  border-radius: 0.25rem;
+  box-shadow: 2px 2px 5px #000;
+  padding: 0.25rem;
+}
+
+note for the button
+button width 100% therefor button will be same width as input
+min-height at 48 pixels
+give it some slight margin on the top at 0.5rems
+font-size and border radius to the same small size
+and adding some box-shadow and padding
+then save and the button looks just the other objects
+	box
+	text field
+	Toggle Text Color
+
+now text again
+white
+magenta
+
+END
+
+next Chapter 11 useEffect Hook

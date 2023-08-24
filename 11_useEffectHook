@@ -14,6 +14,22 @@ this will run at every render
 funtion App() {
  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shopppinglist)))
  const [newItem, setNewItem] = useState('')
+ const [search, setSearch] = useState('')need to import useEffect right after useState
+
+in App.js
+import { useState } from 'react';
+import { useState, useEffect } from 'react';
+
+and after our import statement then we can begin to work with it
+and one of the things we need to look at is when useEffect runs
+
+so if I have useEffect and we just take the simpliest version
+which is useEffect takes in an anonymous function
+this will run at every render
+
+funtion App() {
+ const [items, setItems] = useState(JSON.parse(localStorage.getItem('shopppinglist)))
+ const [newItem, setNewItem] = useState('')
  const [search, setSearch] = useState('')
 }
 
@@ -35,7 +51,12 @@ useEffect(() => {
   console.log('render')
 })		
 
-now we dont want the component to render so frequently
+
+// Adding An Empty Array as a Dependency
+
+(now we dont want the component to render so frequently
+do accomplish this, lets add a dependency inside useEffect)
+
 so usually we need to look at the useEffect dependencies  v03.05.26
 and if we add an empty array [] as a dependency then the re-rendering will
 only happen at load time
@@ -48,8 +69,11 @@ so lets save again, clear console, re-load the app again, and
 you can see the text load time in the DevTools console.
 And now, if we type letters in the search box, notice there is nothing 
 happening in the console. This is b/c useEffect will only run at the app load time.
-So now we have seen examples when useEffect runs all the time at every render OR
-when the app loads at load time.
+
+So now we have seen examples when 
+- useEffect runs all the time at every render 
+OR
+- when the app loads at load time.
 
 B/c this array [] never changes, and this array is a dependency, 
 and so what useEffect does is that it looks to its dependency and
@@ -129,34 +153,6 @@ useEffect is asynchronous thus is non-blocking architecture so task run simultan
 
 useEffect runs after everything else has rendered.
 
-notice - if there is a need to re-render (example is typing now into the search box)
-results in console log output
-before useEffect
-after useEffect
-then type again
-before useEffect
-after useEffect
-and notice still no inside useEffect console output
-b/c useEffect was not called into action 
-b/c we didnt change the state of items
-so we only see text "inside useEffect" when we change the state of the items
-
-now we have a very clear idea of when useEffect is called into action. v03.09.15
-
-Next discuss how we can apply useEffect to our application
-
-0) local storage exists so able to see current state of memory
-1st) useEffect render--> each key stroke (no memory updates as array [] never changes)
-1.5) when dependency changes then useEffect runs the anonymous function
-2nd) useEffect render--> each time the app is re-loaded
-
-useEffect is called into action when the state changes
-state changes only upon re-loading of the application
-
-Lets set useEffect to run only at load time
-so we set the state of our application to:
-	- the shopping list sitting inside
-	- local storage
 
 v03.06.33 now lets add [items] inside useEffect
 note items = is the list itself, not when we type a letter, but actually 
@@ -173,14 +169,190 @@ useEffect(() -> {
 }, [items])
 
 
+save
 now clear console
 reload app
 
-console shows "updating items state" this output shows only when the app loads
+console shows "updating items state" this output once and only when the app loads
+
 then anytime we delete an item, the "updating items state" will increment
 also anytime we add an item, the "updating items state" will increment
 
 so now useEffect only looks at its dependency when it runs this function
 and it only runs this function when the dependency changes
 
-Now we have discussed the different times useEffect may run v03.07034
+Now we have discussed the different times useEffect may run v03.07.34
+
+lets discuss when useEffect runs for the "order of rendering"
+
+
+
+NEW 
+
+console.log('before useEffect')		<<<<<<<<<<<<<<<<<<
+
+useEffect(() -> {
+  console.log('inside useEffect')	<<<<<<<<<<<<<<<<<<
+}, [items])
+
+console.log('after useEffect')		<<<<<<<<<<<<<<<<<<
+
+save,
+clear console,
+reload app in Chrome
+
+so we get in order in the console output
+before useEffect
+after useEffect
+inside useEffect
+
+why is after useEffect 2nd and inside useEffect 3rd? b/c useEffect is asychronous    v03.08.28
+
+why? useEffect is not synchronous
+useEffect is asynchronous thus is non-blocking architecture so task run simultaneously
+
+useEffect runs after everything else has rendered.
+
+
+notice - if there is a need to re-render (example is typing now into the search box)
+results in console log output
+before useEffect
+after useEffect
+then type again
+before useEffect
+after useEffect
+and notice still no inside useEffect console output
+b/c useEffect was not called into action 
+b/c we didnt change the state of items
+so we only see text "inside useEffect" when we change the state of the items
+
+now we have a very clear idea of when useEffect is called into action. v03.09.15
+
+Next discuss how we can apply useEffect to our application
+
+right now its set to run only at load time		v03.09.18
+
+OLD
+
+function App() {
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')));
+  const [newItem, setNetItem] = useState('')
+  const [search, setSearch] = useState('')
+
+useEffect(() -> {
+  console.log('inside useEffect')
+}, [items])
+
+EDIT THIS CODE
+useEffect(() -> {
+
+}, [])
+
+and we take the JSON.parse(localStorage.getItem('shoppinglist'))
+statement from above that we load out of localStorage
+and remove it 
+
+function App() {
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')));
+
+function App() {
+  const [items, setItems] = useState());
+
+and put it 		JSON.parse(localStorage.getItem('shoppinglist'))
+here inside of useEffect
+BUT need to add setItems () and THEN feed setItem the JSON.parse statement
+
+EDIT THIS CODE
+useEffect(() -> {
+
+}, [])
+
+
+useEffect(() -> {
+   setItems()
+}, [])
+
+
+useEffect(() -> {
+   setItems(JSON.parse(localStorage.getItem('shoppinglist')))
+}, [])
+
+
+so now at load time, 
+we set the items 
+
+function App() {
+  const [items, setItems] = useState();
+  const [newItem, setNetItem] = useState('')
+  const [search, setSearch] = useState('')
+
+console.log('before useEffect')
+
+useEffect(() -> {
+   setItems(JSON.parse(localStorage.getItem('shoppinglist')))
+}, [])
+
+
+thus code flow is
+
+0) local storage exists so able to see current state of memory
+1st) useEffect render--> each key stroke (no memory updates as array [] never changes)
+1.5) when dependency changes then useEffect runs the anonymous function
+2nd) useEffect render--> each time the app is re-loaded
+
+useEffect is called into action when the state changes
+state changes only upon re-loading of the application
+
+Lets set useEffect to run only at load time
+so we set the state of our application to:
+	- the shopping list sitting inside
+	- local storage
+
+so useEffect calls setItems which then looks to local storage. 
+ie so now at load time, we set the items (ie state of our application) to
+this shoppinglist 
+
+but to do this we need to initialize useState
+why? right now useState has no variable inside it
+thus we need to initialize useState with an emtpy array
+
+OLD
+function App() {
+  const [items, setItems] = useState();
+  const [newItem, setNetItem] = useState('')
+  const [search, setSearch] = useState('')
+
+NEW
+function App() {
+  const [items, setItems] = useState([]);		<<<<<<<<<<<<<<<<<<
+  const [newItem, setNetItem] = useState('')
+  const [search, setSearch] = useState('')
+
+now save
+delete this code	
+	console.log('before useEffect')
+	console.log('after useEffect')
+
+now note, this is an ideal way to load the data in,
+especially if we are working with an API
+
+useEffect(() -> {
+   setItems(JSON.parse(localStorage.getItem('shoppinglist')))
+}, [])
+
+
+New topic
+never set item inside useEffect if there is an items dependency
+like this:
+
+useEffect(() -> {
+   setItems()
+}, [items])
+
+which creates an endless loop as
+
+useEffect( () -> {setItems()}, [items] )
+
+you setItems items which triggers useEffect to run which in turns triggers
+items to get updated which trigges useEffect, etc...
+

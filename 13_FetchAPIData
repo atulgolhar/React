@@ -40,7 +40,7 @@ function App() {
   const API_URL = 'http://localhost:3500/items';	<<<<<<<<<<<<<<<<<
 
   const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')) || []);
-  const [newItem, setNetItem] = useState('')
+  const [newItem, setNewItem] = useState('')
   const [search, setSearch] = useState('')
 
 useEffect(() -> {
@@ -92,7 +92,7 @@ b/c async will not work this way with useEffect.
 and so you will often see the old way of using fetch inside of useEffect 
 and we would chain then-ables such as like this fetch().then.then.then
 
-useEffect (() => {
+useEffect(() => {
   fetch().then.then.then etc
 }, [])
 
@@ -101,12 +101,14 @@ We want to use async await, and so we need to just define an async function that
 we can call inside of useEffect.
 Now we could define that function outside of useEffect and then call it from 
 inside useEffect if we wanted to use that function elsewhere b/c then it would
-make it available to the rest of the application. 
+make it available to the rest of the 
+
 We are not going to do this b/c we only need this function inside of 
-this one useEffect call at load time.
+this one useEffect call at load time. 		v03.26.56
+
 So we define fetchItems, make this an arrow function.
 
-useEffect (() => {
+useEffect(() => {
 
   const fetchItems = () => {
     
@@ -117,15 +119,726 @@ useEffect (() => {
 and we need to put async right inside it
 
   const fetchItems = () => {
-  const fetchItems = asynch () => {
+  const fetchItems = async () => {
 
 and now that we have determined that fetchItems is an asynch arrow function
 we will start with a try block  v03.27.15
 
-useEffect (() => {
+useEffect(() => {
 
   const fetchItems = () => {
     try {}
     
   }
 }, [])
+
+
+and you want to end a try block with a catch block and we would catch any err
+
+    try {}
+    catch {}
+
+    try {
+  
+    } catch (err) {
+  
+    }
+
+so in the try block we want to put our fetch statement
+we define a response
+where we await a fetch call()
+and inside the fetch call we fetch the API_URL
+and here is the API_URL   const API_URL = 'http://localhost:3500/items';
+
+    try {
+      catch response
+    } catch (err) {
+
+
+      catch response
+      catch response = 
+      catch response = await
+      catch response = await fetch()
+      catch response = await fetch(API_URL)
+
+if you were to paste this API_URL directly into Chrome then it
+would perform a GET request dy default and it will return those 
+items inside of db.json and those items are coming from the REST JSON server
+so we get this response and these would be our listItems
+and here we would await the response 
+to convert to json()
+
+      const response = await fetch(API_URL);
+      const listItems 
+
+      const response = await fetch(API_URL);
+      const listItems = 
+      const listItems = await response.json();
+
+so far we have
+
+    try {
+      const response = await fetch(API_URL);
+      const listItems = await response.json();
+
+    } catch (err) {
+
+and then we can setItems to the listItems
+and this is typically what we do to get the infomation.
+
+    try {
+      const response = await fetch(API_URL);
+      const listItems = await response.json();
+      setItems(listItems);
+    } catch (err) {
+
+now we need to think about the error as well
+so for now, lets add a console.log and 
+put the error that we would get inside the console.log
+or in fact, lets do the error stack so we get the information
+
+   } catch (err) {
+     console.log
+
+   } catch (err) {
+     console.log(err)
+
+   } catch (err) {
+     console.log(err.stack)
+
+lets also log this information to the console as well just make sure
+that we are getting these listItems from the json server <<<<<<<HERE
+
+so we have
+
+
+useEffect(() => {
+
+  const fetchItems = async () => {
+    try {
+      const response = await fetch(API_URL);
+      const listItems = await response.json();
+      console.log(listItems);
+      setItems(listItems);
+   } catch (err) {
+     console.log(err.stack)
+     }
+   }
+
+we will modify this fetch a little but for now, 
+
+How do we call the asynch function from inside useEffect?
+Note fetchItems does not return a value.
+Therefore, this async IIFE (instantaly invoked function expression)
+is not required.  You can just make a call to fetchItems().
+
+useEffect(() => {
+
+  const fetchItems = async () => {
+    try {
+      const response = await fetch(API_URL);
+      const listItems = await response.json();
+      console.log(listItems);
+      setItems(listItems);
+   } catch (err) {
+     console.log(err.stack)
+     }
+   }
+    (async () => await fetchItems()) (); 		// need to verify this
+}, [])
+
+v 03.29.47
+
+save
+seems to work
+
+it still loaded our items b/c we set the listItems 
+      setItems(listItems);
+
+and also it logged the listItems to the console
+      console.log(listItems);
+we can verify the console log in DevTools Console 
+which shows the listItems in memory
+
+Now note we are not updating anything yet with the REST API
+so if we change the state of the applicaiton    v03.30.07
+
+lets check the box for Bread. This crosses out the item in the app.
+But note, we do not see any change in DevTools Console as check did
+not change to 'true'. Its still 'false'. Why? 
+useEffect just loads at load time and contains the circuit breaker empty array [])
+So note, even if there is another change in the state of the application, we still
+will not see any change in DevTools b/c this useEffect only updates the state
+at load time b/c of its reliance upon the empty array []).
+
+Now, lets cause an error and see if we get that back in the console.log(err.stack)
+
+   } catch (err) {
+     console.log(err.stack)
+     }
+
+so lets add an extra s inside the url so it will not find the url
+then save which then reloads the application
+  const API_URL = 'http://localhost:3500/items';
+  const API_URL = 'http://localhost:3500/itemss';
+
+TypeError: items.filter is not a function 
+
+so note that we did NOT catch the error at all.
+in fact the code produced an empty null list 
+and then we set this to that empty list
+which would not allow us to use the filter on the empty list
+b/c its trying to call an operation on something that does not exist.
+
+Now if we scroll up in the Console log output to the top of the error output,  v03.31.42
+you can see we got a GET with a 404 (Not Found) error
+we can see that line #21 in App.js:21 and we logged the listItems which was
+just empty 			>{}		App.js:21 			v03.32.03
+but we know its not an empty array 
+so we need to do something to catch this type of error as well
+
+What we are going to do is set up a 'fetch error with state'
+so lets define 					const []
+then we add 					const [fetchError, setFetchError]
+and we will use state with this to we add 	= useState
+and set useState to null to start it		= useState(null);
+
+  const []
+  const [fetchError, setFetchError]
+  const [fetchError, setFetchError] = useState
+  const [fetchError, setFetchError] = useState(null);
+
+so far we have
+
+function App() {
+  const API_URL = 'http://localhost:3500/itemss';	// note 2nd s in itemss
+
+  const [items, setItems] = useState([]);
+  const [newItem, setNewItem] = useState('')
+  const [search, setSearch] = useState('')
+  const [fetchError, setFetchError] = useState(null);
+
+  useEffect(() => {
+
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(API_URL);
+        const listItems = await response.json();
+        console.log(listItems);
+        setItems(listItems);
+     } catch (err) {
+       console.log(err.stack)
+       }
+     }
+      (async () => await fetchItems())();
+  }, [])
+
+now what we need to do is
+after we get this response and BEFORE we set it to listItems
+      try {
+        const response = await fetch(API_URL);		// AFTER but 
+        const listItems = await response.json();	// BEFORE this
+
+we need add a new line between these two that looks for an error
+
+        const response = await fetch(API_URL);		// AFTER but 
+	// look for an error
+        const listItems = await response.json();	// BEFORE this
+
+so here
+	// look for an error
+we can add if response.ok then we have a response in the 200 range
+which indicates an http status of 'ok'
+	if (response.ok)
+but what we really want is if response is NOT ok thus add ! 
+	if (!response.ok)
+then if its not ok then got something like a 404 so then we throw an error
+	if (!response.ok) throw Error
+	if (!response.ok) throw Error('')
+	if (!response.ok) throw Error('Did not receive expected data');
+we clear the console, and lets see what happens
+we dont get that huge list of errors in the console.
+instead we get the GET 404 (Not Found) Error
+
+"Error: Did not receive expected data"
+
+so that works as we caught the fetch
+and the code continues to run
+
+and lets change the error output from the long error to showing 
+just the error message itself
+
+       console.log(err.stack)
+       console.log(err.message)
+
+now the error message is a little shorter.
+
+"Did not receive expected data"
+
+This is warning us that fetchError and setFetchError have not been used yet
+so we still need to handle this error
+
+  useEffect(() => {
+
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(API_URL);
+	if (!response.ok) throw Error('Did not receive expected data');
+        const listItems = await response.json();
+        console.log(listItems);
+        setItems(listItems);
+     } catch (err) {
+       console.log(err.message)
+       }
+     }
+      (async () => await fetchItems())();
+  }, [])
+
+
+
+how to handle this error? add line
+
+      setItems(listItems);
+     } catch (err) {
+
+add line here
+and setFetchError here
+and set it to null
+
+      setFetchError
+      setFetchError()
+      setFetchError(null)
+
+like this
+
+      setItems(listItems);
+      setFetchError(null)
+     } catch (err) {
+
+so we have 
+
+  useEffect(() => {
+
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(API_URL);
+	if (!response.ok) throw Error('Did not receive expected data');
+        const listItems = await response.json();
+        console.log(listItems);
+      setItems(listItems);
+      setFetchError(null)		<<<<<<HERE
+     } catch (err) {
+       console.log(err.message)
+       }
+     }
+      (async () => await fetchItems())();
+  }, [])
+
+
+and as we catch this error, we just dont want to log to the console
+we want to set the Fetch Error and set it equal to the error message
+
+     } catch (err) {
+       console.log(err.message)
+       }
+
+add line
+setFetchError to the specific error message that is received
+
+     } catch (err) {
+       console.log(err.message)
+       setFetchError(err.message);
+       }
+
+then we can remove the console.log(err.message) as we have the 
+error saved in state
+
+
+     } catch (err) {
+       // console.log(err.message)
+       setFetchError(err.message);
+       }
+
+then save
+lets use this error to indicate to the user that there has been an error
+and this will allow us to deliver a message based on this 
+so down in the components we the return with all the JSX code
+our Content contains the main element and then the listItems that
+go within the main element
+so what we can do is
+before the Content block
+we will add the <main> element here 		v03.35.51
+<main> element needs to surround the Content section
+</main> then is after Content section
+tab over Content section
+
+return (
+  <div className="App">
+    <Header title="Grocery List" />
+    <AddItem
+	newItem={newItem}
+	setNewItem={setNewItem}
+	handleSubmit={handleSubmit}
+    />	
+    <SearchItem			
+	search={search}					
+	setSearch={setSearch}		
+    />
+    <main>
+      <Content
+        items={items.filter(item => ((item.item).toLowerCase()).includes(search.toLowerCase() ) ) )}
+        handleCheck={handleCheck}
+        handleDelete={handleDelete}
+      />
+    </main>
+    <Footer length={items.length} />
+  </div>
+  );
+}
+
+now save it
+DevTools Console shows GET with 404 (Not Found) error
+now CONTROL B to show File Tree and go to src folder then inside it go to Content.js file
+we need to change the Content main element into a fragment element
+<main>
+</main>
+
+will become
+<>
+</>
+
+save. 
+Continue to keep main element now inside the App.js component
+Control B to hide file tree
+
+we will use the FetchError right above the Content block
+add {} to indicate this is an expression
+add {fetchError} which means that OK we have an error now
+add && 
+add <p></p> tags
+add curly brace {
+with a template literal ie use backtic `
+add Error:
+add ${
+then addin fetchError}
+use backtic to close the template literal
+then add ending curly brace }
+now lets add some style to this p tag
+add style ={}
+since this is indicating an expression, so we need another {}
+style ={{}}
+now this allows us to put in the actual css properties
+color: "red"
+
+    <main>
+      <Content
+
+    <main>
+      {}
+      {fetchError && }
+      {fetchError && <p></p>}
+      {fetchError && <p>{`</p>}
+      {fetchError && <p>{`Error: </p>}
+      {fetchError && <p>{`Error: ${fetchError}</p>}
+      {fetchError && <p>{`Error: ${fetchError}`</p>}
+      {fetchError && <p >{`Error: ${fetchError}`</p>}
+      {fetchError && <p style=>{`Error: ${fetchError}`</p>}
+      {fetchError && <p style={}>{`Error: ${fetchError}`</p>}
+      {fetchError && <p style={{}}>{`Error: ${fetchError}`</p>}
+      {fetchError && <p style={{ color: "red" }}>{`Error: ${fetchError}`</p>}
+      <Content
+
+
+    <main>
+      <Content
+
+
+so we have 
+
+    <main>
+      {fetchError && <p style={{ color: "red" }}>{`Error: ${fetchError}`</p>}
+      <Content
+
+save and now the error message is in red in the browser app
+
+now back in the JSX, we can also prevent showing the text
+Your list is empty 
+we would the same type of thing as we did for the fetchError but
+this will need to surround the Content
+so we have 
+if no fetchError
+if !fetchError
+add && 
+and then we keep the <Content opening tag
+but then we need to put a closing } at the end of the Content
+
+    <main>
+      <Content
+      {fetchError<Content
+      {!fetchError<Content
+      {!fetchError && <Content
+      {!fetchError && <Content
+      />}	
+    </main>
+
+so now only if there is no Fetch Error (ie FetchError state is false)
+then it will display the Content component
+
+save.
+now the text "Your list is empty" message has disappeared
+
+now fix the url (ie remove the additional s)
+save
+now our fetch request is working and we are catching errors and response errors that
+would normally not be caught by the try catch error block
+however there is one thing still missing.
+
+We need to recognize that a REST API may not be as fast as 
+one running in a local environment as we have with the JSON server.
+
+So lets simulate the potential delay of a REST API
+using a setTimeout()
+this will have an anonymous function 
+      setTimeout()
+      setTimeout(() => {})
+      setTimeout(() => {
+      })
+
+move the async call to inside the setTimeout function
+      setTimeout(() => {
+        (async () => await fetchItems())();	
+      })
+
+lets make this wait 2 seconds before it runs
+      })
+      }, 2000)
+
+so we have 
+
+      setTimeout(() => {
+        (async () => await fetchItems())();	
+      }, 2000)
+
+
+so overall we have
+
+  useEffect(() => {
+
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(API_URL);
+	if (!response.ok) throw Error('Did not receive expected data');
+        const listItems = await response.json();
+        console.log(listItems);
+      setItems(listItems);
+      setFetchError(null)
+     } catch (err) {
+       // console.log(err.message)
+       setFetchError(err.message);
+       }
+    }
+    setTimeout(() => {
+      (async () => await fetchItems())();	
+    }, 2000)
+
+  }, [])
+
+
+save and reload application
+it says our List is Empty (ie 2 seconds artifical delay)
+and then we get the 3 items
+Almonds, Unsalted, in the blue bag
+Pizza
+Bread
+
+
+so we want to get rid of that false message (Your list is Empty) when 
+our list is not really empty but just had a 2 second delay in reporting the data.
+We should tell the user that the "List is Loading" or that we are "Loading the data"  v03.41.08
+or some message like this while we are waiting on the REST API to finish that initial call.
+
+To do this, we use one more piece of state
+existing state code is
+
+function App() {
+  const API_URL = 'http://localhost:3500/itemss';	// note 2nd s in itemss
+
+  const [items, setItems] = useState([]);
+  const [newItem, setNewItem] = useState('')
+  const [search, setSearch] = useState('')
+  const [fetchError, setFetchError] = useState(null);
+
+so lets add the bottom of this
+add isLoading
+and setIsLoading
+set this equal to 		=
+set equal to useState
+and this will be a boolean, either true or false
+and so when the app first loads, we set the boolean default equal to true
+why true? b/c we plan to load that data so the boolean is true
+add ;
+
+  const []
+  const [isLoading]
+  const [isLoading, setIsLoading]
+  const [isLoading, setIsLoading] = 
+  const [isLoading, setIsLoading] = useState
+  const [isLoading, setIsLoading] = useState()
+  const [isLoading, setIsLoading] = useState(true);
+
+now remember before we used a try, catch block
+now we can use the last part of the try, catch, finally block
+
+so we add a finally to the try catch block
+
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(API_URL);
+	if (!response.ok) throw Error('Did not receive expected data');
+        const listItems = await response.json();
+        console.log(listItems);
+       setItems(listItems);
+       setFetchError(null)
+      } catch (err) {
+       // console.log(err.message)
+       setFetchError(err.message);
+      }				<<<<<<<<<<<<<<HERE finally
+    }
+    setTimeout(() => {
+      (async () => await fetchItems())();	
+    }, 2000)
+
+  }, [])
+
+
+like this
+add finally
+add {}
+now we setIsLoading() 
+to false
+
+
+      }				<<<<<<<<<<<<<<HERE finally
+      }	finally
+      }	finally {}
+
+      }	finally {
+	setIsLoading()
+      }
+
+      }	finally {
+	setIsLoading(false)		<<<<<<<<<<<<<<<<<<<<<<
+      }
+
+we can save this
+but we will not see any change yet b/c we are not yet using 
+this in our JSX
+
+so we have 
+
+  useEffect(() => {
+
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(API_URL);
+	if (!response.ok) throw Error('Did not receive expected data');
+        const listItems = await response.json();
+        console.log(listItems);
+        setItems(listItems);
+        setFetchError(null)
+      } catch (err) {
+        // console.log(err.message)
+        setFetchError(err.message);
+      }	finally {
+	setIsLoading(false)		<<<<<<<<<<<<<<<<<<<<<<
+      }
+    }
+    setTimeout(() => {
+      (async () => await fetchItems())();	
+    }, 2000)
+
+  }, [])
+
+
+now we are tracking the state of loading
+and we do not setIsLoading to false until everything else above is completedS
+
+so now we need to update the JSX and utilize this loading state 
+so inside the <main> element
+add curly braces {}
+
+    <main>
+      {fetchError && <p style={{ color: "red" }}>{`Error: ${fetchError}`</p>}
+      <Content
+
+
+    <main>
+      {}  		<<<<<<<<<<
+      {fetchError && <p style={{ color: "red" }}>{`Error: ${fetchError}`</p>}
+      <Content
+
+if isLoading is true
+add && 
+add <p></p>
+and this is just simple paragraph text  Loading Items...
+
+      {isLoading && <p></p>} 
+      {isLoading && <p>Loading Items...</p>} 
+
+so we have
+
+    <main>
+      {isLoading && <p>Loading Items...</p>} 
+      {fetchError && <p style={{ color: "red" }}>{`Error: ${fetchError}`</p>}
+      <Content
+
+now notice isLoading is true and thus we show the p text
+then the fetchError loading block that we leave in place
+but the !fetchError line needs to be updated
+to account for the fetchError and for the isLoading and for the Content
+so (careful here)
+so want !fetchError and !isLoading and showContent		(no && no && yes)
+
+      {!fetchError && <Content
+      {!fetchError &&     && <Content
+      {!fetchError && !isLoading && <Content
+
+
+so summary here so far for App.js
+
+    <Header title="Grocery List" />
+    <AddItem
+	newItem={newItem}
+	setNewItem={setNewItem}
+	handleSubmit={handleSubmit}
+    />	
+    <SearchItem			
+	search={search}					
+	setSearch={setSearch}		
+    />
+    <main>
+      {isLoading && <p>Loading Items...</p>} 
+      {fetchError && <p style={{ color: "red" }}>{`Error: ${fetchError}`</p>}
+      {!fetchError && !isLoading && <Content
+        items={items.filter(item => ((item.item).toLowerCase()).includes(search.toLowerCase() ) ) )}
+        handleCheck={handleCheck}
+        handleDelete={handleDelete}
+      />
+    </main>
+    <Footer length={items.length} />
+  </div>
+  );
+}
+
+so this works
+Note we dont want the setTimeout in the code as just a simulation    v03.44.02
+
+remove the console.log(listItems)
+	   // console.log(listItems)
+from the const fetchItems async try block
+this now gives us the completed async function 
+and it is only created and called the first time the app loads with useEffect
+the other benefit of this const fetchItems async function since we are not sharing 
+it anywhere else in the application of having this defined INSIDE useEffect is
+that this function is not re-created or re-defined everytime the component renders.
+It only executes this first time when its called into action.

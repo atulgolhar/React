@@ -1,1 +1,133 @@
-tbd
+
+today we are looking the JSON server to quickly launch a development API
+that you can work with as you build your front end applications
+https://www.npmjs.com/
+search for json-server
+click the 1st result json-server
+
+https://www.npmjs.com/package/json-server
+Get a full fake REST API with zero coding in less than 30 seconds (seriously).
+Created with <3 for front-end developers who need a 
+quick back-end for prototyping and mocking.
+
+note the install code needs to be changed
+from
+$ npm i json-server 
+to 
+$ npx i json-server 
+NPM is a package manager used to 
+install, delete, and update Javascript packages on your machine. 
+NPX is a package executer, and it is used to 
+execute javascript packages directly, without installing them.
+https://www.freecodecamp.org/news/npm-vs-npx-whats-the-difference/
+1) npx helps us avoid versioning, dependency issues and installing unnecessary packages 
+that we just want to try out.
+2) It also provides a clear and easy way of executing packages, 
+commands, modules and even GitHub gists and repositories.
+
+Folders
+.git
+node_modules
+public
+src
+	AddItem.js
+	App.js
+	Content.js
+	Footer.js
+	Header.js
+	index.css
+	index.js
+	ItemList.js
+	LineItem.js
+	SearchItem.js
+.gitignore
+package-lock.json
+
+
+now lets begin
+create new folder at top of file tree called data
+now create new file inside data folder called bd.json
+data
+	db.json
+
+lets add starter data for db.json
+
+{
+  "items": [
+    {
+      "id": 1,
+      "checked": false,
+      "item": "Almonds, Unsalted, in the blue bag"
+    },
+    {
+      "id": 2,
+      "checked": false,
+      "item": "Pizza"
+    },
+    {
+      "id": 3,
+      "checked": false,
+      "item": "Bread"
+    }
+  ]
+}
+
+now notice some differences from when we originally started the project
+originally we hard coded the items by adding thru a button (ie inputting JSON via JS)
+now we use a database
+but now using a db, all the keys are in quotes " "
+and between each JSON object is a comma ,
+
+so lets look at the data
+integer does not need to be in quotes
+boolean is not in quotes
+string is yes in quotes " "
+so make sure you have this correct
+
+also notice the nesting
+we have an items array and then we have objects inside of the items array
+also "items" is inside " "
+
+save file
+open terminal window 
+needs to be different terminal window from what we use to open our react application in
+-p port
+-w watch
+
+$ npx json-server -p 3500 -w data/db.json
+takes a moment then the server launches on your computer
+we can see
+
+Resources
+http://localhost:3500/items 		<<<<<<COPY THIS
+
+Home
+http://localhost:3500
+
+
+want to TYPE the the Resources into chrome and then we get our JSON right inside the broswer
+now resize Chrome and VSCode
+now we can see the terminal window showing
+GET /item 200 32.858 ms -223
+
+refresh and then we get another GET request
+refresh and then we get another GET request
+etc...
+
+these so far are GET requests
+open another Bash window
+now lets look at POST requests
+we use the same localhost to POST new items
+$ http://localhost:3500/items/id
+$ http://localhost:3500/items/1
+
+to Delete
+$ http://localhost:3500/items/d
+
+GET request
+POST request
+UPDATE the item is a PATCH
+DELETE request
+
+Next we explore CRUD opertions Create Read Update and Delete
+See next lecture

@@ -354,5 +354,122 @@ which creates an endless loop as
 useEffect( () -> {setItems()}, [items] )
 
 you setItems items which triggers useEffect to run which in turns triggers
-items to get updated which trigges useEffect, etc...
+items to get updated which trigges useEffect, etc...		v03.10.43
 
+So back to the project
+lets put localStorage back in useState 				v03.10.55
+
+function App() {
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')));
+  const [newItem, setNetItem] = useState('')
+  const [search, setSearch] = useState('')
+
+and lets add a short-circuit operator and keep the empty array		|| []
+
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')) || []);
+
+v03.11.09
+
+lets discuss this
+b/c if we didnt have the short circut operator  || []
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')));
+then (clear console and reload app in browser, look at Application not the Console)
+in Application tab, see the key value with key showing shoppinglist
+there are 3 items in the shopplinglist
+now lets delete those 3 items which leaves us with an empty array []
+and this is ok as the application still works showing "Your list is empty"
+But if we never run this application before, then we would not have the shoppinglist
+inside the Application tab b/c useState assumes a 'shoppinglist' exists and thereby 
+useState then looks for the array shoppinglist
+so the new user that would come to our application would NOT have an empty array
+so lets reload the browser app and see what happens
+TypeError: Cannot read property 'filter' of null
+thus we get an error b/c we are trying to filter a null value	v03.11.57
+and this object does not exist in Application memory to pull in to set the state with so its set to null
+    ^^^^^^^^^^^
+this object means this 		JSON.parse(localStorage.getItem('shoppinglist')
+so we need to put in the short circut operator 	|| []
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')));
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')) || []);
+so if this statement is null inotherwords the shoppinglist does not exist, then at
+the application can work with the empty array 
+Thus that default empty array ie short circut operator is helpful.
+
+v03.12.29
+now that we have had that discussion, lets talk about what we can do in our application
+
+since we can load the local storage right here 
+
+function App() {
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')) || []);
+  const [newItem, setNetItem] = useState('')
+  const [search, setSearch] = useState('')
+
+useEffect(() -> {
+
+}, [items])
+
+const setAndSaveItems = (newItems) => {
+  setItems(newItems);
+  localStorage.setItem('shoppinglist', JSON.stringify(newItems));
+}
+
+
+
+lets then save the localStorage in a new place
+so we move localStorage from setAndSaveItems to useEffect
+and change JSON.stringify(newItems) to JSON.stringify(items) b/c
+items needs to be the current state that we are saving to localStorage
+
+
+function App() {
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')) || []);
+  const [newItem, setNetItem] = useState('')
+  const [search, setSearch] = useState('')
+
+useEffect(() -> {
+  localStorage.setItem('shoppinglist', JSON.stringify(newItems));	<<<<<<<<TOHERE1
+  localStorage.setItem('shoppinglist', JSON.stringify(items));		<<<<<<<<TOHERE2
+}, [items])
+
+const setAndSaveItems = (newItems) => {
+  setItems(newItems);
+									<<<<<<<FROMHERE
+}
+
+and so notice we that removed 1/2 of the setAndSaveItems
+and we need to find/replace all setAndSaveItems and replace with setItems
+then we can completely remove the setAndSaveItems function
+and this should still give the same funtionality that we have had.
+so lets
+save
+watch Console>Application tab which shows an empty array [] in value of key-value
+thus we can tell that the short circut opertor has worked as it pulls in the empty array.
+b/c we previously didnt have a shoppinglist which triggered an error
+
+now go Console, clear console
+reload app
+so now useEffect runs 1 time at the very beginning so it grabbed the empty array value
+and set it into localStorage immediately when the application loads (which 
+happended inside useEffect). And now, everything should work as it did before:
+add Bread, Chips, Milk
+now look at Application tab shoppinglist and we see all the 3 items
+and if we delete the items, the application still works
+and now check Console Application tab shoppinglist key value shows an empty array
+and then delete the shopplinglist out of Console Application tab directly 
+and then reload the browser App, then the empty array shoppinglist shows up 
+in the key-value Application tab.
+So this makes the Application a little more efficient by using a short circut operator
+empty array as opposed to loading everything at the beginning
+
+useEffect(() -> {
+  localStorage.setItem('shoppinglist', JSON.stringify(items));
+}, [items])
+
+so useEffect runs looking at the state of items in localStorage 
+or uses a default empty array b/c of the || []		v 03.14.47
+
+next we setup JSON server to mock our backend for our data API
+and then we come back to use useEffect to load data instead of saving to localStorage
+
+next JSON Server v03.15.08

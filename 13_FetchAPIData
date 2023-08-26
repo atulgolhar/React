@@ -1,1 +1,131 @@
+Prior Chapter 12
+JSON server to run local REST API as a development server
+where we work with it and use that REST API as we develop our front end
 
+Chapter 13 (03:21:23)
+today we use the this as well
+VSCode open, Chrome opon on right with Grocery List application
+DevTools Console tab is open
+and Bash window in VSCode and ran npm start
+
+Lets open another terminal window in VSCode to start the JSON server
+$ npx json-server -p 3500 -w data/db.json
+we add db.json b/c we have a data folder with our json data
+
+click on the App.js file
+expand terminal window to see more info
+we can see 
+Resources 
+http://localhost:3500/items		
+this is our root url that we contact with the Fetch API to get our information
+so copy this Resources url
+
+Home
+http://localhost:3500
+
+click down arrow to min VSCode terminal window
+now x click the terminal windows, note they continue to run 
+1) the server and 2) react for us
+and we can display these again if we want to
+
+now lets add code just below function App()
+API_URL has all caps as this is a true constant as this url will not change for us
+and we will refer to it as we create the different fetch requests.
+and add an extra line and save file
+
+const API_URL = 'http://localhost:3500/items';
+
+
+function App() {
+  const API_URL = 'http://localhost:3500/items';	<<<<<<<<<<<<<<<<<
+
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')) || []);
+  const [newItem, setNetItem] = useState('')
+  const [search, setSearch] = useState('')
+
+useEffect(() -> {
+  localStorage.setItem('shoppinglist', JSON.stringify(items));
+}, [items])
+
+
+now lets look at useEffect and useState
+b/c we are loading our current data from the localStorage
+and if had never before accessed this application such as a brand new user
+then we loaded an empty array shoppinglist so we dont get errors when trying to
+access properties of the shoppinglist array
+
+look at useState
+so now, instead of getting this data from localStorage, we want to remove the
+loading and the short circut or operator but leave the empty array for the useState
+and this empty array is the State we want to initially load the application with  v03.25.21
+
+  const [items, setItems] = useState(JSON.parse(localStorage.getItem('shoppinglist')) || []);
+  const [items, setItems] = useState([]);
+
+look at useEffect
+
+useEffect(() -> {
+  localStorage.setItem('shoppinglist', JSON.stringify(items));
+}, [items])
+
+where we are saving these items in localStorage and listing for any changes in state 
+in the useEffect using the dependency items, we can get rid of all of this as well 
+b/c we are going to use useEffect with an empty array as a dependency which means 
+what happens in useEffect will only occur at load time b/c we only want it to happen
+that one time and thats when we would load the data FROM THE REST API 
+and after that we can manage it in state but then we will send messages back to the 
+REST API to keep that database in synch with our current state of the Application
+
+useEffect(() -> {
+
+}, [])
+
+
+Now b/c we want to use asynch await, its important to note 
+that we can NOT do this with useEffect
+
+useEffect (async () => {
+
+}, [])
+
+b/c async will not work this way with useEffect. 
+and so you will often see the old way of using fetch inside of useEffect 
+and we would chain then-ables such as like this fetch().then.then.then
+
+useEffect (() => {
+  fetch().then.then.then etc
+}, [])
+
+but we will not do this.
+We want to use async await, and so we need to just define an async function that
+we can call inside of useEffect.
+Now we could define that function outside of useEffect and then call it from 
+inside useEffect if we wanted to use that function elsewhere b/c then it would
+make it available to the rest of the application. 
+We are not going to do this b/c we only need this function inside of 
+this one useEffect call at load time.
+So we define fetchItems, make this an arrow function.
+
+useEffect (() => {
+
+  const fetchItems = () => {
+    
+  }
+}, [])
+
+
+and we need to put async right inside it
+
+  const fetchItems = () => {
+  const fetchItems = asynch () => {
+
+and now that we have determined that fetchItems is an asynch arrow function
+we will start with a try block  v03.27.15
+
+useEffect (() => {
+
+  const fetchItems = () => {
+    try {}
+    
+  }
+}, [])

@@ -266,12 +266,165 @@ import apiRequest from './apiRequest';
 
 so far we have
 1) defined the apiRequest
-2) imported into our App.js component
-3) now we need to put the apiRequest to work and the first place we
-could use it is within the addItem function
+2) imported apiRequest into our App.js component
+3) put apiRequest to work and the first place we could use it is within the addItem function 
+and note that 
+(3a) we already have everything we need to udpate our state in setItems 
+but this is not enough b/c 
+(3b) we need to update the REST API as well and we do this inside the new function postOptions b/c
+this will a post request
+
+from App.js
+const addItem = (item) => {
+  const id = items.length ? items[items.length -1].id + 1 : 1;
+  const myNewItem = { id, checked: false, item };
+  const listItems = [...items, myNewItem];
+  setItems(listItems);							
+
+  const postOptions
+
+Lets discuss building the postOptions function
+This will be a post request.
+Set this equal to 	=
+an object		{}
+Lets define the method 		method:
+and that will be POST		'POST'
+and after the method 		,
+We define the headers which an object all of its own
+This is an object 	{}
+and inside the headers, we define the 'Content-Type'
+and this will be 'application/json'
+Then we a comma after headers		},
+and then we need to define the body	body:
+Now for the body, the information we want to send
+We need to use JSON.stringify
+and here we can pass in (myNewItem) as we defined it above
+Note here in myNewItem we dont need 
+to send the full list of items like we did when we set the items in our state
+So we just need the myNewItem that we want to POST to the REST API
+and this was defined by myNewItem
+so with that, we have completed our postOptions.
 
 
+  const postOptions
+  const postOptions = 
+  const postOptions = {}
+
+  const postOptions = {
+    method:
+  }
+
+  const postOptions = {
+    method: 'POST'
+  }
+
+  const postOptions = {
+    method: 'POST',
+  }
+
+  const postOptions = {
+    method: 'POST',
+    headers: 
+  }
+
+  const postOptions = {
+    method: 'POST',
+    headers: {
+        'Content-Type':
+    }
+  }
+
+  const postOptions = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json
+    },
+  }
+
+  const postOptions = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json
+    },
+    body: 
+  }
+
+  const postOptions = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json
+    },
+    body: JSON.stringify(newMyItem)
+  }
 
 
+so now lets define the rest of and send the request
+so we have const result
+equals  	=
+now remember this result is await and remember that our apiRequest was an async function
+so, we need to change our const addItem to an async
+  const addItem = (item) => {
+  const addItem = async (item) => {
+and now that addItem is async, we can add await to the result function		const result = await
+like this, we add await to the apiRequest
+and we can pass in the API_URL that we defined at the top
+  const API_URL = 'http://localhost:3500/items';
+and so for a POST request, we dont need to do anything different other than
+just send it to the same api url that we send the get request to
+BUT the method being different will therefore handle the request differently
+so this is a POST apiRequest and the url will not change
+We also need to pass in 			, 
+the postOptions 
+add ; to end the statement
+Now, if you remember our apiRequest, that it returns is an errMsg
+either its null or its not (ie errMsg)
+So we can add an if statement to check
+if we have a result (ie result exists) which means the message is not null
+Then we need to setFetchError
+and of course when that is not null 
+(ie result exists)   		setFetchError(result)
+then it will render in our Chrome app 
+  const result = await apiRequest(API_URL, postOptions);
+  if (result) setFetchError(result);
 
+  const postOptions = {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json
+    },
+    body: JSON.stringify(newMyItem)
+  }
 
+  const result
+  const result =
+  const result = await
+  const result = await apiRequest
+  const result = await apiRequest()
+  const result = await apiRequest(API_URL)
+  const result = await apiRequest(API_URL, )
+  const result = await apiRequest(API_URL, postOptions);
+  const result = await apiRequest(API_URL, postOptions);
+  if (result)
+  if (result) setFetchError
+  if (result) setFetchError(result);
+
+so lets save this
+
+  const result = await apiRequest(API_URL, postOptions);
+  if (result) setFetchError(result);
+
+Open VSCode terminal to show already running JSON server 
+need to see details to see GET requests			v03.54.40
+
+Notice we have many GET 304 
+lets reload the Chrome app
+we get a GET 304 means its using cached info (not need to get
+info from the server b/c nothing has changed)
+200 range response means ok
+
+What happens if we post? ie lets add an items using the app buttons
+add in text box Cookies
+click the plus button
+in Terminal this shows a POST /items 201 55.542 ms
+This works as we expected    v03.55.56
+ 

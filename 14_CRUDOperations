@@ -1,19 +1,277 @@
+Summary - 
+1) we put a fetchItems function 
+using an async await anonymous function
+and the fetch API
+inside of the useEffect Hook
+in our App component
+and this functional App component is the parent component 
+for the rest of the components in our application
+2) we simulated a call to an API using a 2 second setTimeout
+but we are really running a local JSON server instance
+and we are accessing the data from our db.json file.
 
-now go to App.js and just underneath import Header statement we add import Additem component like this
+So we have this code.
+We request the data from the API 
+Now we need to link up the rest of the CRUD operations
+Create for creating a listItem
+Read for reading a listItem
+Update for updating a listItem
+Delete for deleting a listItem
+
+  useEffect(() => {
+
+    // CRUD - Read
+    const fetchItems = async () => {
+      try {
+        const response = await fetch(API_URL);
+	if (!response.ok) throw Error('Did not receive expected data');
+        const listItems = await response.json();
+        // console.log(listItems);		// can delete was useful for debugging
+        setItems(listItems);
+        setFetchError(null)
+      } catch (err) {
+        // console.log(err.message)		// can delete was useful for debugging
+        setFetchError(err.message);
+      }	finally {
+	setIsLoading(false)
+      }
+    }
+    setTimeout(() => {
+      (async () => await fetchItems())();	
+    }, 2000)
+
+  }, [])
+
+
+So lets go ahead and put CrUD in place as well. (r is done).
+
+App.js
+
+import Header from './Header';
+import SearchItem from './SearchItem';
 import AddItem from './AddItem';
+import Content from './Content';
+import Footer from './Footer';
+import { useState, useEffect } from 'react';
 
-now need to add the AddItem component in the JSX just below the Header component
+function App() {
+  const API_URL = 'http://localhost:3500/items';
 
-return (
-  <div className="App">
-    <Header title="Grocery List" />
-    <AddItem />				<<<<<<<<<<here
-    <Content
-      items={items}
-      handleCheck={handleCheck}
-      handleDelete={handleDelete}
-    />
-    <Footer length={items.length} />
-  </div>
-  );
+  const [items, setItems] = useState([]);
+  const [newItem, setNewItem] = useState('');
+  const [search, setSearch] = useState('');
+  const [fetchError, setFetchError] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+Need add a file to the src folder   	apiRequest.js
+this will contain a function that we can import to use
+for all of these other operations (Create, Update, Delete)
+so here we abstract somewhat to allow us to us this 1 function
+for all 3 operations
+
+define the name const apiRequest
+it will be an asyc function
+that accepts a url
+we will use a default parameter for now that is just an empty string
+then it is going to accept a 2nd parameter 
+called an optionsObject
+and this optionsOjb will be set to null 	= null
+this will have a 3rd parameter errMsg
+and this will be set to null
+the we put in the arrow for the arrow function and curly braces {}
+and we also need to remember to export this function so at the bottom
+we add export default apiRequest;
+
+const apiRequest = 
+const apiRequest = async ()
+const apiRequest = async (url = )
+const apiRequest = async (url = '')
+const apiRequest = async (url = '', optionsObj)
+const apiRequest = async (url = '', optionsObj = null)
+const apiRequest = async (url = '', optionsObj = null, errMsg = )
+const apiRequest = async (url = '', optionsObj = null, errMsg = null)
+const apiRequest = async (url = '', optionsObj = null, errMsg = null) => {
 }
+const apiRequest = async (url = '', optionsObj = null, errMsg = null) => {
+}
+
+export default apiRequest;
+
+
+now with the setup done, lets start the component's body
+we start with a try block 		try {}
+and the setup inside the try block would also include a catch {}
+for an error			(err)
+and then it will have a finally at the end that happens whether we
+have an error or not.
+
+
+const apiRequest = async (url = '', optionsObj = null, errMsg = null) => {
+    try {}
+}
+
+export default apiRequest;
+
+
+const apiRequest = async (url = '', optionsObj = null, errMsg = null) => {
+    try {}
+
+    catch ()
+}
+
+
+const apiRequest = async (url = '', optionsObj = null, errMsg = null) => {
+    try {}
+
+    catch (err) {}
+}
+
+const apiRequest = async (url = '', optionsObj = null, errMsg = null) => {
+    try {
+    
+    } catch (err) {
+
+    } finally {
+
+    }
+}
+
+export default apiRequest;
+
+
+now we have our try catch finally block, lets define the generic requests
+which defines the response we expect to receive inside the try block
+we set that equal to await fetch
+and we use the url here
+and fetch also accepts a 2nd parameter which is an optionsObj
+this optionsObj is the 2nd parameter that was originally part of the apiRequest function
+so we accept both of those 		;
+Note that the optionsObj is what differentiates this addressing which amoung the choices of
+Create vs Update vs Delete request.
+
+        const response
+        const response = await
+        const response = await fetch
+        const response = await fetch(url,
+        const response = await fetch(url, optionsObj)
+        const response = await fetch(url, optionsObj);
+
+so now we have 
+
+const apiRequest = async (url = '', optionsObj = null, errMsg = null) => {
+    try {
+        const response = await fetch(url, optionsObj);
+    
+    } catch (err) {
+
+    } finally {
+
+    }
+}
+
+export default apiRequest;
+
+
+
+after the const response statement, we check to see if
+the url response is ok or not.
+This is a lot like our fetch function from the useEffect of the App component.
+This is say !response.ok (ie if the response is not correct) then we want to catch it
+and throw an Error b/c this will not be automatically caught as a error (ie its a
+response that we did not want)
+and so here we add the text 'Please reload the app'
+We add this text b/c at this point the state of the application may not be in sync
+with the database. So we reload, get the data back from the server once again, and then
+our state will be updated once again to be in sync with the server.
+So this is why we add the 'Please reload' message here.
+
+
+        const response = await fetch(url, optionsObj);
+	if (!response.ok)    
+	if (!response.ok) throw 
+	if (!response.ok) throw Error()
+	if (!response.ok) throw Error('Please reload the app);
+
+so now we have 
+
+const apiRequest = async (url = '', optionsObj = null, errMsg = null) => {
+    try {
+        const response = await fetch(url, optionsObj);
+	if (!response.ok) throw Error('Please reload the app);    
+    } catch (err) {
+
+    } finally {
+
+    }
+}
+
+export default apiRequest;
+
+
+then we need to define the error message in the catch block
+we set the error message equal to 		=
+err.message
+
+         errMsg
+         errMsg = 
+         errMsg = err.message;
+
+and then in the finally block, this is where we
+want to return the error message
+so no matter what, this return will happen whether the
+message is null or it actually has a value
+and we dont need a response back from the API here		if (!response.ok) throw Error('Please reload the app);    
+and the reason we dont need those reponses back is b/c
+we are updating the state with our setItems and other set functions
+that we would call from our state, however, that does not update the API
+and we need to keep the state of our application and the API in sync  v03.50.26
+but we can update the state and see that update occur faster 
+than we may get that response back from the API 
+so we dont want to wait for that response 
+we would rather instantly show the new state in the application 
+but then if we get an error message then we know we are out of sync
+with the API so then we show 'Please reload the app' message
+(or whatever other error might occur that is caught by the catch (err) block
+
+         return errMsg;
+
+so now we have our apiRequest
+
+const apiRequest = async (url = '', optionsObj = null, errMsg = null) => {
+    try {
+        const response = await fetch(url, optionsObj);
+	if (!response.ok) throw Error('Please reload the app);    
+    } catch (err) {
+         errMsg = err.message;
+    } finally {
+         return errMsg;
+    }
+}
+
+export default apiRequest;
+
+
+now lets go back to the App component and import our apiRequest
+so we import apiRequest from apiRequest
+
+App.js
+
+import Header from './Header';
+import SearchItem from './SearchItem';
+import AddItem from './AddItem';
+import Content from './Content';
+import Footer from './Footer';
+import { useState, useEffect } from 'react';
+import apiRequest from './apiRequest';
+
+so far we have
+1) defined the apiRequest
+2) imported into our App.js component
+3) now we need to put the apiRequest to work and the first place we
+could use it is within the addItem function
+
+
+
+
+
+

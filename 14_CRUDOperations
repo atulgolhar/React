@@ -426,5 +426,94 @@ What happens if we post? ie lets add an items using the app buttons
 add in text box Cookies
 click the plus button
 in Terminal this shows a POST /items 201 55.542 ms
-This works as we expected    v03.55.56
+This works as we expected    
  
+Lets open data folder
+open db.json file
+before we had 3 items, now we have 4 items including Cookies
+add to our json file, so this 
+did update the file as expected
+did handle the request as expected
+
+{
+  "items": [
+    {
+      "id": 1,
+      "checked": false,
+      "item": "Almonds, Unsalted, in the blue bag"
+    },
+    {
+      "id": 2,
+      "checked": false,
+      "item": "Pizza"
+    },
+    {
+      "id": 3,
+      "checked": false,
+      "item": "Bread"
+    }
+    {
+      "id": 4,
+      "checked": false,
+      "item": "Cookies"
+    }
+  ]
+}
+
+now lets go back to App.js component
+and handle the Check now
+const handleCheck = (id) => {
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setAndSaveItems(listItems);
+}
+we already have the code that updates our state
+    setAndSaveItems(listItems);
+
+so we add new code below this
+lets define the item that is getting updated
+so far we handled the listItems and 				    const listItems =
+then we updated the full state of the listItems	    		    setAndSaveItems(listItems);
+and we just changed the check: !item.checked 
+but now we need to handle this just a little differently
+how?
+we need to get the item that is checked
+    const myItem
+and now we can use listItems b/c we have already updated the listItems 
+and now 'the checked' is in the state that it needs to be
+so here we use listItems
+and we use filter
+we pass in 
+the item
+use an anonymous function arrow
+and say the item.id needs to be equal to the id that was passed in
+if we do this, we have now defined myItem
+
+    const myItem = listItems
+    const myItem = listItems.filter
+    const myItem = listItems.filter()	
+    const myItem = listItems.filter(())			second set of () added for consistency with handleCheck
+    const myItem = listItems.filter(item)
+    const myItem = listItems.filter(item => )
+    const myItem = listItems.filter(item => id);
+
+so we have
+
+const handleCheck = (id) => {
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setAndSaveItems(listItems);
+
+    const myItem = listItems.filter(item => id);
+}
+
+now we need to define updateOptions
+
+const handleCheck = (id) => {
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setAndSaveItems(listItems);
+
+    const myItem = listItems.filter(item => id);
+    updateOptions
+}
+
+
+WIP

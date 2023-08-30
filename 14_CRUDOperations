@@ -505,7 +505,8 @@ const handleCheck = (id) => {
     const myItem = listItems.filter(item => id);
 }
 
-now we need to define updateOptions
+now we need to define updateOptions				v03.57.53
+b/c we are going to update (not posting) 
 
 const handleCheck = (id) => {
     const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
@@ -516,4 +517,153 @@ const handleCheck = (id) => {
 }
 
 
-WIP
+so the CRUD method we use is called PATCH
+so we set this equal to =
+an object {} 
+and here we define the method: ''
+called PATCH
+b/c we are updating a specific part of a specific record
+now once again the in the headers: {}
+this will be just like before
+we add 'Content-Type':					'Content-Type': 
+and this will equal 'application/json'			'application/json'
+now that we have defined the headers we add },		},
+we will move down and define the body:			body:
+
+    updateOptions
+    updateOptions = 
+    updateOptions = {}
+    updateOptions = {
+      method: ''
+    }
+
+    updateOptions = {
+      method: 'PATCH'
+    }
+
+    updateOptions = {
+      method: 'PATCH'
+      headers: {}
+    }
+
+    updateOptions = {
+      method: 'PATCH'
+      headers: {
+        'Content-Type':
+      }
+    }
+
+    updateOptions = {
+      method: 'PATCH'
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    }
+
+    updateOptions = {
+      method: 'PATCH'
+      headers: {
+        'Content-Type': 'application/json'
+        body: JSON.stringify
+      },
+    }
+
+and here once again we need to use JSON.stringify	JSON.stringify
+and we can pass in					()
+a specific bit of JSON here 				{}
+just the checked property of this specific item 
+that we are sending with the PATCH method		checked: 
+and its called myItem					myItem
+but remember that the filter returns an array
+so its an array with one item so we must say [0]	myItem[0]
+then we add a .						.
+and then checked b/c whatever the checked property is	checked
+we are not changing the checked property b/c it was
+already updated before we accessed the listItems in this code
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    const myItem = listItems.filter((item) => item.id === id);
+
+and so this code will handle that execution by sending in the correct information  v03.59.19
+
+and now that we have defined that object add the ; 		};
+to close the const updateOptions method
+and now we move on
+
+        body: JSON.stringify
+        body: JSON.stringify()
+        body: JSON.stringify({})
+        body: JSON.stringify({ checked: })
+        body: JSON.stringify({ checked: myItem})
+        body: JSON.stringify({ checked: myItem[0]})
+        body: JSON.stringify({ checked: myItem[0].})
+        body: JSON.stringify({ checked: myItem[0].checked})
+        body: JSON.stringify({ checked: myItem[0].checked})
+
+    updateOptions = {
+      method: 'PATCH'
+      headers: {
+        'Content-Type': 'application/json'
+      },
+        body: JSON.stringify({ checked: myItem[0].checked})
+    };
+
+
+so our complete const handleCheck method is
+
+const handleCheck = (id) => {
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setAndSaveItems(listItems);
+
+    const myItem = listItems.filter(item => id);
+    updateOptions = {
+      method: 'PATCH'
+      headers: {
+        'Content-Type': 'application/json'
+      },
+        body: JSON.stringify({ checked: myItem[0].checked})
+    };
+}
+
+
+now we need to request the url b/c this is just a little different
+than the url that we used for GET and POST
+this will be equal to a template literal		''	${}
+and we start with that API_URL				API_URL
+but after that we need a slash inside the template literal	/
+still part of the template literal			${}
+and then we need to use whatever id was passed in	id
+so if this was POST #1 it would have the id of 1
+so we are accessing a specific post that we are updating with PATCH	v03.59.52
+
+and then we define our result again		const result = 
+we set this equal to an await call 
+which means we need to change the handleCheck to an async function as well
+
+const handleCheck = (id) => {
+const handleCheck = async (id) => {
+ 
+then we add await
+and add apiRequest()
+and we pass in a (reqUrl)
+and also pass in the ( , updateOptions)
+and now once again the apiRequest will only return the error message
+and that error message is either null or it has a value
+so we say if we have a result			if (result)
+
+ 
+	
+    const reqURL = 
+    const reqURL = ``
+    const reqURL = `${}`
+    const reqURL = `${API_URL}`
+    const reqURL = `${API_URL}/`
+    const reqURL = `${API_URL}/${}`
+    const reqURL = `${API_URL}/${id}`
+
+    const result = 
+    const result = await
+    const result = await apiRequest()
+    const result = await apiRequest(reqUrl)
+    const result = await apiRequest(reqUrl,)
+    const result = await apiRequest(reqUrl, updateOptions);
+    if (result)

@@ -667,3 +667,43 @@ so we say if we have a result			if (result)
     const result = await apiRequest(reqUrl,)
     const result = await apiRequest(reqUrl, updateOptions);
     if (result)
+    if (result) setFetchError
+    if (result) setFetchError(result);
+
+
+open terminal so we can see what the request is here
+existing items in Grocery List are Almonds, Pizza, Bread, Cookies
+make blue check mark for Cookies to make font line thru
+terminal shows PATCH /items/4			v04.00.44
+which is id #4 and it updated the REST API
+Try unchecking Cookies, then we see a PATCH /items/4 
+this PATCH shows the code is updating the items
+close terminal 
+
+so our complete const handleCheck method now is   v04.00.44
+
+const handleCheck = async (id) => {
+    const listItems = items.map((item) => item.id === id ? { ... item, checked: !item.checked } : item);
+    setItems(listItems);
+
+    const myItem = listItems.filter((item) => item.id === id);
+    const updateOptions = {
+      method: 'PATCH'
+      headers: {
+        'Content-Type': 'application/json'
+      },
+        body: JSON.stringify({ checked: myItem[0].checked})
+    };
+    const reqURL = `${API_URL}/${id}`
+    const result = await apiRequest(reqUrl, updateOptions);
+    if (result) setFetchError(result);
+}
+
+new lets look at db.json file
+
+Cookies is unchecked which shows "checked": false
+lets CHECK Cookies now 
+this changes the json data automatically right inside the file 
+to show "checked": true
+what does this change? the json server automtically changes it 
+and our code deploys it to the IDE

@@ -707,3 +707,105 @@ this changes the json data automatically right inside the file
 to show "checked": true
 what does this change? the json server automtically changes it 
 and our code deploys it to the IDE
+
+And now if we uncheck, the "checked": should show false
+
+This is exactly what we expected for the update function based 
+on our handleCheck function
+
+Ok, so far, we have created an item, updated an item
+all that is left is to delete an item b/c we were reading the items
+from app load with the Fetch
+
+
+Now lets update the handleDelete		v 04.01.51 
+
+from 
+Chapter 9: Controlled Component Inputs
+
+const handleDelete = (id) => {
+    const listItems = items.filter((item) => item.id !== id )
+    setAndSaveItems(listItems);
+    // new code here 
+}
+
+and here we can see that we are updating the state once again
+add a couple lines to make room for new code
+b/c we will need to define what what we need to update the API
+that is just a little bit different than updating the state
+and we need to keep those in sync as well
+so if we get an error, we just reload the app and that will put 
+everything back into sync (ie which means data default memory is based
+upon hardcoded data inputs. 
+Note this will change as we progress to the next couple chapters).
+
+we create the const deleteOptions that we are going to define
+set the method equal 
+to 'DELETE'
+now we define the request url 
+which is just like above so we can copy that request url 		reqUrl
+    const reqURL = `${API_URL}/${id}`
+note that the id gets passed in
+
+reminder that we need to change our handleDelete to async
+OLD
+const handleDelete = (id) => {
+
+NEW
+const handleDelete = async (id) => {
+
+and then the result is going to be very similar as above as well
+which is from handleCheck = async (id)
+
+    const reqURL = `${API_URL}/${id}`
+    const result = await apiRequest(reqUrl, updateOptions);
+    if (result) setFetchError(result);
+
+so we have 
+but note that instead of updateOptions this should be deleteOptions
+This function operates the same way
+    if (result) setFetchError(result);
+so if we get a result back then we set that Fetch Error
+and if no result comes back then we know there is no error to set
+
+    const deleteOptions
+    const deleteOptions = {}
+    const deleteOptions = { method: }
+    const deleteOptions = { method: 'DELETE'}
+    const reqURL = `${API_URL}/${id}`
+    const result = await apiRequest(reqUrl, updateOptions);
+    if (result) setFetchError(result);
+
+    const result = await apiRequest(reqUrl, deleteOptions);
+    if (result) setFetchError(result);
+
+so we have this 	v04.03.16
+
+const handleDelete = async (id) => {
+    const listItems = items.filter((item) => item.id !== id )
+    setAndSaveItems(listItems);
+
+    const deleteOptions = { method: 'DELETE'}
+    const reqURL = `${API_URL}/${id}`
+    const result = await apiRequest(reqUrl, deleteOptions);
+    if (result) setFetchError(result);
+}
+
+open terminal
+now we see existing REST API status
+lets delete a Grocery List item (delete Cookies and see what happens)
+we get the DELETE /items/4 reponse back immediately
+its a 200 response so everything is good 
+and this is item 4
+
+we can blue check box Pizza, this gives a PATCH request 
+lets uncheck Pizza, this gives a PATCH request b/c that continues to get updated
+lets add an item Candy, this produces a POST request 
+lets delete Candy, then we get a DELETE request
+so our CRUD operations are complete
+so if we reload the full app then we get the 3 default Grocery List items 
+GET request with this
+so our Create Read Update and Delete or CRUD operations are functioning 
+and we have eliminated using local storage
+
+next if the Fetch Data Challenge Chapter 15

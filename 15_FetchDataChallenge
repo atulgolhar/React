@@ -1155,3 +1155,131 @@ that was part A of the challenge
 
 Now we tackle part B of the challenge  v04.30.16
 
+Part B
+3 buttons at top but now we print a table based upon button clicks
+
+now we go into each property of the object
+ID, name, etc
+Users object has nested objects
+Need to map through the individual properties.
+Hint1 need to map thru each key of the object
+use object.entries (this is javascript)
+Hint2 json.stringify still applies
+CSS challenge - form on top is a fixed position, no scroll bar 
+right/left until you get to the bottom
+
+Solution for Part B
+
+ListItem.js 
+
+const ListItem = ({ item }) => {
+    return (
+        <li>
+	    // full object next to those 10 bullet points 
+        </li>
+    )
+}
+
+export default ListItem
+
+need to amend the code here. 
+Notice Part A solution when scrolling
+the top 3 buttons leave the page. 
+We want the buttons to stay fixed.
+So go to index.css file to make these changes
+
+OLD
+form {
+  width: 100%;
+  /* position: fixed */
+}
+
+NEW
+form {
+  width: 100%;
+  position: fixed		// simple change
+}
+
+OLD
+ul {
+  /* padding: 3rem 2rem 1rem; */
+  margin-top: 1rem;
+  padding: 0 2rem 1rem;
+}
+
+NEW
+ul {
+  padding: 3rem 2rem 1rem;	// simple change
+  /* margin-top: 1rem;		// comment out this
+  padding: 0 2rem 1rem; */	// comment out this
+}
+
+save. Now buttons stay in fixed position.
+
+Now go to App.js
+
+App.js from before is
+
+import import { useState, useEffect } from 'react';
+to import Form from './Form';
+import List from './List';
+
+function App() {
+    const API_URL = 'https://jsonplaceholder.typicode.com/'
+    const [reqType, setReqType] = useState('users)
+    const [items, setItems] = useState([]);
+
+    useEffect(() => {
+
+        const fetchItems = async () => {
+            try{
+                const response await fetch(`${API_URL}${reqType}`)
+                const data = await response.json();
+                console.log(data);
+		setItems(data);
+            } catch (err) {
+	      console.log(err)
+	    }
+        }
+        fetchItems();
+
+    }, [reqType])
+
+  return (
+    <div className="App">
+      <Form reqType={reqType} setReqType={setReqType} />
+      <List items={items} />
+    </div>
+  );
+}
+
+export default App;
+
+
+All we need to do is comment out the list
+
+OLD
+  return (
+    <div className="App">
+      <Form reqType={reqType} setReqType={setReqType} />
+      <List items={items} />
+    </div>
+
+NEW - comment out the List component and add Table component	v 04.34.37
+add Table tag
+pass in the items list like we did with the list
+add {list}							v 04.34.57
+now we need to save the app file 	v 04.35.00
+
+  return (
+    <div className="App">
+      <Form reqType={reqType} setReqType={setReqType} />
+      /* <List items={items} /> */
+      <Table 
+      <Table items
+      <Table items=
+      <Table items={items} />						
+    </div>
+
+
+now we need to save the app file 	v 04.35.00

@@ -1,1 +1,1157 @@
-tbd
+set start the 2nd challenge
+go to website jsonplaceholder.typicode.com
+and use the resources from this free fake api
+scroll down to Resources and we will use /posts /comments and /users
+if we click on the Resource /posts
+it will give us the full link which is based on the root url of the website
+and then slash /posts /comments or /users
+2 part challenge A and B
+part A now
+3 buttons at top - to provide the resources on the page after the button clicks
+
+when select 1st button users, it will select the uses from the json placeholder website
+and prints unordered list of full object we get back
+when click 2nd button posts, displays posts
+Part A 
+hint1 print list of each object you recieve, use useEffect and anytime a post changes
+you will need to run useEffect thus the dependencies will be the request resources
+so users, posts or comments would be changing the useEffects runs the same Fetch
+to request anyone of these resources
+hint2 as you display objects, need to json.stringify the objects
+
+want to be in a parent folder so in REACT_SERIES
+terminal window is open
+$ npx create-react-app 15tut
+Enter
+Happy hacking! message appears
+we are still in parent folder thus to go File menu > Open Folder > 15tut
+thus 15tut is now open in VSCode
+VSCode open on left, chrome jsonplaceholder site open on right for reference
+Need to do some cleanup in Folders
+In src folder, select following files App.cs App.test.js logo.svg ReportWebVitals.js and setupTests.js
+Delete them
+Go to index.js and select everything at bottom (ie line 13 onwards) delete
+delete import for WebVitals
+save
+Go to App.js, remove both imports at top 
+also select everything between <div> tags so select <header to </header> and delete
+Now ready to begin building own project
+
+At top of App.js
+add the following
+
+import {}
+import { useState, useEffect } from 'react';
+
+boilerplate is 
+
+function App() {
+  return (
+    <div className="App">
+    
+    </div>
+  );
+}
+
+export default App;
+
+now adding code into boilderplate, we add inside App function 
+we need to define the API_URL
+lets point that API_URL to the web address so just paste it in here
+Control B to hide file tree
+We dont need to add the resource after this API_URL code b/c 
+this is something that we will change, for example
+    const API_URL = 'https://jsonplaceholder.typicode.com/posts'
+    const API_URL = 'https://jsonplaceholder.typicode.com/users'
+    const API_URL = 'https://jsonplaceholder.typicode.com/comments'
+
+    const API_URL
+    const API_URL = 
+    const API_URL = 'https://jsonplaceholder.typicode.com/'
+
+next line of code is:
+now lets think about the state we going to use 
+b/c we are going to change the resource type
+so lets start with const [reqType
+using camelcase
+and then set Request type		setReqType
+equals
+and then we add useState
+and we set the first type to users (ie one of three types users, posts, or comments)
+now we think about what we get in return some data so we could
+call each piece of data that we get as items and we did this previously in these lectures
+    const 
+    const [reqType, setReqType]
+    const [reqType, setReqType] = useState
+    const [reqType, setReqType] = useState('users)
+
+so again have const
+and we have items, and setItems and this are the objects that we get back
+these will be a JSON aarray so we pass them into useState
+so we get the array that has the JSON objects within them
+and that is all we need			;
+
+    const
+    const [items, setItems] 
+    const [items, setItems] = useState
+    const [items, setItems] = useState([])
+    const [items, setItems] = useState([]);
+
+so code so far is:
+
+import { useState, useEffect } from 'react';
+
+function App() {
+    const API_URL = 'https://jsonplaceholder.typicode.com/'
+    const [reqType, setReqType] = useState('users)
+    const [items, setItems] = useState([]);
+
+  return (
+    <div className="App">
+    
+    </div>
+  );
+}
+
+export default App;
+
+note that while we have not yet worked on the display yet
+we will still create some logic as we have done this before
+so we have useEffect
+and it has an anonymous function		() => {}
+and inside the anonymous function
+we can specify a dependency at the end		, []
+this empty array would just take effect at load time
+but this is not completely what we want
+we want useEffect to take place ANYTIME the request type state changes [reqType]
+Remember that reqType will be one of three things users, posts, or comments
+So this is our useEFfect and it will actually run everytime our reqType changes
+So now we need to put our fetchItems function inside our useEffect function
+and then we need to call that function
+
+    useEffect()
+    useEffect(() => {
+      
+    })
+    useEffect(() => {
+      
+    }, [])
+    useEffect(() => {
+      
+    }, [reqType])
+
+
+so code so far is:
+
+import { useState, useEffect } from 'react';
+
+function App() {
+    const API_URL = 'https://jsonplaceholder.typicode.com/'
+    const [reqType, setReqType] = useState('users)
+    const [items, setItems] = useState([]);
+    useEffect(() => {
+      
+    }, [reqType])
+
+  return (
+    <div className="App">
+    
+    </div>
+  );
+}
+
+export default App;
+
+So now we need to put our fetchItems function inside our useEffect function
+and then we need to call that function
+
+so inside the useEffect, we start with a definition of fetchItems
+and this needs to be async
+and we make it an arrow function
+now inside the fetchItems arrow function we add a try {} block
+and inside the try block we add const
+we get a response
+which is equal to
+we await a fetch call
+and the fetch call will be to the API_URL
+but remember that we need to add a little bit to it
+we need the API_URL inside a template literal
+and this will allow us to add a little bit more to the API_URL at the end
+b/c remember we need to change the end as we change the resource
+now note that we already have the slash up here 
+in the API_URL which is already inside the quote
+    const API_URL = 'https://jsonplaceholder.typicode.com/'
+							 ^ HERE
+given that the slash does exist inside the API_URL means we dont need to put a slash here
+but what we do need to put here is the request type
+so we do add another template literal ${} INSIDE the backtics 
+and inside this second template literal we add the request type  	reqType
+so we put those together and that gives us the fetch url
+
+        const fetchItems 
+        const fetchItems = async
+        const fetchItems = async () => {}
+        const fetchItems = async () => {
+            try{}
+        }
+        const fetchItems = async () => {
+            try{
+
+            }
+        }
+
+        const fetchItems = async () => {
+            try{
+                const
+                const response 
+                const response = 
+                const response await 
+                const response await fetch()
+                const response await fetch(``)
+                const response await fetch(`${}`)
+                const response await fetch(`${API_URL}`)
+                const response await fetch(`${API_URL}${}`)
+                const response await fetch(`${API_URL}${reqType}`)
+
+            }
+        }
+
+
+so now the code so far is:
+
+import { useState, useEffect } from 'react';
+
+function App() {
+    const API_URL = 'https://jsonplaceholder.typicode.com/'
+    const [reqType, setReqType] = useState('users)
+    const [items, setItems] = useState([]);
+
+    useEffect(() => {
+
+        const fetchItems = async () => {
+            try{
+                const response await fetch(`${API_URL}${reqType}`)
+            }
+        }
+      
+    }, [reqType])
+
+  return (
+    <div className="App">
+    
+    </div>
+  );
+}
+
+export default App;
+
+after we added the fetch API_URL we can add the data 		data
+and we will need to await this					= await 
+we are awaiting the response.json				response.json
+and this response.json will include the json itself		()
+so summary so far inside our fetchItems is
+we get the response, then change it to json
+so there is our data
+and then we can just set our Items				setItems
+equal to the data						setItems(data)
+now note we not putting in any error checking to see if
+the response is ok or not (ie do time constraint here in the coding challange)  v04.14.56
+then we catch the err			} catch (err) {}
+and for errors that occur but are not returned in fetch or not returned at all 
+are to console.log(err)
+so notice you catch the error then pass it into console.log
+so this is a basic catch with a try-catch block
+
+                const response await fetch(`${API_URL}${reqType}`)
+                const
+                const data
+                const data = await
+                const data = await response
+                const data = await response.json
+                const data = await response.json();
+
+                setItems
+                setItems()
+                setItems(data);
+
+
+            } catch (err) {}
+            } catch (err) {
+	      console.log(err)
+	    }
+
+
+        const fetchItems = async () => {
+            try{
+                const response await fetch(`${API_URL}${reqType}`)
+                const data = await response.json();
+                setItems(data);
+            } catch (err) {
+	      console.log(err)
+	    }
+        }
+
+and all we need to do after the const fetchItems function is to call fetchItems()
+Note that we dont have anything to return for fetchItems()
+and since we dont have any data to return then there is no need to await it
+If we did have a need to await it, then we could use an instantly invoked function
+and then await the return of this fetch.
+But since its not needed, we just put the semicolon after it and thus our useEffect
+function is completed to fetch these resources as they change.
+
+so now the code so far is App.js:
+
+import { useState, useEffect } from 'react';
+
+function App() {
+    const API_URL = 'https://jsonplaceholder.typicode.com/'
+    const [reqType, setReqType] = useState('users)
+    const [items, setItems] = useState([]);
+
+    useEffect(() => {
+
+        const fetchItems = async () => {
+            try{
+                const response await fetch(`${API_URL}${reqType}`)
+                const data = await response.json();
+                setItems(data);
+            } catch (err) {
+	      console.log(err)
+	    }
+        }
+        fetchItems();
+
+    }, [reqType])
+
+  return (
+    <div className="App">
+    
+    </div>
+  );
+}
+
+export default App;
+
+
+And so now we have handled the logic for the App component.
+So now we need to think about the display so we focus on the return
+We just need 2 components that come into here.
+1st we have a form component
+In the form componet, we pass in the request Type as reqType
+so we specify that now 		= {}
+				= {reqType}
+
+And after the reqType, we also pass in the setReqType
+so we specify that now as well	={}
+				={setReqType}
+and then we can close out the form 	/>
+
+  return (
+    <div className="App">
+      <Form reqType={reqType} setReqType={setReqType} />
+    
+    </div>
+  );
+
+
+After this we also have a list
+but lets work on the form next
+So need to expand VSCode, show file tree Control B.
+Now we create the form component with an arrow function
+Within src folder, create new form called Form.js
+using snippets, CONTROL ALT R then _rafce
+which gives us the boilerplate snippet
+
+From.js 
+
+const Form = () => {
+    return (
+        <div>
+
+	</div>
+}
+
+export default Form
+
+Now our Form is going to receive those two props that we passed down
+so its reqType and setReqType
+We are destructuring here instead of specifying props and using .props
+
+const Form = () => {
+const Form = ({}) => {
+const Form = ({ reqType, setReqType }) => {
+
+And then in the return instead of a <div> we can use a <form>
+Note using Form does not recognize as an html element
+Note using form lowercase does YES recognize this as an html element.
+
+const Form = ({ reqType, setReqType }) => {
+    return (
+        <form>
+
+	</form>
+}
+
+export default Form
+
+In the <form> we add an onSubmit
+and have this equal to an anonymous function
+that has the event e
+and we use e.preventDefault() b/c we do not want to defaultSubmit to reload
+the page every time the button is clicked.
+
+        <form onSubmit>
+        <form onSubmit={}>
+        <form onSubmit={() => }>
+        <form onSubmit={(e) => e.preventDefault()}>
+
+
+so far we have
+
+const Form = ({ reqType, setReqType }) => {
+    return (
+        <form onSubmit={(e) => e.preventDefault()}>
+
+	</form>
+}
+
+export default Form
+
+Now our form is going to contain buttons but we have not really created them yet.
+So lets save this.
+
+Note we need to import this Form into App.js
+
+App.js
+
+import { useState, useEffect } from 'react';		
+// add code here
+
+So at the top of the App.js we have 
+to import Form from './Form';
+
+in Form.js we need to put our buttons here
+
+Lets create a reuseable Button component b/c we will have 3 buttons.
+so in src folder, create new file called Button.js
+CONTROL ALT R _rafce
+this adds the boilerplate for a functional button component
+lets save the empty Button component as is for now and 
+just import into Form.js
+
+const Button = () => {
+    return (
+        <div>
+
+        </div>
+    )
+}
+
+export default Button
+
+Back to Form.js
+
+add this import statement
+
+so far we have in Form.js
+
+import Button from "./Button"
+
+const Form = ({ reqType, setReqType }) => {
+    return (
+        <form onSubmit={(e) => e.preventDefault()}>
+
+	</form>
+}
+
+export default Form
+
+and lets add our 3 buttons into Form.js as well
+
+            <Button />
+
+SHIFT ALT DOWNARROW creates copies
+
+            <Button />
+            <Button />
+            <Button />
+
+now lets think about what props go down to the button				<Button />
+click inside the button, hit return to put the props on seperate lines		<Button 
+										/>
+first thing we could do is set the button text here		                buttonText= 
+much like we would a title and we can use it in the future
+lets set the buttonText equal to users						="users"
+and after that we can create the reqType and that equals reqType 		reqType={reqType}
+then we can do the same with setReqType						setReqType={setReqType}
+so there are the 3 things that we need to pass to each button
+so lets copy that 3 things and apply to each Button
+or grab 3 those lines of code and SHIFT ALT DOWNARROW, copy 2 more times
+
+            <Button />
+            <Button 
+            />
+            <Button
+                buttonText= 
+            />
+            <Button
+                buttonText="users"
+                reqType={reqType}
+                setReqType={setReqType}
+            />
+
+            <Button
+                buttonText="users"
+                reqType={reqType}
+                setReqType={setReqType}
+            />
+            <Button
+                buttonText="users"
+                reqType={reqType}
+                setReqType={setReqType}
+            />
+            <Button
+                buttonText="users"
+                reqType={reqType}
+                setReqType={setReqType}
+            />
+
+so far we have in Form.js
+
+import Button from "./Button"
+
+const Form = ({ reqType, setReqType }) => {
+    return (
+        <form onSubmit={(e) => e.preventDefault()}>
+            <Button
+                buttonText="users"
+                reqType={reqType}
+                setReqType={setReqType}
+            />
+            <Button
+                buttonText="users"
+                reqType={reqType}
+                setReqType={setReqType}
+            />
+            <Button
+                buttonText="users"
+                reqType={reqType}
+                setReqType={setReqType}
+            />
+	</form>
+}
+
+export default Form
+
+so now change two of the three buttonText from "users" 
+                buttonText="users"
+                buttonText="users"
+                buttonText="users"
+three buttonText that contain "users" "posts" "comments" 
+                buttonText="users"
+                buttonText="posts"
+                buttonText="comments"
+
+now we have three different props that each button needs
+
+now go back to Button.js 
+and destructure those props inside each respective's anonymous function
+                buttonText="users"
+                reqType={reqType}
+                setReqType={setReqType}
+and we add the props inside
+and now inside the button itself we do not want a <div> element
+thus we would prefer s ymantic html <button> element
+
+const Button = () => {
+const Button = ({}) => {
+const Button = ({  }) => {
+const Button = ({ buttonText, reqType, setReqType }) => {
+
+        <div>
+        </div>
+        <button>
+        </button>
+
+so far we have for Button.js
+
+const Button = ({ buttonText, reqType, setReqType }) => {
+    return (
+        <button>
+	// different attributes for the Button element
+        </button>
+    )
+}
+
+export default Button
+
+now on seperate lines we can work with the different attributes for the Button element
+create className
+and set that equal to
+and now we DONT just put a className and call it Button
+so here we will what button class it is based upon that button text prop
+so we use the {buttonText}
+stricly equals requestType (ie if the requestType equals users and the buttonText is users
+then we use a ternary statement and say if this is true then we
+give it a className of "selected"
+otherwise
+we just say null (ie there is no className)		04.21.57
+and this will help to apply the css as we show which button actually selected
+Next line we add type="button"
+note we dont want a submit type as we want in fact want a button type
+and then for the click on the button 		onClick
+and this is the onClick event we need an anonymous function	() =>
+and then given this anonymous function we set the set the Request Type		setReqType
+and the setReqType will be the (buttonText) b/c this is what we pass in using the ()
+so if its the user Button then we setReqType to users
+                buttonText="users"
+                buttonText="posts"
+                buttonText="comments"
+if its posts Button then we set the setReqTye to posts
+if its comments Button then we set the setReqType to comments
+so we close the initial button tag		>
+
+
+Now we need to put some text on the button and
+note that there are different attributes for the button
+so that guides our button creation
+
+so far we have
+const Button = ({ buttonText, reqType, setReqType }) => {
+    return (
+        <button
+	    // className
+	    // type
+	    // onClick
+        >
+	</button>
+    )
+}
+
+export default Button
+
+	    // different attributes for the Button element
+	    className
+	    className=
+	    className={}
+	    className={buttonText }
+	    className={buttonText === }
+	    className={buttonText === reqType}
+	    className={buttonText === reqType ? }
+	    className={buttonText === reqType ? "selected" }
+	    className={buttonText === reqType ? "selected" : }
+	    className={buttonText === reqType ? "selected" : null }
+	    type
+	    type=
+	    type="button"
+	    onClick
+	    onClick={}
+	    onClick={() => }
+	    onClick={() => setReqType}
+	    onClick={() => setReqType()}
+	    onClick={() => setReqType(buttonText)}
+
+before we had
+const Button = ({ buttonText, reqType, setReqType }) => {
+    return (
+        <button
+	    className={buttonText === reqType ? "selected" : null }
+	    type="button"
+	    onClick={() => setReqType(buttonText)}
+        >					
+	</button>
+    )}
+
+export default Button
+	
+now we know we need to put text on the button  		v04.22.41
+so between the opening and closing tags 
+we add the {buttonText} reference
+
+	<button></button>
+	<button>ButtonTextHere</button>
+	<button>{}</button>
+	<button>{buttonText}</button>
+
+so now we have
+
+const Button = ({ buttonText, reqType, setReqType }) => {
+    return (
+        <button
+	    className={buttonText === reqType ? "selected" : null }
+	    type="button"
+	    onClick={() => setReqType(buttonText)}
+        >					
+	{buttonText}
+	</button>
+    )}
+
+export default Button
+
+save the Button.js component
+so now we have completed our button component and this is reusable
+we use the button component 3 times in the Form.js component
+and then the Form.js component is imported into the App.js component
+
+now lets open the terminal window CONTROL BACKTIC `
+lets start up the Dev version of our Application
+$ npm start		ENTER
+now Application is launched showing the Application form with 3 buttons
+now resize VSCode on left with Chrome on right
+close terminal window noting that it continues to run
+
+lets go index.css
+here is the code
+since we are focused on react, we wont go over details of index.css
+but here is the index.css code
+
+this is the default index.css
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe
+	'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'He
+	sans-serif;  
+  -webkit-font-smoothing: antialiased;
+  -moz-osz-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consalas, 
+    monospace;
+}
+
+delete all the css code and replace with this:
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 22px;
+}
+
+body {
+  min-height: 100vh;
+  font-family: 'Roboto', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+form {
+  width: 100%;
+  /* position: fixed */
+}
+
+button {
+  width: 33.33%
+  padding: 0.5rem;
+  font-size: 1rem;
+}
+
+button.selected {
+  background-color: #000;
+  color: #fff;
+}
+
+ul {
+  /* padding: 3rem 2rem 1rem; */
+  margin-top: 1rem;
+  padding: 0 2rem 1rem;
+}
+
+li {
+  margin-bottom: 1rem;
+}
+
+.table-container {
+  width: 100%;
+  overflow-y: auto;
+  padding-top: 52px;
+}
+
+td {
+  border: 1px solid #000;
+  padding: 0.25rem;
+}
+
+now lets go back to the App.js
+
+so now the code so far is App.js:
+
+import { useState, useEffect } from 'react';
+
+function App() {
+    const API_URL = 'https://jsonplaceholder.typicode.com/'
+    const [reqType, setReqType] = useState('users)
+    const [items, setItems] = useState([]);
+
+    useEffect(() => {
+
+        const fetchItems = async () => {
+            try{
+                const response await fetch(`${API_URL}${reqType}`)
+                const data = await response.json();
+                setItems(data);		<<<<<<<<<<<<<<BEFORE WE SET THE ITEMS in the fetchItems function
+            } catch (err) {
+	      console.log(err)
+	    }
+        }
+        fetchItems();
+
+    }, [reqType])
+
+  return (
+    <div className="App">
+    
+    </div>
+  );
+}
+
+export default App;
+
+now looking at the App.js
+BEFORE WE SET THE ITEMS in the fetchItems function
+we need to add a console.log(data)
+
+        const fetchItems = async () => {
+            try{
+                const response await fetch(`${API_URL}${reqType}`)
+                const data = await response.json();
+                setItems(data);		<<<<<<<<<<<<<<BEFORE WE SET THE ITEMS in the fetchItems function
+		console.log(data);
+            } catch (err) {
+	      console.log(err)
+	    }
+        }
+        fetchItems();
+
+save this
+now right click on Chrome and inspect 
+Dev Tools Console
+we can see an array of 10 items
+we can see the 10 items logged in the console so this code is working
+Note there is a warning about 'items' not being used
+
+Now lets work on displaying that data
+which will eliminate the warning about 'items' not being used
+b/c we will start using the 'items' in our application
+all we need below the Form component is a List component
+and here we just pass the items		items={items}
+and this little piece of state that is all our data
+so we pass that along to the list, so close out the list with a closing tag
+
+
+from App.js
+
+
+  return (
+    <div className="App">
+      <Form reqType={reqType} setReqType={setReqType} />
+      //List component here    
+    </div>
+  );
+
+
+      //List component here    
+      <List
+      <List items
+      <List items={}
+      <List items={items}
+      <List items={items} />
+
+so we have
+
+  return (
+    <div className="App">
+      <Form reqType={reqType} setReqType={setReqType} />
+      <List items={items} />
+    </div>
+  );
+
+now we need to create the list so 
+new file in src 
+called List.js
+CONTROL ALT R
+_rafce
+which produces our functional list component
+
+const List = () => {
+    return (
+        <div>
+
+        </div>
+    )
+}
+
+export default List
+
+now we go back to the App.js and now we import it
+
+add this code
+import List from './List';
+
+so now App.js is
+
+import import { useState, useEffect } from 'react';
+to import Form from './Form';
+import List from './List';
+
+function App() {
+    const API_URL = 'https://jsonplaceholder.typicode.com/'
+    const [reqType, setReqType] = useState('users)
+    const [items, setItems] = useState([]);
+
+    useEffect(() => {
+
+        const fetchItems = async () => {
+            try{
+                const response await fetch(`${API_URL}${reqType}`)
+                const data = await response.json();
+                console.log(data);
+		setItems(data);
+            } catch (err) {
+	      console.log(err)
+	    }
+        }
+        fetchItems();
+
+    }, [reqType])
+
+  return (
+    <div className="App">
+    
+    </div>
+  );
+}
+
+export default App;
+
+save
+reload Chrome app
+everything works and no error
+we are still logging the data to the console.log
+so can remove console.log(data);
+
+so now App.js is
+
+import import { useState, useEffect } from 'react';
+to import Form from './Form';
+import List from './List';
+
+function App() {
+    const API_URL = 'https://jsonplaceholder.typicode.com/'
+    const [reqType, setReqType] = useState('users)
+    const [items, setItems] = useState([]);
+
+    useEffect(() => {
+
+        const fetchItems = async () => {
+            try{
+                const response await fetch(`${API_URL}${reqType}`)
+                const data = await response.json();
+                console.log(data);
+		setItems(data);
+            } catch (err) {
+	      // console.log(err)
+	    }
+        }
+        fetchItems();
+
+    }, [reqType])
+
+  return (
+    <div className="App">
+    
+    </div>
+  );
+}
+
+export default App;
+
+
+now we can go create our list
+so go to List.js
+
+so we have
+
+const List = () => {
+    return (
+        <div>
+
+        </div>
+    )
+}
+
+export default List
+
+hide File Tree
+now inside the list we return an unordered list
+so change the <div> to <ul>
+
+        <div>
+        </div>
+        <ul>
+        </ul>
+
+and we are receiving the item prop
+so we destructure that right here			const List = ({ items }) => {
+and we want to map thru the items that we receive
+
+
+const List = () => {
+const List = ({}) => {
+const List = ({ items }) => {
+
+
+so we have 
+
+const List = ({ items }) => {
+    return (
+        <ul>
+	    // map thru items here
+        </ul>
+    )
+}
+
+export default List
+
+
+so new code it items.map
+and we map thru the items received
+so we add items.map
+and each map has an individual item
+and we add a () and not a curly brace 
+now we use another reuable component called ListItem
+and ListItem will need a key=
+b/c each item in a list has a key
+the key will be {} 
+and it will be item.id that we receive from json placeholder
+and then we pass the ListItem item down as well 		item={item}
+so this is the full item itself
+now close the tag				/>
+
+	    // map thru items here
+	    {}
+	    {items.map}
+	    {items.map()}
+	    {items.map(item => ())}
+	    {items.map(item => (
+            
+            ))}
+	    {items.map(item => (
+                <ListItem
+            ))}
+	    {items.map(item => (
+                <ListItem key=
+            ))}
+	    {items.map(item => (
+                <ListItem key={}
+            ))}
+	    {items.map(item => (
+                <ListItem key={item.id}
+            ))}
+	    {items.map(item => (
+                <ListItem key={item.id} item={item}
+            ))}
+	    {items.map(item => (
+                <ListItem key={item.id} item={item} />
+            ))}
+
+save
+show file tree
+create new file inside src folder
+ListItem.js
+CONTROL ALT R
+_rafce to get boilderplate snippet
+
+so now we have our ListItem component
+now notice that in Chrome browser deployed app we can see the 10 blank bullet points
+now change the <div> to an <li> for ListItem
+
+const ListItem = () => {
+    return (
+        <div>
+
+        </div>
+    )
+}
+
+export default ListItem
+
+        <li>
+
+        </li>
+
+save
+go back to List.js
+
+import ListItem from './ListItem';
+
+save ListItem.js
+
+now go back to the ListItem.js component
+
+
+const ListItem = () => {
+    return (
+        <li>
+
+        </li>
+    )
+}
+
+export default ListItem
+
+
+so here we receive an item
+we want to destructure this at the top
+in the Chrome browser we can see that we are already mapping thru
+the 10 bullet items 
+so now we want to print out the full object next to those 10 bullet points
+
+
+const ListItem = () => {
+const ListItem = ({}) => {
+const ListItem = ({ item }) => {
+
+so we have
+
+const ListItem = ({ item }) => {
+    return (
+        <li>
+	    // full object next to those 10 bullet points 
+        </li>
+    )
+}
+
+export default ListItem
+
+to now print out the full object next to those 10 bullet points
+we do it this way
+grab the JSON item and stringify it
+
+
+	    // full object next to those 10 bullet points 
+	    {}
+	    {JSON.}
+	    {JSON.stringify()}
+	    {JSON.stringify(item)}
+
+now save
+and this will print the full object in the browser
+now we see each user in the web page (10 users total)
+
+now lets click the post button and see if it changes to posts
+it works
+now wee see the complete post json data for a single user (100 posts per user)
+
+now click on button comments 
+and we can 500 different comments
+
+that was part A of the challenge
+
+Now we tackle part B of the challenge  v04.30.16
+

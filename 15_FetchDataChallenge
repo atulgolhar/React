@@ -1283,3 +1283,336 @@ now we need to save the app file 	v 04.35.00
 
 
 now we need to save the app file 	v 04.35.00
+in src folder create Table.js
+CONTROL ALT R 
+_rafce	React 17 Arrow Function Component with ES7 module system
+we need to create a container to handle the table formatting 
+
+const Table = () => {
+    returns (
+        <div>
+
+        </div>
+    )
+}
+ 
+export default Table
+
+
+So the table can scroll while the header stays in place
+add className equals "table-container"			        <div className="table-container">
+Now inside this div we create a table 				<table> </table>
+and just to keep properly formatted for the html
+We create <tbody> tags						<tbody> </tbody>
+we dont have any header to theader for the table but we do have this body
+Now inside the table body we need to map thru the items		{items.map()}
+then we are passing inside the arrow function
+item and a parenthesis, not a curly brace
+and now we need a row component
+
+        <div>
+        <div className="table-container">
+	    <table>
+	        <tbody>
+		   {}
+		   {items.map()}
+		   {items.map(item => () )}
+		   {items.map(item => (
+
+		   ) )}
+	        </tbody>
+	    </table>
+
+combining the above, so far we have
+
+const Table = () => {
+    return (
+        <div className="table-container">
+	    <table>
+	        <tbody>
+		   {items.map(item => (
+
+		   ) )}
+	        </tbody>
+	    </table>
+        </div>
+    )
+}
+ 
+export default Table
+
+
+and now we need a row component but for now we dont put anything 
+inside the items.map arrow function
+save
+Now back in the App.js component we need to import the table
+
+App.js
+
+import import { useState, useEffect } from 'react';
+to import Form from "./Form";
+import List from "./List";
+import Table from "./Table";
+
+
+Now we go back to the Table.js component
+and build out the items.map arrow function
+Add the row component					<Row
+which receives the key					key={}
+Inside the key is item.id				key={item.id}
+The Row component also receives the full item itself 
+so we pass that item into the row			item={item}
+and now close out the row component
+
+		   {items.map(item => (
+
+		   ))}
+		   {items.map(item => (
+		       <Row
+		   ))}
+		   {items.map(item => (
+		       <Row key={}
+		   ))}
+		   {items.map(item => (
+		       <Row key={item.id}
+		   ))}
+		   {items.map(item => (
+		       <Row key={item.id} item={item}
+		   ))}
+		   {items.map(item => (
+		       <Row key={item.id} item={item} />
+		   ))}
+
+
+so now we have Table.js 
+
+const Table = () => {					<<<<<<<<<DESTRUCTURE HERE
+    return (
+        <div className="table-container">
+	    <table>
+	        <tbody>
+		   {items.map(item => (
+		       <Row key={item.id} item={item} />
+		   ))}
+	        </tbody>
+	    </table>
+        </div>
+    )
+}
+ 
+export default Table
+
+
+Remember we need to destructure items 			<<<<<<<<<DESTRUCTURE HERE
+const Table = () => {
+const Table = ({}) => {
+const Table = ({ items }) => {
+
+now save
+but we will have an error b/c we have not yet created the Row
+So now we create the Row component
+new file in src called Row.js
+
+Row.js
+CONTROL ALT R
+_rafce	
+
+creates the Row.js snippet
+
+const Row = () => {
+    return (
+        <div>
+        </div>
+    )
+}
+
+export default Row
+
+now we have our Row
+it receives the item 
+
+const Row = () => {
+const Row = ({}) => {
+const Row = ({ item }) => {
+
+and the table row needs a tr and not a div
+and inside the row we need to step thru or map thru 
+each key of the different objects that we are receiving
+Note in Part A we just listed the key.objects using json.stringify
+Here in Part B we need more drill down capabilties than that so 
+we need Object.entries					{Object.entries}
+Note the capital O for Object
+and into entries we pass in item 			(item)
+
+Then .map() to map each entries
+first .map then () to pass in data into .map thus its 		.map()
+Note that we need another set of () inside of here so its 	.map(())
+and now inside of here we add [key, value]			.map(([]))
+so we add the arrow function					.map( ([]) => {} )
+thus we have 							.map( ([key, value]) => {} )
+	breakdown of what is happening here
+	Object.entries
+	pass in the item 
+	then call map
+	then we destructuting the key and the value of each different property
+	so then we are able to reference each individual different property
+
+and we can then return 	v04.38.39
+need a ()
+we can return a value here
+
+
+        <div>
+        </div>
+        <tr>
+        </tr>
+        <tr>
+            {}
+            {Object.entries}
+            {Object.entries()}
+            {Object.entries(item)}
+            {Object.entries(item).map}
+            {Object.entries(item).map()}
+            {Object.entries(item).map(())}
+            {Object.entries(item).map( ([]) => {} )}
+            {Object.entries(item).map( ([key, value]) => {} )}
+        </tr>
+
+
+so far we have Row.js
+
+const Row = ({ item }) => {
+    return (
+        <tr>
+            {Object.entries(item).map(([key, value]) => {
+                return (
+                    
+                )
+	    })}
+        </tr>
+    )
+}
+
+export default Row
+
+
+and we use one more reusable component 				v04.39.03
+and you might guess that reusable componet comes from the 
+table which has a row and
+the table's row is a data cell and we will just call this 	<Cell
+and we once again need a key which is already defined		<Cell key={key}
+defined why/how? each pair has a key and a value
+and so we set the cellData is what we will call this		cellData=
+equal to JSON.stringify						JSON.stringify
+and we pass in							()
+the value							(value)
+and the reason we are doing this with JSON.stringify is
+b/c some of these values are nested objects themselves from the user resource
+they are not from the posts or the components b/c we didnt see any nested objects ther
+but are instead from the user resource we did see nested objects so we
+still need to stringify these nested objects in order to print them out to the page
+now close out the line and 					/>
+ save the file
+
+               return (
+                    <Cell
+                    <Cell key={key}
+                    <Cell key={key} cellData
+                    <Cell key={key} cellData
+                    <Cell key={key} cellData={JSON.stringify}
+                    <Cell key={key} cellData={JSON.stringify()}
+                    <Cell key={key} cellData={JSON.stringify(value)}
+                    <Cell key={key} cellData={JSON.stringify(value)} />
+                )
+
+so far we have Row.js
+
+const Row = ({ item }) => {
+    return (
+        <tr>
+            {Object.entries(item).map(([key, value]) => {})}
+                return (
+                    <Cell key={key} cellData={JSON.stringify(value)} />
+                )
+	    })}
+        </tr>
+    )
+}
+
+export default Row
+
+so we save the file in order to import the row into the Table component
+so we import Row from "./Row";
+
+for Table.js we have
+
+import Row from "./Row";
+
+const Table = ({ items }) => {
+    return (
+        <div className="table-container">
+	    <table>
+	        <tbody>
+		   {items.map(item => (
+		       <Row key={item.id} item={item} />
+		   ))}
+	        </tbody>
+	    </table>
+        </div>
+    )
+}
+ 
+export default Table
+
+save this
+and then show file tree just to create a new file in src folder
+Cell.js
+CONTROL ALT R
+_rafce
+
+Cell.js snippet is here
+
+const Cell = () => {
+    return (
+        <div>
+
+        </div>
+    )
+}
+
+export default Cell
+
+and now that we have the Cell snippet
+it is receiving the { cellData }
+and once we get the cellData instead of div we need a td for html table
+and now you can just put the cellData inside b/c we have already stringified it
+            {cellData}
+
+
+const Cell = () => {
+const Cell = ({ cellData }) => {
+        <div>
+
+        </div>
+        <td>
+
+        </td>
+        <td>
+            {cellData}
+        </td>
+
+
+Now that {cellData} is in Cell.js
+we need to go back to our Row.js and import our Cell component
+
+import Cell from "./Cell";
+
+const Row = ({ item }) => {
+
+and save
+now we have our full table printing out with the 3 buttons
+note that nested objects have {}
+while objects just use ""
+
+One thing to change is to flatten out nested data objects 
+so that every piece of data would recieve its own cell

@@ -1,17 +1,70 @@
-tbd
-Then we need to put inside the JSX of the app component 	<<<<<<<<<<<<<<<<<
-										<<
-so now App.js has these								<<
-										<<
-import './App.css';								<<
-import Header from './Header';							<<
-import Content from './Content';						<<
-import Footer from './Footer'; 	<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<			<<
-										<<
-return {									<<
-  <div className='App'>								<<
-    <Header />									<<
-    <Content /									<<
-    <Footer /> <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-  </div>
-};
+ReactJS Blog is like a full website
+React helps to create SPAs (Single Page Applications)
+
+Lets PREVIEW this project:
+This offers a home page, with the feed that has different blog posts, 
+we have a page for new posts, 
+we have an about page, 
+and if we go back to the feed we can click on any blog post
+and get a page with the full post and the ability to delete the post 
+We accomplish all of this with React Router 
+And notice that as click on the different pages, the url does change 
+however these pages are not requested from the server 
+These are components that routed using React Router and therefor you
+get an almost instanteous response which is also an excellent user experience.
+
+For VSCode, the file tree shows in the src folder
+src folder 	App.js
+		index.css
+		index.js
+.gitignore
+package-loc...
+package.json
+README.md
+
+Terminal
+$ npx create-react-app THEN_NAME_THE_FOLDERTOCREATE
+$ npx create-react-app 16tut
+enter
+
+use VSCode to open the folder you created
+then once you in the folder, you need to add one more dependency 
+which is the react router
+save this as a production dependency (ie b/c using npm and not npx)
+
+$ npm i react-router-dom -S
+enter
+
+then go package.json file to see the depenedencies
+including react-router-dom included in the dependencies
+
+package.json
+
+{
+  "name": "16tut",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.2.0",			<<<<<<<<<<<<<HERE
+    "react-scripts": "4.0.3",
+    "web-vitals": "^1.1.2"
+    },
+}
+
+
+now close the package.json file
+
+to clear out a react application you need to delete all the files in src except for
+
+App.js
+index.css
+index.js
+
+Then go into index.js
+and remove the comments from line 13 onwards so only left with code on lines 1-11
+and also remove the import for WebVitals as well				v 04.45.54

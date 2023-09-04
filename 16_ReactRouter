@@ -68,3 +68,187 @@ index.js
 Then go into index.js
 and remove the comments from line 13 onwards so only left with code on lines 1-11
 and also remove the import for WebVitals as well				v 04.45.54
+
+in the App.js
+remove both imports and remove everything except for the basics
+
+function App() {
+  return (
+    <div className="App">
+
+    </div>
+  );
+}
+
+export default App;
+
+In package.json
+Make sure you have installed the "react-rounter-dom": "^5.2.0"
+react-router-dom dependency
+
+Start this project by going to index.js
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+						<<<<<<<ADD HERE
+ReactDOM.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+  document.getElementById('root')
+);
+
+we need to import some things from react-router
+we import BrowserRouter as Router so that we can just refer to it as Router
+we also import Route
+
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+
+and now inside the JSX (lines 7-12)
+and add <Router></Router>
+and then ending tag </Router> and cut paste to after the <App /> component
+so the <App /> component is inside the Router
+But note that we change the <App /> as well
+Change <App /> to <Route />
+and we add a path attribute path=""				<Route path=""
+set it equal to the root path which is just a slash "/"		<Route path="/"
+then we specify the component 					<Route path="/" component={}
+then we add back in the App 	{App}				<Route path="/" component={App}
+
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+
+  <React.StrictMode>
+    <Router></Router>
+    <App />
+  </React.StrictMode>
+
+  <React.StrictMode>
+    <Router>
+      <App />
+    </Router>
+  </React.StrictMode>
+
+  <React.StrictMode>
+    <Router>
+      <Route />
+      <Route path="" />
+      <Route path="/" />
+      <Route path="/" component={} />
+      <Route path="/" component={App} />
+    </Router>
+  </React.StrictMode>
+
+so in the end we have specified the App component 
+which will response to the root route 
+for our Application
+so now everything about our Application will now be inside React Router		v04.47.31
+we will be able to use everything associated with React Router including 
+some hooks taht come with the React Router DOM Package
+ 
+so we have index.js
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Router>						<<<<<<INSIDE React Router
+      <Route path="/" component={App} />		<<<<<<INSIDE
+    </Router>						<<<<<<INSIDE
+  </React.StrictMode>
+  document.getElementById('root')
+);
+
+
+Now we move to the App.js file
+
+how react router works is that it routes components 
+sometimes we want components to stay on the page like 
+a header or a nav bar or a footer but then
+othertimes we want the main area of page to change
+and react router can change them based upon url file paths
+But before we can do that, we need to have these components created
+and import them into our App
+So we start out with some import statements 
+to list out the components we are going to create
+we import a Header from ./Header
+then we import a Nav from ./Nav
+then we import a Footer from ./Footer
+now these three components will always stay on the page 
+even when the other components change
+so the Header Nav and Footer will stay consistent
+But then after that we have a main area of the page 
+which is actually the Main Element
+where five components occupy the Main Element 
+and note those five components will change
+1) and one of those components we just call Home from ./Home
+2) another component will be a page to create a NewPost ./NewPostS
+3) another component will be a PostPage where we can see the full page from ./PostPage
+4) note that Home gives us a small part of the Post
+while PostPage gives us the full Post
+another component will be an About page
+5) and finally we want a page that shows up for a 404 error
+this is basically page that doesnt exist
+so four of these pages we want as part of the application
+while the 5th one is to show errors
+And then after this we need to import some things from React Router
+
+Now these we will destructure here		import {}
+We want Route 
+We want Switch as we switch between the Routes
+And then we want a Hook that comes with React Router and that is useHistory
+React Router has several custom hooks
+and this custom hook will allow us to access the browser history 
+but note that React Router does not make requests from the server
+as React Router just routes inside the App itself which has a faster response time
+so it improves the user experience 
+Now we need to import some hooks we will be using 
+we import useState and useEffect from react
+Now we are finished with the imports.
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
+so far we have App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+
+function App() {
+  return (
+    <div className="App">
+
+    </div>
+  );
+}
+
+export default App;
+
+We are not yet running the app b/c this would create errors as these components
+dont yet exist
+But now we can create, at least, the basics of each of these components to import into our App
+and then begin to route them with react router
+
+So now inside the source folder src we will start creating the components

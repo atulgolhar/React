@@ -252,3 +252,200 @@ But now we can create, at least, the basics of each of these components to impor
 and then begin to route them with react router
 
 So now inside the source folder src we will start creating the components
+So now inside the source folder src we will start creating the components  v04.51.07
+//1 
+Create new file Header.js
+CONTROL ALT R
+_rafce
+
+const Header = () => {
+  return (
+    <div>
+
+    </div>
+  )
+}
+
+export default Header
+
+now we have our functional Header component. Its a basic component
+Change <div> tags to <Header> tags
+Add an <h1> and text Header
+Now CONTROL A to select all and copy
+
+    <div>
+    </div>
+    <header>
+        <h1></h1>
+    </header>
+    <header>
+        <h1>Header</h1>
+    </header>
+
+so we have Header.js 
+
+const Header = () => {
+  return (
+    <header>
+        <h1>Header</h1>
+    </header>
+  )
+}
+
+export default Header
+
+//2
+Next new file to create is a Nav
+New file called Nav.js
+then paste copy from Header.js
+and replace all Header with CONTROL D
+Capital N in Nav is ok except inside the elements where 
+its a smaller case n for the nav html element
+
+so we have Nav.js
+
+const Nav = () => {
+  return (
+    <nav>
+        <h1>Nav</h1>
+    </nav>
+  )
+}
+
+export default Nav
+
+Next new file to create is NewPost.js
+
+
+//3
+so we have NewPost.js
+paste again
+CONTROL D to select all NewPost text
+change two elements to <main> from <NewPost>
+
+so we have NewPost.js
+
+const NewPost = () => {
+  return (
+    <main>
+        <h1>NewPost</h1>
+    </main>
+  )
+}
+
+export default NewPost
+
+//4
+Next new file is to create a Home.js
+paste again
+change NewPost to Home
+want to keep <main> element
+
+so we have Home.js
+
+const Home = () => {
+  return (
+    <main>
+        <h1>Home</h1>
+    </main>
+  )
+}
+
+export default Home
+
+
+//5
+Next new file is to create an About.js
+paste again
+next change Home to About
+keep component element as <main>
+
+so we have About.js
+
+const About = () => {
+  return (
+    <main>
+        <h1>About</h1>
+    </main>
+  )
+}
+
+export default About
+
+
+
+//6
+Next new file is to create a PostPage.js
+paste again
+change to PostPage
+change html element to <main>
+
+so we have PostPage.js
+
+const PostPage = () => {
+  return (
+    <main>
+        <h1>PostPage</h1>
+    </main>
+  )
+}
+
+export default PostPage
+
+
+//7 
+Next new file is to create Missing.js
+paste again
+change to Missing
+change html element to <main>
+
+so we have Missing.js
+
+const Missing = () => {
+  return (
+    <main>
+        <h1>Missing</h1>
+    </main>
+  )
+}
+
+export default Missing
+
+
+//8
+Next new file is to create Footer.js
+paste again
+change to Footer
+change html element to <footer>
+
+so we have Footer.js
+
+const Footer = () => {
+  return (
+    <footer>
+        <h1>Footer</h1>
+    </footer>
+  )
+}
+
+export default Footer
+
+now check the App.js import statements 
+to verify we have all the new files created
+
+1 import Header
+2 import Nav
+3 import Footer
+4 import Home
+5 import NewPost
+6 import PostPage
+7 import About
+8 import Missing
+
+v 04.55.27
+so now we have all 8 and they are ready to be imported into the App.js page
+so we are ready to use them
+But before we put any routes in, 
+lets go ahead and put all the components inside of our JSX
+
+v04.55.39

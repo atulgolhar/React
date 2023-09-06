@@ -442,6 +442,18 @@ to verify we have all the new files created
 7 import About
 8 import Missing
 
+from App.js
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+
 v 04.55.27
 so now we have all 8 and they are ready to be imported into the App.js page
 so we are ready to use them

@@ -682,3 +682,101 @@ and instead we want the NewPost component to show
 so the problem here is that this like a waterfall inside Switch
 so as soon as it match something, then that is what it delivers		v05.00.59
 
+notice the path with the slash will match all of these other paths with a slash
+and it routes to the first one of those matches which is Home no matter what the rest is.
+This is a mistake.
+To rectify this, we need to add a keyword here 		"exact"
+
+         <Route path="/"
+         <Route exact path="/"
+
+but only change that for the Home route
+
+Header		Header
+Nav		Nav
+Home		NewPost			<<<<<<< works for NewPost
+Footer		Footer
+
+Now this works for the NewPost
+
+         <Route path="/"
+           <Home />
+
+         <Route exact path="/"
+           <Home />
+
+But what about Post with id of 1?
+in url type				localhost:3000/post/1
+this still gives the NewPost and not the PostPage (which is what we wanted)
+so we also need to add "exact" keyword to the NewPost slash
+
+         <Route path="/post"
+           <NewPost />
+
+         <Route exact path="/post"
+           <NewPost />
+
+save
+Now this works for the PostPage
+
+url		localhost:3000/post/1
+
+Header		Header
+Nav		Nav
+Home		PostPost			<<<<<<< works for PostPost
+Footer		Footer
+
+so we needed to add the "exact" keyword to both of these
+So after PostPage there is nothing else that would match Post
+so then lets check the other routes
+by typing into url		localhost:3000/about
+
+This works as get the about page 
+(you can verify this by checking the url after pressing enter)
+
+localhost:3000/about
+
+and then check to see that the page shows
+
+Header		Header
+Nav		Nav
+Home		About			<<<<<<< works for About		v05.02.03
+Footer		Footer
+
+Now lets try typing into url "Abouts"
+
+localhost:3000/abouts
+
+but now this matches with Missing b/c we get this
+
+Header
+Nav
+Missing			<<<<<<< Missing is rendering
+Footer
+
+so what is happening?
+typing in /about matches to /about
+but anything more typed THAT DOES NOT EXIST will default to the wildcard 
+and end up in on Missing page
+
+so now all of our routes are working as expected.  v05.02.33
+
+Now with the main routing for our App complete,
+next we discuss 
+Adding Links 
+and how React Router handles Adding Links
+and we also add Custom Hooks such as useHistory				<<<<<<<<useHistory
+and grabbing parameters from urls
+
+
+from App.js
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';		<<<<<<<<useHistory
+import { useState, useEffect } from 'react';

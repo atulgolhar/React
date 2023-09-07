@@ -1,1 +1,6 @@
-tbd
+Now we have all of our routes specified inside of our App component
+But today we need to build out the blog application 
+and then work with React Router 
+1) to handle links
+2) to pull parameters from the url (custom hooks allows for this)
+3) to in some custom hooks that come with the react router package such as useHistory

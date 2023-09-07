@@ -373,7 +373,6 @@ const About = () => {
 export default About
 
 
-
 //6
 Next new file is to create a PostPage.js
 paste again
@@ -461,3 +460,56 @@ But before we put any routes in,
 lets go ahead and put all the components inside of our JSX
 
 v04.55.39
+lets go ahead and put all the components inside of our JSX
+we have the Header component, Nav component, Home component, 
+NewPost component, PostPage component, About component, 
+Missing component, Footer component
+This will not present an hmtl standard when we launch it
+but this is in development so we will not be showing any one of
+these five (Home, NewPost, PostPage, About, Missing) at the same time
+
+     <div className="App">
+     </div>
+     <div className="App">
+       <Header />
+       <Nav />
+       <Home />
+       <NewPost />
+       <PostPage />
+       <About />
+       <Missing />
+       <Footer />
+     </div>
+
+
+so lets open a terminal window now
+CONTROL `
+type this in to start a dev server for our react app
+so we can see how this renders
+$ npm start
+
+Now we can see our App to the right in Chrome localhost:3000 and we can 
+see each component.
+Now we are ready to set up Routing so 
+we dont see all of these at the same time
+Resize VSCode so we can see it with our Chrome dev version 
+of the application at the same time
+Close the terminal window
+Note that we already put our App inside of the React.Dom function
+
+From index.js
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Router>						<<<<<<INSIDE React Router
+      <Route path="/" component={App} />		<<<<<<INSIDE
+    </Router>						<<<<<<INSIDE
+  </React.StrictMode>
+  document.getElementById('root')
+);

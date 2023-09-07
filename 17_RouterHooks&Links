@@ -299,3 +299,224 @@ body {
   }
 
 }
+
+
+Now, given above css code and url is 		localhost:3000/abouts
+we get centered
+
+Header
+Nav
+Missing
+Footer
+
+We will focus on the react, not the css.
+Close the css file.
+Focus on App.js
+
+from App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+
+function App() {
+  return (
+     <div className="App">
+       <Header />
+       <Nav />
+       <Switch>		
+         <Route exact path="/"
+           <Home />
+         </Route>
+
+         <Route exact path="/post"
+           <NewPost />
+         </Route>	
+...
+
+The first component is a Header.
+So lets go the Header.js file
+
+we have Header.js 
+
+const Header = () => {
+  return (
+    <header>
+        <h1>Header</h1>
+    </header>
+  )
+}
+
+export default Header
+
+The Header receives a title prop
+
+const Header = () => {
+const Header = ({}) => {
+const Header = ({ title }) => {
+
+we also add a header component className attribute
+
+    <header>
+    <header className>
+    <header className="">
+    <header className="Header">
+
+and instead of Header in the h1, we will pass in the {title} prop to display
+
+        <h1>Header</h1>
+        <h1>{title}</h1>
+
+we now have Header.js 
+
+const Header = ({ title }) => {
+  return (
+    <header className="Header">
+        <h1>{title}</h1>
+    </header>
+  )
+}
+
+export default Header
+
+save
+Note that we will get an error (ie its blank) b/c as of now we have not yet
+passed in any title prop {title}
+
+so then we go back to the App.js
+here in the Header, we can now pass in the title prop
+
+
+function App() {
+  return (
+     <div className="App">
+       <Header />
+       <Header title="React JS Blog"/>
+
+save
+and then now we see that title in Chrome
+
+Header ------------->	React JS Blog (not centered)
+Nav				Nav (centered)
+Missing				Missing (centered)
+Footer				Footer (centered)
+
+so this is our Header for now
+
+Lets move on the Nav.js
+the Nav will receive { search, setSearch } b/c we will have
+a search bar in the Nav as well as links for the menu
+
+Nav.js file has
+
+const Nav = () => {
+  return (
+    <nav>
+        <h1>Nav</h1>
+    </nav>
+  )
+}
+
+export default Nav
+
+updated code is
+
+const Nav = () => {
+const Nav = ({ search, setSearch }) => {
+
+and instead of an h1 now
+we do want to have the Nav elements 
+but instead of the h1, we will have a form here for the search
+and we will also have a menu
+so delete the h1 line
+add a className attribute="Nav"
+so in the <form where we have our search
+we will have a className="searchForm"				v05.06.14
+add onSubmit={}
+add onSubmit={}
+add onSubmit={(e)} add event as e and this needs an anonymous function
+and that e takes in the e.preventDefault()
+b/c we want to prevent the default rendering 
+and now close out the form tag
+
+hide file tree CONTROL B to give more room
+
+    <nav>
+        <h1>Nav</h1>
+    </nav>
+
+    <nav className="Nav">			add className="Nav"
+        <>					delete h1
+    </nav>
+
+    <nav className="Nav">
+        <form >					add form
+    </nav>
+
+    <nav className="Nav">
+        <form className="searchForm">		add className="searchForm"
+    </nav>
+
+    <nav className="Nav">
+        <form className="searchForm" onSubmit= > 
+        <form className="searchForm" onSubmit={} > 
+        <form className="searchForm" onSubmit={(e)} > 
+        <form className="searchForm" onSubmit={(e) => e.preventDefault()}> 
+        <form className="searchForm" onSubmit={(e) => e.preventDefault()}></form> 
+    </nav>
+
+so far we have
+
+const Nav = ({ search, setSearch }) => {
+  return (
+    <nav className="Nav">
+        <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
+        </form> 
+    </nav>
+  )
+}
+
+export default Nav
+
+now inside the form, we always want to have a label
+even if we dont show the label as we use css to take it off the screen
+but that label will be part of the dom itself so screen readers can use it
+so the label is htmlFor="search" and this search needs to match the id of the input
+and then we add closing tag				</label>
+add text for the label Search Posts 			Search Posts
+then we add an input					<input
+and each attribute for the input will be on a seperate lines
+	    <input
+	        id=
+		...
+		...
+now we know that we need an id="search" to match the htmlFor from above
+we also want to set the type to equal a "text" input
+and then we need a placeholder					v05.07.30
+
+
+        <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
+        </form> 
+
+        <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
+            <label
+            <label htmlFor
+            <label htmlFor=
+            <label htmlFor="search"
+            <label htmlFor="search"></label>
+            <label htmlFor="search">Search Posts</label>
+	    <input
+	        id=
+	        id="serach"
+	        type=
+	        type="text"
+	        placeholder=
+	        placeholder=
+        </form> 

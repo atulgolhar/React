@@ -455,11 +455,24 @@ import { useState, useEffect } from 'react';
 
 v 04.55.27
 so now we have all 8 and they are ready to be imported into the App.js page
-so we are ready to use them
-But before we put any routes in, 
-lets go ahead and put all the components inside of our JSX
+so we are ready to use them here is the App.js component
 
-v04.55.39
+for App.js
+
+function App() {
+  return (
+     <div className="App">
+     </div>
+  )
+}
+
+export default App;
+
+
+But before we put any routes in, 		v04.55.39
+
+// ATUL NEW
+
 lets go ahead and put all the components inside of our JSX
 we have the Header component, Nav component, Home component, 
 NewPost component, PostPage component, About component, 
@@ -468,6 +481,8 @@ This will not present an hmtl standard when we launch it
 but this is in development so we will not be showing any one of
 these five (Home, NewPost, PostPage, About, Missing) at the same time
 
+function App() {
+  return (
      <div className="App">
      </div>
      <div className="App">
@@ -480,7 +495,8 @@ these five (Home, NewPost, PostPage, About, Missing) at the same time
        <Missing />
        <Footer />
      </div>
-
+  )
+}
 
 so lets open a terminal window now
 CONTROL `
@@ -489,13 +505,16 @@ so we can see how this renders
 $ npm start
 
 Now we can see our App to the right in Chrome localhost:3000 and we can 
-see each component.
+see each component has rendered.
+
 Now we are ready to set up Routing so 
 we dont see all of these at the same time
 Resize VSCode so we can see it with our Chrome dev version 
 of the application at the same time
 Close the terminal window
-Note that we already put our App inside of the React.Dom function
+Note that we already put our App inside 
+of the React.Dom function			<<<<<<INSIDE React Router
+so we are routing the path here     		<Route path="/" component={App} />	
 
 From index.js
 
@@ -507,9 +526,159 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router>						<<<<<<INSIDE React Router
-      <Route path="/" component={App} />		<<<<<<INSIDE
-    </Router>						<<<<<<INSIDE
+    <Router>					<<<<<<INSIDE React Router
+      <Route path="/" component={App} />	<<<<<<INSIDE
+    </Router>					<<<<<<INSIDE
   </React.StrictMode>
   document.getElementById('root')
 );
+  
+So now when we route to App.js, we can see that ***THIS***
+is already inside the router
+But we also want to show the Header, Nav and Footer all the time
+so we do not need to route to these 3 components any more b/c
+they are already in the app.
+But we do need to add a Switch to show what is actually the
+main area content.
+See opening <Switch> and closing </Switch>
+So we tab these over 
+and now we need to specify routes for each one of these
+
+function App() {
+  return (
+     <div className="App">
+     </div>
+     <div className="App">
+       <Header />
+       <Nav />
+       <Switch>			<<<<<<HERE
+         <Home />		  <<<<INDENT
+         <NewPost />		  <<<<INDENT
+         <PostPage />	  	  <<<<INDENT
+         <About />	  	  <<<<INDENT
+         <Missing />		  <<<<INDENT
+       </Switch>		<<<<<<HERE
+       <Footer />
+     </div>
+  )
+}
+
+// Routes for switches
+for the home page we add a Route component right before the Home tag		<Route
+then we add a path equals "/" b/c we want this to be the default root path
+so it shares the path with App component overall 
+We want to surround the Home component with the Route path component
+So we end with a </Route> tag and indent 
+This actually has an issue but lets demonstrate it later  			v04.58.20
+
+       <Switch>
+       <Home />
+
+       <Switch>
+         <Route path
+           <Home />
+         </Route>	
+
+       <Switch>
+         <Route path="/"
+           <Home />
+         </Route>	
+
+For the next NewPost Component we do the same
+add a <Route tag
+add the path = "/" but also add a "/post"
+add the closing </Route> tag
+
+       <Switch>
+         <Route path=
+           <NewPost />
+         </Route>	
+
+       <Switch>
+         <Route path="/post"
+           <NewPost />
+         </Route>	
+
+For the next PostPage Component we can details for each post
+we add a Route tag with a slightly different path
+we add a /post but also a parameter in the path 
+for that parameter we will use another react router hook to grab that parameter
+we need the :id parameter to identify the specific blog post
+then add the closing Route tag
+
+         <Route path=
+         <Route path="/"
+         <Route path="/post"
+         <Route path="/post/:id"
+
+so we have 
+
+       <Switch>
+         <Route path="/post/:id">
+           <PostPage />
+         </Route>
+
+Now with the About and Missing components, these are two component that
+we do not expect to be passing any props to therefore we can handle these
+just a little bit differently
+if you remember how we handled the route inside the App itself
+we can do the same thing here			<Route path
+then specify the path				<Route path="/about"	
+then we specify the component			<Route path="/about" component={About} />
+note that this is 1 line of code
+
+         <Route path="/about" component={About} />
+          
+we do the same thing for Missing but the path is catchall "*"
+the * wildcard works as follows
+the * wildcard will catch anything that has 
+not been caught by the code above it 		<Route path="*" component={Missing} />
+note both are 1 line of code each
+
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+so overall we have 
+
+function App() {
+  return (
+     <div className="App">
+     </div>
+     <div className="App">
+       <Header />
+       <Nav />
+       <Switch>		
+         <Route path="/"
+           <Home />
+         </Route>	
+
+         <Route path="/post"
+           <NewPost />
+         </Route>	
+
+         <Route path="/post/:id">
+           <PostPage />
+         </Route>
+
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}
+
+now save this and see the changes in Chrome
+which now show 						Header
+							Nav
+							Home
+							Footer
+
+so now lets try to go to Post in the url bar
+localhost:3000/post
+but we still get Home which is an issue as we dont want Home
+and instead we want the NewPost component to show
+so the problem here is that this like a waterfall inside Switch
+so as soon as it match something, then that is what it delivers		v05.00.59
+

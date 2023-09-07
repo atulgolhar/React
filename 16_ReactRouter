@@ -155,6 +155,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -208,12 +209,12 @@ and this custom hook will allow us to access the browser history
 but note that React Router does not make requests from the server
 as React Router just routes inside the App itself which has a faster response time
 so it improves the user experience 
-Now we need to import some hooks we will be using 
-we import useState and useEffect from react
+xxx
+Now we need to import some hooks we will be using we import useState and useEffect from react
 Now we are finished with the imports.
 
 import Header from './Header';
-import Nav from './Nav';
+import Nav from './Nav';  
 import Footer from './Footer';
 import Home from './Home';
 import NewPost from './NewPost';
@@ -251,7 +252,6 @@ dont yet exist
 But now we can create, at least, the basics of each of these components to import into our App
 and then begin to route them with react router
 
-So now inside the source folder src we will start creating the components
 So now inside the source folder src we will start creating the components  v04.51.07
 //1 
 Create new file Header.js
@@ -471,8 +471,6 @@ export default App;
 
 But before we put any routes in, 		v04.55.39
 
-// ATUL NEW
-
 lets go ahead and put all the components inside of our JSX
 we have the Header component, Nav component, Home component, 
 NewPost component, PostPage component, About component, 
@@ -483,8 +481,6 @@ these five (Home, NewPost, PostPage, About, Missing) at the same time
 
 function App() {
   return (
-     <div className="App">
-     </div>
      <div className="App">
        <Header />
        <Nav />
@@ -546,8 +542,6 @@ and now we need to specify routes for each one of these
 
 function App() {
   return (
-     <div className="App">
-     </div>
      <div className="App">
        <Header />
        <Nav />
@@ -642,8 +636,6 @@ so overall we have
 
 function App() {
   return (
-     <div className="App">
-     </div>
      <div className="App">
        <Header />
        <Nav />
@@ -780,3 +772,46 @@ import About from './About';
 import Missing from './Missing';
 import { Route, Switch, useHistory } from 'react-router'dom';		<<<<<<<<useHistory
 import { useState, useEffect } from 'react';
+
+
+so overall we have 
+
+from App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+
+function App() {
+  return (
+     <div className="App">
+       <Header />
+       <Nav />
+       <Switch>		
+         <Route exact path="/"
+           <Home />
+         </Route>
+
+         <Route exact path="/post"
+           <NewPost />
+         </Route>	
+
+         <Route path="/post/:id">
+           <PostPage />
+         </Route>
+
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}

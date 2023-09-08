@@ -499,8 +499,14 @@ and each attribute for the input will be on a seperate lines
 		...
 now we know that we need an id="search" to match the htmlFor from above
 we also want to set the type to equal a "text" input
-and then we need a placeholder					v05.07.30
-
+and then we need a placeholder this will say the same thing as the label v05.07.30
+then we have value and set this equal to {search} and 
+search is what we passed into this Nav.js as a prop thus its a controlled input
+and then just like a controlled input, the onChange needs to set the search
+and we do this with an anonymous function with the event e
+and then we setSearch using setSearch and pass in e.target.value
+and this makes this a controlled form input
+then close the input tag
 
         <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
         </form> 
@@ -518,5 +524,473 @@ and then we need a placeholder					v05.07.30
 	        type=
 	        type="text"
 	        placeholder=
-	        placeholder=
+	        placeholder="Search Posts"
+	        value=
+	        value={search}
+	        onChange=
+	        onChange={() =>}
+	        onChange={(e) => setSearch()}
+	        onChange={(e) => setSearch(e.target.value)}
+	    />
         </form> 
+
+so far we have
+
+const Nav = ({ search, setSearch }) => {
+  return (
+    <nav className="Nav">
+        <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
+            <label htmlFor="search">Search Posts</label>
+	    <input
+	        id="serach"
+	        type="text"
+	        placeholder="Search Posts"
+	        value={search}
+	        onChange={(e) => setSearch(e.target.value)}
+	    />
+        </form> 
+    </nav>
+  )
+}
+
+export default Nav
+
+
+so we save
+then we are going to have to create the search and setSearch back in the App
+in order to pass those into the Nav component
+But before we do that, we need to finish the Navigation within the Nav component
+so we add an unordered list <ul>
+and now each list item can be a navigation <li> link 
+but we have not yet imported the link from react router yet so lets do that at the top
+import { Link } from 'react-router-dom';
+
+        </form> 
+        <ul></ul> 
+    </nav>
+
+        </form> 
+        <ul>
+        </ul> 
+    </nav>
+
+        </form> 
+        <ul>
+            <li></li>
+        </ul> 
+    </nav>
+
+
+so we have
+
+import { Link } from 'react-router-dom';
+
+const Nav = ({ search, setSearch }) => {
+  return (    <nav className="Nav">
+        <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
+            <label htmlFor="search">Search Posts</label>
+	    <input
+	        id="serach"
+	        type="text"
+	        placeholder="Search Posts"
+	        value={search}
+	        onChange={(e) => setSearch(e.target.value)}
+        </form> 
+        <ul>
+            <li></li>
+        </ul> 
+    </nav>
+    </nav>
+  )
+}
+
+export default Nav
+
+now we save and this
+and use the <Link as we import it
+and links render to anchor tags just like we see in html such as <a href>
+however here this tells react-router that 
+"dont request this link from the server, just route to the proper component"
+so now instead of an href="" we use a to="" and set the to equal a slash 
+for our Home page
+and so there we have the link to Home
+
+            <li></li>
+            <li><Link to=""></li>
+            <li><Link to="/"></li>
+            <li><Link to="/">Home</li>
+
+now we use SHIFT ALT DOWNARROW to make 2 more links
+and now we link these to other pages
+we have a link to post and text is Post
+and a link to about and text is About		v05.09.39
+
+            <li><Link to="/">Home</li>
+            <li><Link to="/">Home</li>
+            <li><Link to="/">Home</li>
+
+            <li><Link to="/">Home</li>
+            <li><Link to="/post">Post</li>
+            <li><Link to="/about">About</li>
+
+
+so we have
+
+import { Link } from 'react-router-dom';
+
+const Nav = ({ search, setSearch }) => {
+  return (    <nav className="Nav">
+        <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
+            <label htmlFor="search">Search Posts</label>
+	    <input
+	        id="serach"
+	        type="text"
+	        placeholder="Search Posts"
+	        value={search}
+	        onChange={(e) => setSearch(e.target.value)}
+        </form> 
+        <ul>
+            <li><Link to="/">Home</li>
+            <li><Link to="/post">Post</li>
+            <li><Link to="/about">About</li>
+        </ul> 
+    </nav>
+    </nav>
+  )
+}
+
+export default Nav
+
+
+and this will handle the links in our page
+so we save these
+and now we see the different links in the Chrome app 
+where css has already applied itself and 
+Links across the top of the app are		Home Post About
+When you click Post then the page renders to NewPost
+When you click Home then the page renders to Home
+When you click About then the page renders to About 
+so this shows that our links are working
+
+Now we still have not yet created our state with search and setSearch
+so lets go back to the App.js and do this
+this means create our state with search and setSearch			v05.10.06
+
+from App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+
+function App() {
+  return (
+     <div className="App">
+       <Header title="React JS Blog"/>
+       <Nav />
+       <Switch>		
+         <Route exact path="/"
+           <Home />
+         </Route>
+
+         <Route exact path="/post"
+           <NewPost />
+         </Route>	
+
+         <Route path="/post/:id">
+           <PostPage />
+         </Route>
+
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}
+
+
+To create our state with search and setSearch
+we need to change the code inside App() function
+we want to define both search and setSearch as arrays
+and then we set that equal to useState and
+we need an empty string for those as we start this
+but then we will have search results that will be stored inside an array
+Also while we are in App.js and creating state, we will need some data
+to search thru and so for now, we will hard code our posts for this dev environment
+and we can worry about hooking those posts to an API later.
+We will have posts and setPosts for our blog posts
+and this will equal useState
+but this will have an array inside it []
+so for now we will hardcode 4 posts
+and we will just paste those 4 hardcoded posts in --> see below for pasted in code block.
+
+  const []
+  const [search, setSearch]
+  const [search, setSearch] = 
+  const [search, setSearch] = useState()
+  const [search, setSearch] = useState('');
+
+  const [posts,]
+  const [search, setSearch] = useState('');
+
+  const [posts, setPosts]
+  const [search, setSearch] = useState('');
+
+  const [posts, setPosts] = useState()
+  const [search, setSearch] = useState('');
+
+
+so we have 
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+
+function App() {
+  const [posts, setPosts] = useState()			<<<<<<<Hard code 4 posts into this useState()
+  const [search, setSearch] = useState('');
+
+  return (
+     <div className="App">
+       <Header title="React JS Blog"/>
+       <Nav />
+       <Switch>		
+         <Route exact path="/"
+           <Home />
+         </Route>
+
+         <Route exact path="/post"
+           <NewPost />
+         </Route>	
+
+         <Route path="/post/:id">
+           <PostPage />
+         </Route>
+
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}
+
+
+
+hard coded here
+        {
+          id: 1,
+          title: "My First Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 2,
+          title: "My 2nd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 3,
+          title: "My 3rd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 4,
+          title: "My 4th Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        }
+
+
+so we have 
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+
+function App() {
+  const [posts, setPosts] = useState([
+        {
+          id: 1,
+          title: "My First Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 2,
+          title: "My 2nd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 3,
+          title: "My 3rd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 4,
+          title: "My 4th Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        }
+      ])
+  const [search, setSearch] = useState('');
+
+  return (
+     <div className="App">
+       <Header title="React JS Blog"/>
+       <Nav />
+       <Switch>		
+         <Route exact path="/"
+           <Home />
+         </Route>
+
+         <Route exact path="/post"
+           <NewPost />
+         </Route>	
+
+         <Route path="/post/:id">
+           <PostPage />
+         </Route>
+
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}
+
+so here you can see
+its an array objects
+
+[
+        {
+          id: 1,
+          title: "My First Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+
+and each object is a post
+
+        {
+          id: 1,
+          title: "My First Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+
+and each post has 4 different properties id, title, datetime, and body.
+These are 4 test posts.
+So now we have posts and setPosts using state as well.
+
+Now we need to create the other state 
+we will start with an empty array for the search Results
+
+  const [posts, setPosts] = useState()			<<<<<See above for 4 hardcoded posts
+  const [search, setSearch] = useState('');		
+  const []					<<<<<now in v05.11.33 we address other state
+
+  const []		
+  const [searchResults, setSearchResults]
+  const [searchResults, setSearchResults] = useState()
+  const [searchResults, setSearchResults] = useState([]);
+
+
+so now we have App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+
+function App() {
+  const [posts, setPosts] = useState([
+        {
+          id: 1,
+          title: "My First Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 2,
+          title: "My 2nd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 3,
+          title: "My 3rd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 4,
+          title: "My 4th Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        }
+      ])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  return (
+     <div className="App">
+       <Header title="React JS Blog"/>
+       <Nav />
+       <Switch>		
+         <Route exact path="/"
+           <Home />
+         </Route>
+
+         <Route exact path="/post"
+           <NewPost />
+         </Route>	
+
+         <Route path="/post/:id">
+           <PostPage />
+         </Route>
+
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}
+
+v05.12.01

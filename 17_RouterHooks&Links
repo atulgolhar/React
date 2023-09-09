@@ -994,3 +994,456 @@ function App() {
 }
 
 v05.12.01
+
+Now we need to update our Nav component by passing in both
+the search and setSearch 
+and now our Nav component is complete and we will be able to search the 
+existing posts here once we put in some more functionality
+       <Nav />
+       <Nav search={search} setSearch={setsearch}/>
+
+so we also need to update the JSX with posts for the Home component
+as we are passing them in to be displayed in a feed there
+           <Home />
+           <Home posts={posts}/>
+
+return (
+     <div className="App">
+       <Header title="React JS Blog"/>
+       <Nav search={search} setSearch={setsearch}/>		<<<<<<<<<<<<<<HERE
+       <Switch>		
+         <Route exact path="/"
+           <Home posts={posts}/>				<<<<<<<<<<<<<<HERE
+         </Route>
+
+
+so now we have App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+
+function App() {
+  const [posts, setPosts] = useState([
+        {
+          id: 1,
+          title: "My First Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 2,
+          title: "My 2nd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 3,
+          title: "My 3rd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 4,
+          title: "My 4th Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        }
+      ])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  return (
+     <div className="App">
+       <Header title="React JS Blog"/>
+       <Nav search={search} setSearch={setsearch}/>		<<<<<<<<<<<<<<HERE
+       <Switch>		
+         <Route exact path="/"
+           <Home posts={posts}/>				<<<<<<<<<<<<<<HERE
+         </Route>
+
+         <Route exact path="/post"
+           <NewPost />
+         </Route>	
+
+         <Route path="/post/:id">
+           <PostPage />
+         </Route>
+
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}
+
+now save
+Control B to see file tree
+and now we want to work on the Home component
+in the Chrome app, click on Home to see the rendering
+
+we have Home.js component
+
+const Home = () => {
+  return (
+    <main>
+        <h1>Home</h1>
+    </main>
+  )
+}
+
+export default Home
+
+
+so now Home component will receive the posts 
+and we have a main element here, 
+so lets put a className on the main element
+this className is going to equal Home
+save this and see if we see a change?
+
+const Home = () => {
+const Home = ({ posts }) => {
+
+    <main>
+    <main className="Home">
+
+
+Yes, there is a change from 		Home
+					Footer
+
+to just 				Home
+
+it just pushes everything down
+and Footer is now at the bottom of the page
+so the style for this set to Flexbox so everything in this column should be equal
+except the main element has a Flexbox grow value of 1
+so it fills up the space and grows out.
+So when we provide the main element with the proper class it now fills out our entire page.
+
+Inside the main element of Home now		v05.13.26
+       <h1>Home</h1>
+
+we dont want the h1 so we delete it
+we want to work with the post to display it
+so we check the posts length with a ternary
+if length then display a Feed component
+that receives the posts by drilling down with prop drilling
+and if it does not have length, then we need to add the :
+and add a ().  Then () gets a paragraph tag			<p
+set the p style and add = {{}} two curly braces
+set the marginTop: to "2rem"								v05.14.20
+then close the opening p tag and add the closing p tag paragraph tag  	</p>
+add the text for the paragraph No posts to display.
+
+        {}
+        {posts.length }
+        {posts.length ? ()}
+        {posts.length ? (
+        )}
+        {posts.length ? (
+            <Feed
+        )}
+
+        {posts.length ? (
+            <Feed posts={}
+        )}
+
+        {posts.length ? (
+            <Feed posts={posts}
+        )}
+
+        {posts.length ? (
+            <Feed posts={posts} />
+        ) : {}}
+
+        {posts.length ? (
+            <Feed posts={posts} />
+        ) : ()}
+
+        {posts.length ? (
+            <Feed posts={posts} />
+        ) : (
+            <p
+        )}
+
+        {posts.length ? (
+            <Feed posts={posts} />
+        ) : (
+            <p style={{ marginTop: "2rem" }}
+        )}
+
+
+        {posts.length ? (
+            <Feed posts={posts} />
+        ) : (
+            <p style={{ marginTop: "2rem" }}>
+                No posts to display.
+            </p>
+        )}
+
+
+save this
+an error shows in the Chrome app
+b/c we have not yet created the Feed to import it yet
+so lets create a Feed component
+
+New file in src
+Feed.js
+CONTROL ALT R
+_rafce
+
+so we have Feed.js
+
+const Feed = () => {
+    return (
+        <div>
+        </div>
+    )
+}
+
+export default Feed
+
+now we leave the Feed component blank for now 
+as it resolve the error from above
+But we still need to import that Feed.js into Home.js
+
+so we have Home.js
+
+import Feed from './Feed';
+
+const Home = ({ posts }) => {
+  return (
+    <main className="Home">
+        {posts.length ? (
+            <Feed posts={posts} />
+        ) : (
+            <p style={{ marginTop: "2rem" }}>
+                No posts to display.
+            </p>
+        )}
+    </main>
+  )
+}
+
+export default Home
+
+save
+reload the App in Chrome 
+
+Now the error in the Chrome app will disappear
+b/c we solved for the error
+Page will be blank b/c Feed is empty
+
+Now we can work on the Feed component here
+
+we have Feed.js
+
+const Feed = () => {
+    return (
+        <div>
+        </div>
+    )
+}
+
+export default Feed
+
+note that Feed is also receiving the Posts
+so Feed ingests the posts
+and inside the JSX, we need to map thru those posts
+but lets first remove the <div> and make it an html fragment		v05.15.52
+        <>
+        </>
+Then we add {posts.map()}				{posts.map()}
+we map thru each post with the arrow function		{posts.map(post => ())}
+then we need a post component which is a 
+a resuable component for each post			<Post
+and the reusable component will need a key		key=
+as you map thru {post.id}				{post.id}
+then we also pass the full post to the component	post={post}
+then we close out this component			/>
+
+	    {posts.map()}
+	    {posts.map(post => ())}
+	    
+	    {posts.map(post => (
+	    ))}	    
+	    
+	    {posts.map(post => (
+	        <Post
+	    ))}
+
+	    {posts.map(post => (
+	        <Post key={post} post={post} />
+	    ))}
+
+so far we have	v05.16.24
+
+const Feed = ({ posts }) => {
+    return (
+        <>
+	    {posts.map(post => (
+	        <Post key={post} post={post} />
+	    ))}
+
+        </>
+    )
+}
+
+save this
+should create an error
+so need to create Post.js component
+
+new file
+Post.js
+
+CONTROL ALT R
+_rafce
+
+const Post = () => {
+  return (
+    <div>
+    </div>
+  )
+}
+
+export default Post
+
+now we have the Post component
+its empty 
+but just save it
+
+Now back to Feed.js
+we need to import the Post.js
+
+import Post from './Post';
+
+const Feed = ({ posts }) => {
+    return (
+        <>
+	    {posts.map(post => (
+	        <Post key={post} post={post} />
+	    ))}
+
+        </>
+    )
+}
+
+save
+now the error goes away
+but post will still be empty b/c we have not created a post yet
+so now lets work on the Post component
+
+in the Post component starting at the top, 
+we will need to import 				import { Link } from react router
+and now that we have this, 			const Post = () => {
+we know we are receiving a post			
+so we destructure that at the top 		const Post = ({ post }) => {
+now we make the <div> and <article>
+and give a article className as well		<article className="post">
+
+so far we have Post.js
+
+import { Link } fro 'react-router-dom';
+
+const Post = ({ post }) => {
+  return (
+    <article className="post">
+
+    </article>
+  )
+}
+
+export default Post
+
+
+then we create a react router thus it has a capital L for Link 		<Link
+with the Link we have a to=						to=
+now lets make this an expression 	{}
+we use a template literal inside	`/post/${}`
+inside the template literal we use 	${post.id}
+why? this takes us to the individual post
+close the tag	        		</Link>
+Now inside the link we have an h2	<h2></h2>
+and inside the h2 we add {post.title}	{post.title}
+and then we also have a paragraph	<p>
+lets give this a className="postDate"	<p className="postDate">
+add the closing tag			</p>
+we need text for the p line 		<p>{}</p>
+which is the post.datetime value	{post.datetime}
+this text renders for each post as text
+Now both the post.title and the post.datetime
+will be linked to the specific parameter of post.id
+
+    <article className="post">
+
+    </article>
+
+    <article className="post">
+        <Link
+    </article>
+
+    <article className="post">
+        <Link to={}
+    </article>
+
+    <article className="post">
+        <Link to={`/post/${}`}
+    </article>
+
+    <article className="post">
+        <Link to={`/post/${post.id}`}>
+        </Link>
+    </article>
+
+    <article className="post">
+        <Link to={`/post/${post.id}`}>
+            <h2>{post.title}</h2>
+            <p className="postDate">{}</p>
+        </Link>
+    </article>
+
+    <article className="post">
+        <Link to={`/post/${post.id}`}>
+            <h2>{post.title}</h2>
+            <p className="postDate">{post.datetime}</p>
+        </Link>
+    </article>
+
+
+so far wer have this
+
+import { Link } fro 'react-router-dom';
+
+const Post = ({ post }) => {
+  return (
+    <article className="post">
+        <Link to={`/post/${post.id}`}>
+            <h2>{post.title}</h2>
+            <p className="postDate">{post.datetime}</p>
+        </Link>
+    </article>
+  )
+}
+
+export default Post
+
+we are not done here
+after the closing Link tag </Link>, we need			v05.18.58
+to add a <p> with a p className		<p className="postBody"
+add a closing p tag			></p>
+we need text inside the p tags
+it will be an expression 		{}
+inside the expression we add a ternary statement
+
+	
+        </Link>
+        <p className="postBody"></p>
+        <p className="postBody">{}</p>

@@ -4,6 +4,7 @@ and then work with React Router
 1) to handle links
 2) to pull parameters from the url (custom hooks allows for this)
 3) to in some custom hooks that come with the react router package such as useHistory
+
 Go to index.css
 
 this is the default index.css
@@ -438,7 +439,7 @@ and we will also have a menu
 so delete the h1 line
 add a className attribute="Nav"
 so in the <form where we have our search
-we will have a className="searchForm"				v05.06.14
+we will have a className="searchForm"				v05.06.140
 add onSubmit={}
 add onSubmit={}
 add onSubmit={(e)} add event as e and this needs an anonymous function
@@ -925,74 +926,6 @@ we will start with an empty array for the search Results
   const [searchResults, setSearchResults] = useState([]);
 
 
-so now we have App.js
-
-import Header from './Header';
-import Nav from './Nav';
-import Footer from './Footer';
-import Home from './Home';
-import NewPost from './NewPost';
-import PostPage from './PostPage';
-import About from './About';
-import Missing from './Missing';
-import { Route, Switch, useHistory } from 'react-router'dom';
-import { useState, useEffect } from 'react';
-
-function App() {
-  const [posts, setPosts] = useState([
-        {
-          id: 1,
-          title: "My First Post"
-          datetime: "July 01, 2023 11:17:36 AM"
-          body: "Lorem ipsum dolor sit amet consectuor elit."
-        },
-        {
-          id: 2,
-          title: "My 2nd Post"
-          datetime: "July 01, 2023 11:17:36 AM"
-          body: "Lorem ipsum dolor sit amet consectuor elit."
-        },
-        {
-          id: 3,
-          title: "My 3rd Post"
-          datetime: "July 01, 2023 11:17:36 AM"
-          body: "Lorem ipsum dolor sit amet consectuor elit."
-        },
-        {
-          id: 4,
-          title: "My 4th Post"
-          datetime: "July 01, 2023 11:17:36 AM"
-          body: "Lorem ipsum dolor sit amet consectuor elit."
-        }
-      ])
-  const [search, setSearch] = useState('');
-  const [searchResults, setSearchResults] = useState([]);
-  return (
-     <div className="App">
-       <Header title="React JS Blog"/>
-       <Nav />
-       <Switch>		
-         <Route exact path="/"
-           <Home />
-         </Route>
-
-         <Route exact path="/post"
-           <NewPost />
-         </Route>	
-
-         <Route path="/post/:id">
-           <PostPage />
-         </Route>
-
-         <Route path="/about" component={About} />
-         <Route path="*" component={Missing} />
-
-       </Switch>
-       <Footer />
-     </div>
-  )
-}
-
 v05.12.01
 
 Now we need to update our Nav component by passing in both
@@ -1418,7 +1351,7 @@ will be linked to the specific parameter of post.id
     </article>
 
 
-so far wer have this
+so far we have this
 
 import { Link } fro 'react-router-dom';
 
@@ -1440,10 +1373,169 @@ after the closing Link tag </Link>, we need			v05.18.58
 to add a <p> with a p className		<p className="postBody"
 add a closing p tag			></p>
 we need text inside the p tags
-it will be an expression 		{}
-inside the expression we add a ternary statement
-
+it will be an expression 		{ternary}
+inside the expression we add a ternary statement	(post.body)
+take the length of that (post.body)			(post.body).length
+if the length is <= 25					<= 25
+if this is true ?					?
+then just display the full post body			post.body
+(ie the entire post has 25 characters or less)
+but if it is false :					:
+start with template literal				`${}`
+add the entire post.body like this (post.body)		(post.body)
+then we slice the first 25 characters			.slice(0, 25)
+and after that we put an elipses which is three dots	...
+those ... 3 dots are just text to be rendered on the screen
+this will allow the user to click on the full length above	
+to see the full post with all its text (ie code from above)    <Link to={`/post/${post.id}`}>
 	
         </Link>
         <p className="postBody"></p>
-        <p className="postBody">{}</p>
+
+        <p className="postBody">{}</p>{
+            (post.body)
+        }
+
+        <p className="postBody">{}</p>{
+            (post.body).length
+        }
+
+        <p className="postBody">{}</p>{
+            (post.body).length <= 25
+        }
+
+        <p className="postBody">{}</p>{
+            (post.body).length <= 25
+            ?
+        }
+
+        <p className="postBody">{}</p>{
+            (post.body).length <= 25
+            ? post.body
+        }
+
+        <p className="postBody">{}</p>{
+            (post.body).length <= 25
+            ? post.body
+            : `${}`
+        }
+
+        <p className="postBody">{}</p>{
+            (post.body).length <= 25
+            ? post.body
+            : `${(post.body)}`
+        }
+
+        <p className="postBody">{}</p>{
+            (post.body).length <= 25
+            ? post.body
+            : `${(post.body).slice(0, 25)}...`
+        }
+
+so far we have this
+
+import { Link } fro 'react-router-dom';v 
+
+const Post = ({ post }) => {
+  return (
+    <article className="post">
+        <Link to={`/post/${post.id}`}>
+            <h2>{post.title}</h2>
+            <p className="postDate">{post.datetime}</p>
+        </Link>
+        <p className="postBody">{
+            (post.body).length <= 25
+            ? post.body
+            : `${(post.body).slice(0, 25)}...`
+        }</p>
+    </article>
+  )
+}
+
+export default Post
+
+save
+reload app
+now we can see our feed with each post in Chrome
+we used Lorem ipsum in each post so the text is the same
+we can see the first 25 characters
+then we get the elipses
+the post title text link to the individual post
+the individual post page will support showing the details
+of the full post body text
+as it grabs the parameter out of the url
+Next we design the PostPage
+
+CONTROL B to show file tree
+select PostPage.js
+CONTROL B to hide file tree			v 05.20.46
+
+PostPage.js
+
+inside the PostPage we need to import a couple of things so lets do this now
+import useParameters which is a custom hook 
+import {}
+and destructure here so add those destructures inside the { xxx }
+
+that comes with react-router-dom		import { useParams, }
+and we also import Link				import { useParams, Link }
+from "react-router-dom"
+now the imports are done we will receive a couple things as 
+props based upon those destructured imports
+
+so we have 
+
+import { useParams, Link } from "react-router-dom";
+
+const PostPage = () => {
+  return (
+    <main>
+        <h1>PostPage</h1>
+    </main>
+  )
+}
+
+export default PostPage
+
+
+now given							const PostPage = () => {
+so within the const PostPage anonymous function we receive  	const PostPage = ({}) => {
+props that we receive are 		the posts		({ posts, })
+we also receive the 			handleDelete function	({ posts, handleDelete})
+why? we will be offering a Delete button on this page 
+so these are the props coming into the page
+
+const PostPage = () => {
+const PostPage = ({}) => {
+const PostPage = ({ posts, }) => {
+const PostPage = ({ posts, handleDelete }) => {
+
+now we have PostPage.js
+
+import { useParams, Link } from "react-router-dom";
+
+const PostPage = ({ posts, handleDelete }) => {
+  return (
+    <main>
+        <h1>PostPage</h1>
+    </main>
+  )
+}
+
+export default PostPage
+
+now we define the id inside the function
+and this is equal to useParams
+note we referenced it as id here b/c that is what we called it
+in our Route back in App.js
+				function App() {
+				  const [posts, setPosts] = useState([
+				        {
+				          id: 1,			<<<<<<<HERE
+
+
+
+    const {}
+    const { id }
+    const { id } = 
+    const { id } = useParams();			v05.21.41

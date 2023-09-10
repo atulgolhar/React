@@ -1524,18 +1524,213 @@ const PostPage = ({ posts, handleDelete }) => {
 
 export default PostPage
 
-now we define the id inside the function
-and this is equal to useParams
-note we referenced it as id here b/c that is what we called it
-in our Route back in App.js
+this is equal to useParams
+this means the id 
+
+now we define the id inside the function and this is equal to useParams
 				function App() {
 				  const [posts, setPosts] = useState([
 				        {
-				          id: 1,			<<<<<<<HERE
+				          id: 1,			<<<<<<<HERE defined parameter
 
+we have PostPage.js
 
+import { useParams, Link } from "react-router-dom";
+
+const PostPage = ({ posts, handleDelete }) => {
+    const {}	<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<BUILD HERE
+    return (
+      <main>
+          <h1>PostPage</h1>
+      </main>
+    )
+}
+
+export default PostPage
 
     const {}
     const { id }
     const { id } = 
     const { id } = useParams();			v05.21.41
+    
+note we referenced id here b/c that is what we called it in our 
+Route back in App.js when we defined the parameter
+now we know that we called it id so we build the useParams function
+
+now once we have the overall posts here, we need to get the individual 
+posts that we want to display				const post = 
+this equals posts.find
+then we need to access that individual post		const post = posts.find(post => )
+and we grab that individual post.id			const post = posts.find(post => (post.id))
+then se that individual post.id to a string
+why string? b/c it is really numeric, so if we didnt set it to a string
+then we could only use two equals == 
+but this author prefers to use strict equals when possible
+but in order to use strict equals we need to match the incoming id to the parameter id
+and the parmeter id is a string. 
+
+    const post = 
+    const post = posts.find()
+    const post = posts.find(post => ())
+    const post = posts.find(post => (post.id))
+    const post = posts.find(post => (post.id).toString())
+    const post = posts.find(post => (post.id).toString() === id);
+
+so note, if you dont set this to a string, then you must use the == 
+but we prefer the === here
+
+so now we have PostPage.js
+
+import { useParams, Link } from "react-router-dom";
+
+const PostPage = ({ posts, handleDelete }) => {
+    const { id } = useParams();
+    const post = posts.find(post => (post.id).toString() === id);
+    return (
+      <main>
+          <h1>PostPage</h1>
+      </main>
+    )
+}
+
+export default PostPage
+
+now with the main element inside the JSX
+we set the className to "PostPage"      			<main className="PostPage">
+then after this, we have an article tag with className="post"	<article className="post">
+lets delete the h1 element
+now inside the article, it will depend on whether we have a post to display or not
+so if we have a post		{post}
+&& (ie True and True, then)
+add line to break up and make reading clearer
+add a fragment		<> </>
+the fragment is for the parent
+and inside the fragment we can put our other elements <h2></h2>
+and inside the h2 we add post.title		<h2>{post.title}</h2>
+
+      <main>
+          <h1>PostPage</h1>
+      </main>
+
+      <main className="PostPage">
+          <h1>PostPage</h1>
+      </main>
+
+      <main className="PostPage">
+          <article className="post">
+              <h1>PostPage</h1>
+          </article>
+      </main>
+
+      <main className="PostPage">
+          <article className="post">
+              {post && }
+          </article>
+      </main>
+
+      <main className="PostPage">
+          <article className="post">
+              {post && 
+                  <>
+                  </>
+              }
+          </article>
+      </main>
+
+      <main className="PostPage">
+          <article className="post">
+              {post && 
+                  <>
+                      <h2>{}</h2>
+                  </>
+              }
+          </article>
+      </main>
+
+      <main className="PostPage">
+          <article className="post">
+              {post && 
+                  <>
+                      <h2>{post.title}</h2>
+                  </>
+              }
+          </article>
+      </main>
+
+
+then after <h2>{post.title}</h2>
+then next we add a paragraph with the className="postDate"
+and inside the <p> tags for text we add {post.datetime}
+now copy this line SHIFT ALT DOWNARROW
+change 2nd postDate class Name to postBody
+and accordingly the text expression will be post.body
+and then finally we need our delete button	<button
+lets give it an onClick={}
+and inside the {} we get an anonymous function
+and inside the anonymous function we call 	handleDelete
+but we need to pass in () the post.id		handleDelete(post.id)
+then we close out the button element		>
+and display on the button is 			Delete Post		v05.25.00
+
+                  <h2>{post.title}</h2>
+
+                  <h2>{post.title}</h2>
+                  <p className="postDate">{post.datetime}</p>
+
+                  <h2>{post.title}</h2>
+                  <p className="postDate">{post.datetime}</p>
+                  <p className="postDate">{post.datetime}</p>
+
+                  <h2>{post.title}</h2>
+                  <p className="postDate">{post.datetime}</p>
+                  <p className="postBody">{post.body}</p>
+
+                  <h2>{post.title}</h2>
+                  <p className="postDate">{post.datetime}</p>
+                  <p className="postBody">{post.body}</p>
+                  <button
+
+                  <button
+                  <button onClick={}
+                  <button onClick={() => }
+                  <button onClick={() => handleDelete}
+
+                  <button onClick={() => handleDelete()}
+
+                  <button onClick={() => handleDelete(post.id)}
+
+                  <button onClick={() => handleDelete(post.id)}>
+
+                  <button onClick={() => handleDelete(post.id)}>
+                      Delete Post
+                  </button>
+
+
+so now we have PostPage.js
+
+import { useParams, Link } from "react-router-dom";
+
+const PostPage = ({ posts, handleDelete }) => {
+    const { id } = useParams();
+    const post = posts.find(post => (post.id).toString() === id);
+    return (
+      <main className="PostPage">
+          <article className="post">
+              {post && 
+                  <>
+                      <h2>{post.title}</h2>
+                      <p className="postDate">{post.datetime}</p>
+                      <p className="postBody">{post.body}</p>
+                      <button onClick={() => handleDelete(post.id)}>
+                          Delete Post
+                      </button>
+                  </>
+              }
+          </article>
+      </main>
+    )
+}
+
+export default PostPage
+
+v05.25.00

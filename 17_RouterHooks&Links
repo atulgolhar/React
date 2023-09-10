@@ -1734,3 +1734,388 @@ const PostPage = ({ posts, handleDelete }) => {
 export default PostPage
 
 v05.25.00
+so now we know we need a handleDelete function that is coming in a prop
+and it receives an id
+
+So we need to add those props into App.js which are then passed into PostPage
+from App.js
+
+           <PostPage />
+           <PostPage posts={posts} handleDelete={handleDelete} />
+
+so save
+
+note we have an error showing.
+TypeError: cannot read property 'find' or undefined
+This is b/c we see that PostPage is looking for props to be passed in 
+	   const PostPage = ({ posts, handleDelete }) => {
+but we have not passed in any props yet from App.js
+           <PostPage />
+
+
+and inside App.js above the return statement we need to define handleDelete
+
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  return (
+
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const handleDelete = <<<<<<<<<<<<<<<<<<ADD HERE
+  return (
+
+  const handleDelete = <<<<<<<<<<<<<<<<<<ADD HERE
+  const handleDelete = (id) => {}
+  const handleDelete = (id) => {
+    // add details, leave empty for nows
+  }
+
+
+so save
+reload app
+this works for now
+
+
+so we have App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+
+function App() {
+  const [posts, setPosts] = useState([
+        {
+          id: 1,
+          title: "My First Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 2,
+          title: "My 2nd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 3,
+          title: "My 3rd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 4,
+          title: "My 4th Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        }
+      ])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+
+  const handleDelete = (id) => {
+    // add details, leave empty for nows
+  }
+
+  return (
+     <div className="App">
+       <Header title="React JS Blog"/>
+       <Nav search={search} setSearch={setsearch} />
+       <Switch>		
+         <Route exact path="/"
+           <Home posts={posts}/>
+         </Route>
+         <Route exact path="/post"
+           <NewPost />
+         </Route>	
+         <Route path="/post/:id">
+           <PostPage posts={posts} handleDelete={handleDelete} />		<<<<<<<HERE
+         </Route>
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}
+
+v05.26.24
+
+
+Now back in the PostPage.js
+
+we have not quite finished our definition 
+yet b/c what happens if we dont have a post?
+so add {!post && }
+this means if post is not true		 {!post && }
+then we have an html fragment
+with an h2 saying Post Not Found
+and a paragraph tag saying Well, that's disappointing.
+then a paragraph tag and Link to visit the homepage.
+Now notice that Link was imported at the top of this component.
+					import { useParams, Link } from "react-router-dom";
+so now we are using the useParams from react router to get the parameter
+   					const { id } = useParams();
+and we are using Link to provide a link back to the homepage if it doesnt exist
+
+                <>
+                  <h2>Post Not Found</h2>
+                  <p>Well, that's disappointing.</p>
+                  <p>
+                      <Link to='/'>Visit Our Homepage</Link>
+                  </p>
+                </>
+
+
+and PostPage.js code is
+
+      <main className="PostPage">
+          <article className="post">
+              {post && 
+                  <>
+                      <h2>{post.title}</h2>
+                      <p className="postDate">{post.datetime}</p>
+                      <p className="postBody">{post.body}</p>
+                      <button onClick={() => handleDelete(post.id)}>
+                          Delete Post
+                      </button>
+                  </>
+              } 			<<<<<<<<<<<<<<<<ADD HERE IF DONT HAVE A POST
+          </article>
+
+
+              }
+              {!post && }
+          </article>
+
+
+              }
+              {!post && 
+                  <>
+                  <h2>Post Not Found</h2>
+                  <p>Well, that's disappointing.</p>
+                  <p>
+                      <Link to='/'>Visit Our Homepage</Link>
+                  </p>
+              }
+          </article>
+
+
+
+so lets save all this
+reload app
+notice useParams is already working as we wanted My First Post
+and this is what we got from the url		localhost:3000/post/1
+if we switch the url to post #4			localhost:3000/post/4
+then we should get My Fourth Post
+but notice if try and load post #5 which does not yet exist
+we will get a properly captured error showing
+	Post Not Found
+	Well that's disappointing.
+
+	Visit Our Homepage (underlined link)
+
+and if we click on the link, it takes us to the Home page	v05.27.44
+
+lets finish defining our handleDelete function in App.js
+what will happen? we receive the post id here 			(id)
+so then we can just define our postsList 		    	const postsList
+and set it equal to posts.filter()
+and inside filter() we have a post 			posts.filter()
+wherein if the post.id 					(post => 
+is not equal to the id					post.id !== id 
+then we include it in the posts list
+so we are filtering out 
+wherein if the posts.filter(post => post.id is not equal to the id
+
+ie if the post.id is NOT equal to the id then it IS included in the list
+ie we are filtering out the posts that have the id we have passed in
+
+  const handleDelete = (id) => {
+    // add details, leave empty for nows
+  }
+
+  const handleDelete = (id) => {
+    const postsList = 
+  }
+
+    const postsList = 
+    const postsList = posts.filter()
+    const postsList = posts.filter(post => )
+    const postsList = posts.filter(post => post.id !== )
+    const postsList = posts.filter(post => post.id !== id);
+
+(ie so now we have) 
+
+  const handleDelete = (id) => {
+    const postsList = posts.filter(post => post.id !== id);
+  }
+
+then from here we just setPosts to the newly updated postsList that does not have that unwanted id
+
+  const handleDelete = (id) => {
+    const postsList = posts.filter(post => post.id !== id);
+  setPosts(postsList);
+  }
+
+and now we want to use our browser history 
+we click the Delete button 
+but we are on the individual post page
+so we can do that (browser history) with the useHistory hook 
+that we are importing in App.js from react-router-dom
+
+  const handleDelete = (id) => {
+    const postsList = posts.filter(post => post.id !== id);
+    setPosts(postsList);
+  }
+
+but still not yet done
+now underneath where we set the useState in App.js
+
+we need to update the app to useHistory and use that specific history 
+inside our handleDelete function
+so we add const history which is equal to useHistory
+
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  // add line here
+
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const history
+
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const history = useHistory();
+
+now after we have defined history, we can then use history via useHistory
+inside our handleDelete function
+so we say history.push						    history.push()
+and we just push in the route to the Home page by adding '/'	    history.push('/');
+so as part of the function we are accessing the browser history
+with react-router and then we are serving the component
+instead of requesting anything from the server
+ie we are serving the component that is routed to that home diretory listing
+
+
+  const handleDelete = (id) => {
+    const postsList = posts.filter(post => post.id !== id);
+    setPosts(postsList);
+    // add here
+  }
+
+    // add here
+    history.push()
+    history.push('/');
+
+
+
+so for App.js we have
+
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const history = useHistory();
+
+  const handleDelete = (id) => {
+    const postsList = posts.filter(post => post.id !== id);
+    setPosts(postsList);
+    history.push('/');
+  }
+
+
+so save
+reload app
+localhost:3000
+click on My 3rd Post
+click on button Delete Post
+now 3rd Post is deleted
+and Home posts show only My First Post, My 2nd Post, My Fourth Post
+ie 3rd Post was deleted
+
+Now note something ***
+b/c we have hardcoded our posts in our state when we completely reload the application
+we then get My 3rd Post back again! This is b/c My 3rd Post is hard coded into state
+
+We now need to work on the NewPost component.
+Why? as of now the first four posts are hardcoded into App.js
+
+so we have App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+
+function App() {
+  const [posts, setPosts] = useState([
+        {
+          id: 1,
+          title: "My First Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 2,
+          title: "My 2nd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 3,
+          title: "My 3rd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 4,
+          title: "My 4th Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        }
+      ])
+
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const history = useHistory();
+
+  const handleDelete = (id) => {
+    const postsList = posts.filter(post => post.id !== id);
+    setPosts(postsList);
+    history.push('/');
+  }
+
+  return (
+     <div className="App">
+       <Header title="React JS Blog"/>
+       <Nav search={search} setSearch={setsearch} />
+       <Switch>		
+         <Route exact path="/"
+           <Home posts={posts}/>
+         </Route>
+         <Route exact path="/post"
+           <NewPost />
+         </Route>	
+         <Route path="/post/:id">
+           <PostPage posts={posts} handleDelete={handleDelete} />
+         </Route>
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}

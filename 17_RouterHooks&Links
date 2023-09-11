@@ -2119,3 +2119,298 @@ function App() {
      </div>
   )
 }
+
+v05.29.57
+
+We now need to work on the NewPost component.				v05.29.57
+Why? as of now the first four posts are hardcoded into App.js
+so the 3rd post returns to the state even after it was deleted
+
+We now need to work on the new post component
+but before we do this, we need to create some more state inside our app	    <<<<<<<<<<<<
+
+so App.js is here
+
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const history = useHistory();
+
+Updated code here
+
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const []				 				    <<<<<<<<<<<< create more state
+  const history = useHistory();
+
+description of logic
+const for postTitle and setPostTitle			 const [postTitle, setPostTitle]
+this will be equal to useState with an empty string	('')
+now copy that line once, paste below
+add postBody and setPostBody and this is also equal to an empty string
+so we have 4 objects here 	postTitle, postBody, setPostTitle, setPostBody
+now we need to pass these 4 objects all in as props into our new post component
+but we also need a handleSubmit function as we submit a new post
+for now make this an empty anonymous function
+now we can define handleSubmit when we are ready
+
+Lets down to the JSX in App.js and pass all of these props into <NewPost />
+and now NewPost will be receiving more than most of our other components
+here handleSubmit equals {handleSubmit}
+then on next line postTitle={postTitle}
+then we have setPostTitle={setPostTitle}
+then we have postBody={postBody}
+then we have setPostBody={setPostBody}
+
+  const []
+
+  const [postTitle, setPostTitle]
+
+  const [postTitle, setPostTitle] = useState()
+
+  const [postTitle, setPostTitle] = useState('');
+
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+
+
+  const handleSubmit
+  const handleSubmit = () => {}
+  const handleSubmit = () => {
+  }
+
+           <NewPost />
+
+           <NewPost 
+             handleSubmit={handleSubmit}
+             postTitle={postTitle}
+             setPostTitle={setPostTitle}
+             postBody={postBody}
+             setPostBody={setPostBody}
+           />
+
+save
+
+so we have App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+
+function App() {
+  const [posts, setPosts] = useState([
+        {
+          id: 1,
+          title: "My First Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 2,
+          title: "My 2nd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 3,
+          title: "My 3rd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 4,
+          title: "My 4th Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        }
+      ])
+
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const history = useHistory();
+
+  const handleSubmit = () => {
+  }
+
+  const handleDelete = (id) => {
+    const postsList = posts.filter(post => post.id !== id);
+    setPosts(postsList);
+    history.push('/');
+  }
+
+  return (
+     <div className="App">
+       <Header title="React JS Blog"/>
+       <Nav search={search} setSearch={setsearch} />
+       <Switch>		
+         <Route exact path="/"
+           <Home posts={posts}/>
+         </Route>
+         <Route exact path="/post"
+           <NewPost 
+             handleSubmit={handleSubmit}
+             postTitle={postTitle}
+             setPostTitle={setPostTitle}
+             postBody={postBody}
+             setPostBody={setPostBody}
+           />
+           <NewPost />
+         </Route>	
+         <Route path="/post/:id">
+           <PostPage posts={posts} handleDelete={handleDelete} />
+         </Route>
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}
+
+then we need to update NewPost.js
+now inside NewPost we have a lot to destructure as we pass in all those props
+handleSubmit, postTitle, setPostTitle, postBody, setPostBody
+these are all coming in as de-structured props
+save
+
+const NewPost = () => {
+const NewPost = ({}) => {
+const NewPost = ({
+    handleSubmit, postTitle, setPostTitle, postBody, setPostBody
+}) => {
+
+now add className to the main element
+
+    <main>
+    <main className="NewPost">
+
+now save and should see the change in Chrome app
+now NewPost shows on left side of app with new formatting
+save
+change the NewPost h1 element to an h2 and add space in the text
+        <h1>NewPost</h1>
+        <h2>New Post</h2>
+
+now the next element to add the JSX is a form as are submitting a new post
+with a className equal to "newPostForm"
+and lets give this an onSubmit but it might be different than you expect
+instead of a preventDefault here we want {handleSubmit}
+Now note that this still receives the event 
+we do not have to have an anonymous function and specify e inside
+if we just give a reference to a function like this, it will STILL receive
+the event and we can refer to that event inside the function
+Lets add a label element for our input		<label htmlFor="postTitle"
+note, we dont hide this label
+finish the label code				>Title:</label>
+Now we can add our input for the title		<input
+with attributes for this input on seperate lines	id="postTitle"
+note that the id needs to match the htmlFor attribute
+with type equal to text				type="text"
+we will make this required so the form will not submit without it
+and this will be a controlled input so its value={postTitle}
+and setting this as a controlled input means we need an onChange
+and we set the onChange equal to {()} an anonymous function		{(e) => }
+and for that anonymous function we have setPostTitle=(e.target.value)
+so this is a controlled input and this hooks it all up and now we close out that input
+But we are not done here. We need the post body as well 
+so we need another label element with an htmlFor			<label htmlFor
+and this will be ="postBody"						="postBody"
+for the text we just add Post:						Post:
+close out the label tag but still not done. 				/>
+Now this will not just be an input that is a type text
+
+        <form>
+        <form className="newPostForm">
+        <form className="newPostForm" onSubmit=>
+        <form className="newPostForm" onSubmit=>{handleSubmit}
+
+	    <label
+	    <label htmlFor=
+	    <label htmlFor="postTitle">Title:</label>
+
+	    <input
+	        id="postTitle"
+	        type="text"
+	        required
+	        value={}
+	        onChange={(e) => setPostTitle=(e.target.value)}
+	    />
+
+	    <label
+	    <label htmlFor
+	    <label htmlFor="postBody"
+	    <label htmlFor="postBody">Post:
+	    <label htmlFor="postBody">Post:</label>
+
+so we make it a little bit larger with a textarea			<textarea
+lets put the attributes for the textarea on seperate lines
+id will be equal to "postBody"						id="postBody"
+we do not need to set the type b/c textarea is text by default	v05.35.03
+we make this required
+lets make this a controlled input as well so the value is {postBody}	value={postBody}
+and we received postBody as a prop
+and then we need to put an onChange and set that equal to 		onChange={}
+an anonymous function () =>
+with (e) and inside the function we have 				(e)
+=> setPostBody and that be e.target.value				==> setPostBody(e.target.value)
+then close out the anonymous function					}
+and now lets close out that textarea input				/>
+
+	    <textarea
+	        id="postBody'
+	        required
+	        value={postBody}
+	        onChange={(e) => setPostBody(e.target.value)}
+	    />
+	        
+and we still need a button
+so we add a button element						<button
+and the type will be a "submit" button					type="submit"
+then close the opening tag						>
+add the button textS Submit						Submit	
+then add closing tag							</button>
+	
+            <button type="submit">Submit</button>
+
+and should finish out our form
+
+
+so we have NewPost.js
+
+const NewPost = ({
+    handleSubmit, postTitle, setPostTitle, postBody, setPostBody
+}) => {
+  return (
+    <main className="NewPost">
+        <h2>New Post</h2>
+        <form className="newPostForm" onSubmit=>{handleSubmit}
+	    <label htmlFor="postTitle">Title:</label>
+	    <input
+	        id="postTitle"
+	        type="text"
+	        required
+	        value={}
+	        onChange={(e) => setPostTitle=(e.target.value)}
+	    />
+	    <textarea
+	        id="postBody'
+	        required
+	        value={postBody}
+	        onChange={(e) => setPostBody(e.target.value)}
+	    />
+            <button type="submit">Submit</button>
+        <form />
+    </main>
+  )
+}
+
+export default NewPost

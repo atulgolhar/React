@@ -2342,7 +2342,7 @@ Now this will not just be an input that is a type text
 	        type="text"
 	        required
 	        value={}
-	        onChange={(e) => setPostTitle=(e.target.value)}
+	        onChange={(e) => setPostTitle(e.target.value)}
 	    />
 
 	    <label
@@ -2372,47 +2372,171 @@ and now lets close out that textarea input				/>
 	        onChange={(e) => setPostBody(e.target.value)}
 	    />
 	        
-and we still need a button
-so we add a button element						<button
-and the type will be a "submit" button					type="submit"
-then close the opening tag						>
-add the button textS Submit						Submit	
-then add closing tag							</button>
-	
-            <button type="submit">Submit</button>
 
-and should finish out our form
+v05.35.39
 
+we still need a button
+insert this below the textarea but above the form closing tag
+add a <button element
+type will be a "submit" button
+close the opening button tag
+closing button tag automatically inserted by VSCode
+text for the button is Submit
+that should finish our form
+we see all this in the rendered page
+we see the Title: field
+we see the Post: field
+we see the Submit button
 
-so we have NewPost.js
+	    />
+	    <button
+	    <button type="submit" \>
+	    <button type="submit" \></button>
+	    <button type="submit" \>Submit</button>
+
+Note that we can not test this yet b/c
+we have not yet defined our handleSubmit in
 
 const NewPost = ({
     handleSubmit, postTitle, setPostTitle, postBody, setPostBody
 }) => {
-  return (
-    <main className="NewPost">
-        <h2>New Post</h2>
-        <form className="newPostForm" onSubmit=>{handleSubmit}
-	    <label htmlFor="postTitle">Title:</label>
-	    <input
-	        id="postTitle"
-	        type="text"
-	        required
-	        value={}
-	        onChange={(e) => setPostTitle=(e.target.value)}
-	    />
-	    <textarea
-	        id="postBody'
-	        required
-	        value={postBody}
-	        onChange={(e) => setPostBody(e.target.value)}
-	    />
-            <button type="submit">Submit</button>
-        <form />
-    </main>
-  )
-}
 
-export default NewPost
+we have also not yet defined setPostTitle
 
-v05.35.57
+go back to App.js 	v05.36.31
+and find the handleSubmit function
+the handleSubmit reference still receives the event e even without the anonymous
+function specifying it in the NewPost component
+so we just put the e in the event for the parameter
+and now we build this out
+lets call e.preventDefault at the very beginning of the function
+after that we need to define the id for the new post
+so lets set the id equal to				const id =
+and check to see if the post has any length		post.length ?
+and if it does then the post already exists 
+and is not empty 
+so then we need to get the last post 			
+so we call the posts array				posts[]
+to get the last post we call 				posts.length - 1 
+b/c the array starts counting at 0
+b/c to get the length need to count all the posts
+normally you count from 1 to get the total 
+but since array starts at 0 you need to subtract that 1
+to the actual last post index
+And then after getting that last index
+we need to reference the id property of that last post		.id
+and then we add + 1 to it 				+ 1
+but 							:
+if posts do not have length then the array is empty
+and then we assign id 1 to it				1;
+
+  const handleSubmit = () => {
+  }
+
+  const handleSubmit = (e) => {
+  }
+
+  const handleSubmit = (e) => {
+    const id
+  }
+
+  const handleSubmit = (e) => {
+    const id = post.length ?
+  }
+
+  const handleSubmit = (e) => {
+    const id = post.length ? posts[]
+  }
+
+  const handleSubmit = (e) => {
+    const id = post.length ? posts[posts.length - 1]
+  }
+
+  const handleSubmit = (e) => {
+    const id = post.length ? posts[posts.length - 1].id
+  }
+
+  const handleSubmit = (e) => {
+    const id = post.length ? posts[posts.length - 1].id + 1
+  }
+
+  const handleSubmit = (e) => {
+    const id = post.length ? posts[posts.length - 1].id + 1 : 
+  }
+
+  const handleSubmit = (e) => {
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+  }
+
+note that now that we have defined the id, we also 
+need to define a datetime value				const datetime
+set to empty string for now				= '';
+
+  const datetime
+  const datetime = '';
+
+thus so far we have 
+
+  const handleSubmit = (e) => {
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+  const datetime = '';
+  }
+
+
+now we need to import a dependency package that we have not yet imported
+open terminal window CONTROL `
+need to stop running existing dev version of our app so CONTROL C
+CONTROL C
+in terminal type $ npm i date-fns which stands for date functions
+then -S which stands for Save As Production Dependency
+
+$ npm i date-fns -S
+ENTER
+
+our new dependency has finished installing
+CONTROL B to see file tree
+go to file package.json
+and you can see "date-fns": "^2.22.1",
+which is the dependency package
+so close package.json file
+hide file tree
+now at top of App.js we need to import this new dependency
+
+note we just want the format part of the package so we will destructure it
+as its imported so to destructure use 			import { format } from '';
+
+so we have App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';
+
+
+save
+now go to function that we were working on handleSubmit in App.js
+we can apply the format in the datetime
+delete the empty string
+type format()
+we need a new Date object 				new Date() 
+then we specify the format
+
+
+  const handleSubmit = (e) => {
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+  const datetime = ;
+  }
+
+  const datetime = '';
+  const datetime = ;
+  const datetime = format();
+  const datetime = format(new Date(), '');
+
+v05.39.22

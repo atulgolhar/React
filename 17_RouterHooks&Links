@@ -2540,3 +2540,47 @@ then we specify the format
   const datetime = format(new Date(), '');
 
 v05.39.22
+
+format is mmmm dd yyyy but note that you must add the exact format you want
+'MMMM dd, yyyy pp';
+pp is needed but not sure why. Consult package documentation at npmjs.org
+
+now we need to create our new post				const newPost
+so far we have
+
+  const handleSubmit = (e) => {
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+  const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+  // create new post here (see below)
+  // create new array with all posts (see below)
+  }
+
+
+first thing we have in the post is the id
+then we specify the title					title: postTitle,
+then we specify the datetime					datetime,
+then we specify the post body itself which is			body: postBody
+this finishes our new post;					;
+
+     const newPost
+     const newPost = {}
+     const newPost = { id, }
+     const newPost = { id, title: postTitle, }
+     const newPost = { id, title: postTitle, datetime, }
+     const newPost = { id, title: postTitle, datetime, postBody }
+     const newPost = { id, title: postTitle, datetime, postBody };
+
+now we need to create a new array with all posts		const allPosts
+so we set this equal to ...posts this means the posts that are in state
+and the new post						newPost
+
+     const allPosts
+     const allPosts = []
+     const allPosts = [...posts, newPost];
+
+now that we have our allPosts
+***we need to set the new state using existing allPosts***
+this is important as it captures the new state of our application 
+without needing to hardcode new posts like before
+
+     setPosts(allPosts);					v05.40.48

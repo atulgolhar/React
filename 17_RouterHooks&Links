@@ -2409,7 +2409,12 @@ the handleSubmit reference still receives the event e even without the anonymous
 function specifying it in the NewPost component
 so we just put the e in the event for the parameter
 and now we build this out
-lets call e.preventDefault at the very beginning of the function
+lets call e.preventDefault at the very beginning of the function	e.preventDefault();
+
+  const handleSubmit = () => {
+    e.preventDefault();
+  }
+
 after that we need to define the id for the new post
 so lets set the id equal to				const id =
 and check to see if the post has any length		post.length ?
@@ -2472,14 +2477,14 @@ note that now that we have defined the id, we also
 need to define a datetime value				const datetime
 set to empty string for now				= '';
 
-  const datetime
-  const datetime = '';
+    const datetime
+    const datetime = '';
 
 thus so far we have 
 
   const handleSubmit = (e) => {
     const id = post.length ? posts[posts.length - 1].id + 1 : 1;
-  const datetime = '';
+    const datetime = '';
   }
 
 
@@ -2531,13 +2536,14 @@ then we specify the format
 
   const handleSubmit = (e) => {
     const id = post.length ? posts[posts.length - 1].id + 1 : 1;
-  const datetime = ;
+    const datetime = ;
   }
 
   const datetime = '';
   const datetime = ;
   const datetime = format();
   const datetime = format(new Date(), '');
+  const datetime = format(new Date(), 'MMMM dd, yyyy pp');
 
 v05.39.22
 
@@ -2550,9 +2556,9 @@ so far we have
 
   const handleSubmit = (e) => {
     const id = post.length ? posts[posts.length - 1].id + 1 : 1;
-  const datetime = format(new Date(), 'MMMM dd, yyyy pp');
-  // create new post here (see below)
-  // create new array with all posts (see below)
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    // create new post here (see below)
+    // create new array with all posts (see below)
   }
 
 
@@ -2562,29 +2568,95 @@ then we specify the datetime					datetime,
 then we specify the post body itself which is			body: postBody
 this finishes our new post;					;
 
-     const newPost
-     const newPost = {}
-     const newPost = { id, }
-     const newPost = { id, title: postTitle, }
-     const newPost = { id, title: postTitle, datetime, }
-     const newPost = { id, title: postTitle, datetime, postBody }
-     const newPost = { id, title: postTitle, datetime, postBody };
+    const newPost
+    const newPost = {}
+    const newPost = { id, }
+    const newPost = { id, title: postTitle, }
+    const newPost = { id, title: postTitle, datetime, }
+    const newPost = { id, title: postTitle, datetime, body: postBody }
+    const newPost = { id, title: postTitle, datetime, body: postBody };
 
 now we need to create a new array with all posts		const allPosts
-so we set this equal to ...posts this means the posts that are in state
+so we set this equal to ...posts this means the posts that are in state				in state
 and the new post						newPost
 
-     const allPosts
-     const allPosts = []
-     const allPosts = [...posts, newPost];
+    const allPosts
+    const allPosts = []
+    const allPosts = [...posts, newPost];			both in state and new state posts
 
 now that we have our allPosts
 ***we need to set the new state using existing allPosts***
-this is important as it captures the new state of our application 
+this is important as it captures the new state of our application 				new state
 without needing to hardcode new posts like before
 
-     setPosts(allPosts);					v05.40.48
+    setPosts(allPosts);					new state set here v05.40.48
 
-then we set the post Title back to empty
+then we set the postTitle in the controlled input back to empty
+so after we have submitted the new posts then we wont need to 
+delete what we just submitted and create another post
+so we can just set the new postTitle to empty and do same for postBody
+and finally we need to access the history and push and set that to the home page
+so we are not just sitting on the new post page again and instead we now sitting on home page
 
-     setPostTitle('');
+    setPostTitle('');
+    setPostBody('');
+    history.push('/');
+
+save this
+so handleSubmit component now is
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    const allPosts = [...posts, newPost];
+    setPosts(allPosts);
+    setPostTitle('');
+    setPostBody('');
+    history.push('/');
+  }
+
+
+notice we stopped our dev environment to 
+install the date functions dependency that used for datetime v05.41.28
+so we need to start our react app
+$ npm start
+
+now app is back up and running
+Notice we get a warning in the terminal 
+'searchResults' is assigned a value but never used
+'setSearchResults' is assigned a value but never used
+
+so we need to make the functionality for our search bar work
+close the terminal
+
+we can see  in App.js that
+
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);		<<<<<<<<ERROR NOT USED YET
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const history = useHistory();
+
+
+so we can see that searchResults and setSearchResults are using state and 
+just assigned an empty array
+  const [searchResults, setSearchResults] = useState([]);	
+and we need to change this assignment
+now we have already imported useEffect 		v05.42.19
+
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';		<<<<<<<<<<<<<<<IMPORTED useEffect HERE
+import { format } from 'date-fns';
+
+v05.42.19

@@ -2584,3 +2584,7 @@ this is important as it captures the new state of our application
 without needing to hardcode new posts like before
 
      setPosts(allPosts);					v05.40.48
+
+then we set the post Title back to empty
+
+     setPostTitle('');

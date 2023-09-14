@@ -2752,5 +2752,244 @@ we want to do the same thing that we did for the post body and also for the post
     ((post.body).toLowerCase()).includes(search.toLowerCase())
     || 
     )
-  }, [posts, search])							v05.44.51
+  }, [posts, search])							
 
+v05.44.51
+
+so now add the closing ; and fix combine the line
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+    ((post.body).toLowerCase()).includes(search.toLowerCase())
+    || ((post.title).toLowerCase()).includes(search.toLowerCase()));
+  }, [posts, search])							
+
+but still not done.
+Lets add a line 
+and set the search results 					setSearchResults()
+after this lets set the setSearchResults
+but instead of just setting them equal to the filter results 	setSearchResults(filterResults)
+and here lets think about our posts timeline. 
+The oldest post is always at the top, but we would rather see the newest post
+so we reverse the filteredResults				setSearchResults(filterResults.reverse())		
+so our searchResults are now reversed
+add closing ;							setSearchResults(filterResults.reverse());			
+Now notice all of this will not change the rendered App
+until we change what we are sending to our home component
+
+Save this.
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+      ((post.body).toLowerCase()).includes(search.toLowerCase())
+      || ((post.title).toLowerCase()).includes(search.toLowerCase()));
+
+    setSearchResults()
+  }, [posts, search])							
+
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+      ((post.body).toLowerCase()).includes(search.toLowerCase())
+      || ((post.title).toLowerCase()).includes(search.toLowerCase()));
+
+    setSearchResults(filterResults.reverse());
+  }, [posts, search])							
+
+
+Note that we dont see anything happening yet b/c if we type 
+in the search field nothing changes for search match feed b/c 
+our Home component below is still receiving 
+the Post results and not the Search results
+
+           <Home posts={posts}/>			<<<<<<<<<<<<<<<<<<<HERE
+           <Home posts={searchResults}/>		<<<<<<<<<<<<<<<<<<<HERE
+
+then save
+now we see changes to the App results in the existing rendered Chrome dev app
+Now we can type in the search bar and see instantly rendered search results.
+
+
+  return (
+     <div className="App">
+       <Header title="React JS Blog"/>
+       <Nav search={search} setSearch={setsearch} />
+       <Switch>		
+         <Route exact path="/"
+           <Home posts={searchResults}/>		<<<<<<<<<<<<<<<<<<<HERE
+         </Route>
+         <Route exact path="/post"
+           <NewPost 
+             handleSubmit={handleSubmit}
+             postTitle={postTitle}
+             setPostTitle={setPostTitle}
+             postBody={postBody}
+             setPostBody={setPostBody}
+           />
+           <NewPost />
+         </Route>	
+         <Route path="/post/:id">
+           <PostPage posts={posts} handleDelete={handleDelete} />
+         </Route>
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+
+v05.46.29
+Now lets add a new post and see what happens
+add test post with short text body 					yay!
+Produces an error if 
+    const allPosts = {...posts, newPost};				<<<<<<
+    const allPosts = [...posts, newPost];				<<<<<<SHOULD BE AN ARRAY
+
+Need to look at handleSubmit function
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    const allPosts = [...posts, newPost];				<<<<<<SHOULD BE AN ARRAY
+    setPosts(allPosts);
+    setPostTitle('');
+    setPostBody('');
+    history.push('/');
+  }
+
+save
+if it was an array already, then this should have worked
+now new post shows up at the top of the post list
+and note the text body is less than 25 characters long 
+
+so now everything works as expected
+show file tree again	CONTROL B
+only 3 more components to complete 
+About component
+Missing component
+Footer component
+none of these 3 receive props so we can make them faily quickly
+go to Missing Component first 
+add { Link }
+add className and text to user 
+                  <h2>Post Not Found</h2>
+                  <p>Well, that's disappointing.</p>
+                  <p>
+                      <Link to='/'>Visit Our Homepage</Link>
+                  </p>
+
+here is Missing.js component
+
+const Missing = () => {
+  return (
+    <main>
+        <h1>Missing</h1>
+    </main>
+  )
+}
+
+export default Missing
+
+at the top of Missing, we need to import from react router the Link
+like this			import { Link } from 'react-router-dom';
+
+
+import { Link } from 'react-router-dom';
+
+const Missing = () => {
+    return (
+        <main className='Missing'>
+            <h2>Post Not Found</h2>
+            <p>Well, that's disappointing.</p>
+            <p>
+                <Link to='/'>Visit Our Homepage</Link>
+            </p>
+        </main>
+    )
+}
+
+export default Missing
+
+now save this
+lets now test by adding anything in url after
+localhost:3000/testforfood
+
+this should show
+Page Not Found
+with link to home page
+it works
+
+
+Note
+if we go to home page, then delete a post (3rd post for example), then url load a missing page
+Page Not Found will show
+but now if we go to Home then that 3rd post reappears from state
+note that state at this point uses static posts
+
+
+Now we go to Footer.js
+
+const Footer = () => {
+  return (
+    <footer>
+        <h1>Footer</h1>
+    </footer>
+  )
+}
+
+export default Footer
+
+
+Footer.js does not receive any props
+lets paste in the code for Footer.js
+
+OLD 
+
+const Footer = () => {
+  return (
+    <footer>
+        <h1>Footer</h1>
+    </footer>
+  )
+}
+
+export default Footer
+
+
+NEW
+
+const Footer = () => {
+    const today = new Date();
+    return {
+        <footer className='Footer'>
+            <p>Copyright &copy; {today.getFullYear()}</p>
+        </footer>
+    }
+}
+export default footer
+
+save this
+and rendered Footer should change
+from 
+black/white Footer
+to color Copyright @ 2023
+
+
+now go to About.js
+
+so we have About.js
+
+const About = () => {
+  return (
+    <main>
+        <h1>About</h1>
+    </main>
+  )
+}
+
+export default About
+
+v05.50.29

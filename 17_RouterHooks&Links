@@ -2639,13 +2639,11 @@ we can see  in App.js that
   const [postBody, setPostBody] = useState('');
   const history = useHistory();
 
-
 so we can see that searchResults and setSearchResults are using state and 
 just assigned an empty array
   const [searchResults, setSearchResults] = useState([]);	
 and we need to change this assignment
 now we have already imported useEffect 		v05.42.19
-
 
 import Header from './Header';
 import Nav from './Nav';
@@ -2660,3 +2658,99 @@ import { useState, useEffect } from 'react';		<<<<<<<<<<<<<<<IMPORTED useEffect 
 import { format } from 'date-fns';
 
 v05.42.19
+
+so lets use useEffect to work with the search bar
+  const history = useHistory();
+under this line add					useEffect()
+and it has an anonymous function			useEffect(() => {})
+and then after the anonymous function 
+we need to define dependencies for useEffect		, []
+and remember when any dependencies change then useEffect runs again
+inside the dependencies we include posts		[posts, ]
+and we also set this to work with search		[posts, search]
+so now as our search input provides new data, then that
+new data is provided here thru useEffect
+so essentially we can filter down the (1) posts we have 
+to what matches the (2) search input,
+thus (1) and (2) are both dependencies
+
+  useEffect()
+  useEffect(() => {})
+ 
+  useEffect(() => {}, [])
+
+  useEffect(() => {
+  }, [])
+
+  useEffect(() => {
+  }, [posts, ])
+
+  useEffect(() => {
+  }, [posts, search])
+
+now we add to this  v05.43.11
+we define a new const filteredResults				filterResults
+and set it equal to posts.filter()				= posts.filter()
+and for each posts we filter it 
+using an anonymous function					posts.filter(post => ())
+now inside the parenthesis, 
+we add another set of parenthesis				posts.filter(post => (()))
+break it up to make more readable
+and now inside the inner parenthesis we add post.body 		((post.body)))
+we need this additional inner parenthesis b/c we 
+add a .toLowerCase						.toLowerCase()
+    ((post.body).toLowerCase()))
+this will set everything in the post body to lower case
+then we add .include						((post.body).toLowerCase()))
+then we have the outer parenthesis 							  ^
+then we can add .includes			    	       ((post.body).toLowerCase()).includes)
+which checks to see if the post includes the post search text
+and by setting everything to lower case makes this easier b/c doesnt matter if capital or lowercase
+then we can include our search value and set it to lower case so
+it can possibly match lower case text body			((post.body).toLowerCase()).includes(search.toLowerCase()))
+(ie lowercase search text vs lowercase text body in order to find a match)
+so now we have our full filter search statement
+but after this we need an OR 					||
+(ie this is also considered a short circut operator)
+we want to do the same thing that we did for the post body and also for the post title  v05.44.51
+				((post.body).toLowerCase()).includes(search.toLowerCase()))
+				((post.title).toLowerCase()).includes(search.toLowerCase()))
+
+
+  useEffect(() => {
+    const filteredResults
+  }, [posts, search])
+ 
+  useEffect(() => {
+    const filteredResults = posts.filter()
+  }, [posts, search])
+
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => (()))
+  }, [posts, search])
+
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+    (()))
+  }, [posts, search])
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+    ((post.body)))
+  }, [posts, search])
+
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+    ((post.body).toLowerCase()))
+  }, [posts, search])
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+    ((post.body).toLowerCase()).includes(search.toLowerCase())
+    || 
+    )
+  }, [posts, search])							v05.44.51
+

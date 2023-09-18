@@ -1,4 +1,86 @@
+we have App.js
+Need to 
+create data folder 			data
+create new file db.json			db.json
 
+inside db.json
+we can add and modify data from within the App component
+right now we have a static state for posts 
+these are objects inside an array
+(ie post data is hard coded inside App.js 
+so any changes to posts then reload App will result in 
+default hardcoded posts remaining inside App).
+Need to make post state dynamic (thus eliminate hardcoding).
+We cut hardcoded posts from App.js and paste into db.json file
+and need to add quotes some elements.
+
+OLD 
 App.js
-create data folder 
-create new file db.json
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';
+
+function App() {
+  const [posts, setPosts] = useState([
+        {
+          id: 1,
+          title: "My First Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 2,
+          title: "My 2nd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 3,
+          title: "My 3rd Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+        {
+          id: 4,
+          title: "My 4th Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        }
+      ])
+
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const history = useHistory();
+
+hardcoded posts code here
+
+function App() {
+    const [posts, setPosts] = useState([
+        {
+          id: 1,							missing "" for key
+          title: "My First Post"					missing "" for key
+          datetime: "July 01, 2023 11:17:36 AM"				missing "" for key
+          body: "Lorem ipsum dolor sit amet consectuor elit."		missing "" for key
+        },
+
+
+db.json properly formated posts here
+{
+    "posts":
+      {
+        "id": 1,							added "" to key
+        "title": "My First Post"					added "" to key
+        "datetime": "July 01, 2023 11:17:36 AM"				added "" to key
+        "body": "Lorem ipsum dolor sit amet consectuor elit."		added "" to key
+      },

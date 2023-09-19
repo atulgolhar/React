@@ -14,6 +14,22 @@ Need to make post state dynamic (thus eliminate hardcoding).
 We cut hardcoded posts from App.js and paste into db.json file
 and need to add quotes some elements.
 
+so here we have an object		{
+we have given it the name "posts"	"posts":
+key-value so the value for this property is the array		[
+notice that each of the json objects are within quotes ""
+vs no quotes in the hard coded json data in the App component
+therefore you need to ensure that you are formatting like this in db.json v06.04.09
+now save b/c we have the db.json file inside the data folder
+
+{
+    "posts": [
+      {
+        "id": 1,							added "" to key
+        "title": "My First Post"					added "" to key
+
+
+
 OLD 
 App.js
 
@@ -77,10 +93,166 @@ function App() {
 
 db.json properly formated posts here
 {
-    "posts":
+    "posts": [
       {
         "id": 1,							added "" to key
         "title": "My First Post"					added "" to key
         "datetime": "July 01, 2023 11:17:36 AM"				added "" to key
         "body": "Lorem ipsum dolor sit amet consectuor elit."		added "" to key
       },
+
+v06.04.18
+now we go back to the App.js file
+function App() {
+  const [posts, setPosts] = useState([
+				     ^ from here onwards for entire array []
+        {
+          id: 1,
+          title: "My First Post"
+          datetime: "July 01, 2023 11:17:36 AM"
+          body: "Lorem ipsum dolor sit amet consectuor elit."
+        },
+
+and replace that with an empty array
+
+  const [posts, setPosts] = useState([])
+
+so we are left with this
+
+  const [posts, setPosts] = useState([])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const history = useHistory();
+
+add the ;
+and now this is really all we need to get the json server up and running.  v06.04.34
+
+so now we go to package.json file in file tree
+
+src
+.gitignore
+package-lock.json
+package.json
+README.md
+
+now we need to add Axios as a new dependency
+
+go to Chrome
+npmjs.com/package/axios
+in VSCode, open terminal window 	CONTROL `
+type npm i for install axios and -S 
+-S is a habit but no longer neededfa
+
+$ npm i axios -S
+Enter
+
+can now see Axios in package.json file as listed dependency
+"axios": "^0.21.1",4
+
+close terminal window
+open src folder in file tree
+add new folder inside src folder
+new folder name is		api
+new file created 		posts.js
+
+add this code inside blank posts.js file
+
+import axios from 'axios';
+
+now we set the base url 
+so we set 
+export default axios.create({})
+then on seperate line we define the base url property
+and we set this to our http local host post 3500	'http://localhost:3500'
+port 3500 is where we launch our json server on
+
+
+
+export default axios.create()
+export default axios.create({})
+export default axios.create({
+
+})
+
+export default axios.create({
+    baseURL: ''
+})
+
+export default axios.create({
+    baseURL: 'http://localhost:3500'
+});
+
+
+save
+now this is all we need in this file
+now axios will continue to use this base url
+if you are doing this to take this project live, 
+then you would need to change this base url to whatever you
+have as a base url for your host
+
+open terminal window  CONTROL `
+1st) inside this 1st terminal window we need to launch json server
+-p means port
+-w means watch
+
+$ npx json-server -p 3500 -w data/db.json
+Enter
+By pressing Enter, this should launch our json server instance
+
+2nd) lets launch react app in another terminal window
+
+To open 2nd terminal window, click + sign 
+and now you can see terminal window tree on right 
+where we have two bash terminal windows running
+In this 2nd terminal window, we launch our react app
+
+$ npm start
+
+now notice that once we get this started, we should not see any posts
+b/c we changed the state. (ie removed hardcoded posts from App.js file).
+but then the react will show any changes we make as we add axios into 
+our Application.
+
+Chrome browser shows rendered app
+Now our application is loaded with 'No posts to display.' and
+this is what we expected since we cleared out the static state.
+Now resize window so we can see VSCode on left 1/2 of screen and 
+rendered app on Chrome on right 1/2 of screen.
+Thus we can work on VSCode on left and view app on right.
+Close terminal windows but note that they continue to run.
+We can open the terminal windows at any time.
+Open file tree CONTROL B
+
+Go to App.js file
+Hide file tree
+
+now we need to import our API
+import api from './api/posts';
+so now we have imported the API and we can use it inside the Application
+
+App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home';
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';
+import api from './api/posts';			<<<<<<<<<<<<<<<<<<<<<<<NEW
+
+
+now within App.js underneath the useHistory line (line 20)
+  const history = useHistory(); line
+press return and start another useEffect
+this useEffect is where we will fetch our data
+we only want to happen at load time
+
+  useEffect()
+  useEffect(() => {})

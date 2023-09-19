@@ -1,1 +1,8 @@
-tbd
+now within App.js underneath the useHistory line (line 20)
+  const history = useHistory(); line
+press return and start another useEffect
+this useEffect is where we will fetch our data
+we only want to happen at load time
+
+  useEffect()
+  useEffect(() => {})

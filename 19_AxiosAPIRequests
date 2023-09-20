@@ -145,7 +145,7 @@ in VSCode, open terminal window 	CONTROL `
 type npm i for install axios and -S 
 -S is a habit but no longer neededfa
 
-$ npm i axios -S
+$ npm i axios -S				v06.05.44
 Enter
 
 can now see Axios in package.json file as listed dependency
@@ -197,7 +197,7 @@ open terminal window  CONTROL `
 -p means port
 -w means watch
 
-$ npx json-server -p 3500 -w data/db.json
+$ npx json-server -p 3500 -w data/db.json			v.06.07.30
 Enter
 By pressing Enter, this should launch our json server instance
 
@@ -208,7 +208,7 @@ and now you can see terminal window tree on right
 where we have two bash terminal windows running
 In this 2nd terminal window, we launch our react app
 
-$ npm start
+$ npm start	
 
 now notice that once we get this started, we should not see any posts
 b/c we changed the state. (ie removed hardcoded posts from App.js file).
@@ -237,7 +237,7 @@ App.js
 import Header from './Header';
 import Nav from './Nav';
 import Footer from './Footer';
-import Home from './Home';
+import Home from './Home'; 
 import NewPost from './NewPost';
 import PostPage from './PostPage';
 import About from './About';
@@ -245,14 +245,304 @@ import Missing from './Missing';
 import { Route, Switch, useHistory } from 'react-router'dom';
 import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
-import api from './api/posts';			<<<<<<<<<<<<<<<<<<<<<<<NEW
+import api from './api/posts';			<<<<<<<<<<<<<<<<<<<<<<<NEW  v06.09.19
 
+so now we have imported the API and can use it within the Application
 
 now within App.js underneath the useHistory line (line 20)
   const history = useHistory(); line
 press return and start another useEffect
 this useEffect is where we will fetch our data
-we only want to happen at load time
 
-  useEffect()
+we only want this fetch to happen at load time 
+so the depedency should be an empty array 		[]
+now inside this useEffect we need to define our fetch function		const fetchPosts
+this should be an async function					async () => {}
+
+now inside the async function we have a try catch finally block		try {} catch ()
+inside the catch we catch any possible error 				catch (err)
+// continue explanation below
+
+  useEffect()								v06.09.50
   useEffect(() => {})
+  
+  useEffect(() => {
+
+  }, [])
+
+  useEffect(() => {
+    const fetchPosts = 
+  }, [])
+
+  useEffect(() => {
+    const fetchPosts = async () => {}
+  }, [])
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try { 
+      } catch ()
+    }
+  }, [])
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try { 
+      } catch (err)
+    }
+  }, [])
+
+// continue explanation
+we need to define how to use axios
+so we define a response 					const response = 
+we set the response equal to await api.		
+remeber api. is the axios instance we are importing		api.
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try { 
+        const response = api.
+      } catch (err)
+    }
+  }, [])
+
+and now we use get						api.get
+this is where axios becomes very easy to understand b/c
+we actually use the verbage the words that we could in a CRUD operation
+for api usage so such as http uses get post put delete patch and a few others
+but we are going to only use the basic CRUD operations
+so get is our read operation in CRUD
+so now we just need to say what endpoint we want with that base url
+this application only has 1 endpoint which is /posts		api.get('/posts');
+(--> ie get the Posts)
+so now we need to define this
+and note that this (ie axios) replaces fetch
+and so what is so nice about axios instead of fetch are (1) (2) 
+(1) axios automatically creates the json so we dont need the 
+2nd step to define data and then set it equal to response.json
+(2) axios will automatically catch the errors when the errors are not
+in the 200 range of http responses					v06.11.50
+so before where we would have said 
+      if (!response.ok)
+if the response.ok was false
+we dont have to do this b/c axios will 
+automatically catch anything outside of the 200 range
+so what we can do is
+set our state with setPosts()					setPosts()
+(--> ie setting Posts state)
+
+b/c if we get to this point then *** automatically an error has not occurred *** 
+and thus we know its already in the 200 range
+we put our data into the (response.data)			setPosts(resposne.data)
+
+note that some you see might say
+if we have a resposne
+and if we the data
+  if (response && response.data)
+and you can do this to be extra careful
+we dont do that here b/c we know we have a response in the 200 range
+and if we have a 200 range response then we know that our json server
+is absolutely going to send data back
+Also, if you are working with someone who is working the backend, then
+you might know already know that you will be getting a response
+in that 200 range
+But if not, then this is how you could check for this to make sure you
+have a response.
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try { 
+        const response = api.get
+      } catch (err)
+    }
+  }, [])
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try { 
+        const response = api.get('/posts');
+      } catch (err)
+    }
+  }, [])
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try { 
+        const response = api.get('/posts');
+        setPosts()					<<<<<<<<<<<<setPosts()
+      } catch (err)
+    }
+  }, [])
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try { 
+        const response = api.get('/posts');
+        setPosts(response.data)				<<<<<<<<<<<<setPosts(response.data)
+      } catch (err)			<<<<<<<<<<<<<<<<<<<<<see below
+    }
+  }, [])
+
+
+v06.13.23
+
+Need to capture backend API reponses
+sometimes they will be 200 responses, non-200 (404) responses, or no response at all
+
+now axios catches those errors
+// Not in the 200 response range
+this is copied pasted directly from axios documentation
+axios will log all these errror categories (and more): data, status, headers
+
+      } catch (err) {
+        // Not in the 200 response range
+          console.log();
+          console.log();
+          console.log();
+
+      } catch (err) {
+        // Not in the 200 response range
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+
+so if your backend was sending a message,
+        console.log(err.response.data);
+
+then you would receive the message like this
+        console.log(err.response.data.message);
+
+it will just depend on what the backend is delivering
+when its not in the 200 range, so you must know (be aware) of
+what you are dealing with (ie aware of the api that you are working with)
+to actually know what property to pull out of that data
+
+you can also do this for the status and the headers
+
+but axios will also catch other possible errors so we need to add code for this
+this means we have an error and its response property
+        if (err.response) {}
+
+ie errors in:
+- 200 range vs					// no error 
+- some other # range vs 			// yes errors but Not in the 200 response range
+- undefined					// yes error but its an undefined error
+
+      } catch (err) {
+        if (err.response) {
+          // Not in the 200 response range
+          // add code here			console.log(err.response.data);
+          // add code here			console.log(err.response.status);
+          // add code here			console.log(err.response.headers);
+        } else {
+          // Undefined error
+          // add code here 			console.log(``);		// template literal
+          // add code here 			console.log(`Error:`);
+          // add code here 			console.log(`Error: ${}`);
+          // add code here 			console.log(`Error: ${err.message}`);
+        }
+
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try { 
+        const response = api.get('/posts');
+        setPosts(response.data)
+      } catch (err) {
+        if 
+          // Not in the 200 response range
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+      } else {
+          console.log(`Error: ${err.message}`)		// template literal		v06.15.00
+      }
+    }
+  }, [])
+
+
+so if we get to this
+we know we did not get any response at all from the backend API
+
+         console.log(`Error: ${err.message}`)		// template literal		v06.15.00
+
+this is directly from the axios documentation
+and so axios handles those errors very well
+and we can pull out extra data if we need to		v06.15.33
+
+now our function for fetchPosts is now defined
+but we still need to call fetchPosts() inside useEffect <<<<<<<<<<<<<<<<<<<<<<<<HERE
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try { 
+        const response = api.get('/posts');
+        setPosts(response.data)
+      } catch (err) {
+        if 
+          // Not in the 200 response range
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+      } else {
+          console.log(`Error: ${err.message}`)		// template literal		v06.15.00
+      }
+    }
+
+    fetchPosts(); 			<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<HERE
+  }, [])
+
+
+save
+now we can see our posts in the rendered Chrome app v06.15.46 --> 06.15.48
+our development server loaded the page as soon as we saved our changes
+
+Now we can make a New Post on the Post page in our application
+
+So now the next thing we need to adjust in our application is the handleSubmit function
+v06.16.23
+this is the C in CRUD		Create a new post
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody }; <<<<New Post created here so add line
+    // add C code here
+    const allPosts = [...posts, newPost];
+    setPosts(allPosts);
+    setPostTitle('');
+    setPostBody('');
+    history.push('/');
+  }
+
+add try{}
+delete ending curly brace
+Now for all lines after this (const allPosts, setPosts(allPosts), setPostTitle, setPostBody, history,push)
+all these lines should be inside the try block 
+b/c they are for New Post creation
+Add } curly brace at end of this try segment 
+b/c we dont want to make any of those lines
+happen if our try {} block fails
+
+    // add C code here
+    try {}
+
+    try {
+      const allPosts = [...posts, newPost];
+      setPosts(allPosts);
+      setPostTitle('');
+      setPostBody('');
+      history.push('/');
+    }
+
+Now catch the error				    catch (err) {
+
+    try {
+      const allPosts = [...posts, newPost];
+      setPosts(allPosts);
+      setPostTitle('');
+      setPostBody('');
+      history.push('/');
+    } catch (err) {
+

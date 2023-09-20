@@ -536,13 +536,163 @@ happen if our try {} block fails
       history.push('/');
     }
 
-Now catch the error				    catch (err) {
+Now catch the error					catch (err) {
+add console.log with template literal			console.log(`Error: ${err.message}`)
+so this way, at least we know that we are grabbing the message and logging it
+ie we are acknowledging that we might get an error in this development application
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody }; <<<<New Post created here so add line
+    // add C code here
+    const allPosts = [...posts, newPost];		<<<<MOVE FROM HERE
+    setPosts(allPosts);					<<<<MOVE FROM HERE
+    setPostTitle('');					<<<<MOVE FROM HERE
+    setPostBody('');					<<<<MOVE FROM HERE
+    history.push('/');					<<<<MOVE FROM HERE
     try {
+      const allPosts = [...posts, newPost];		<<TO HERE
+      setPosts(allPosts);				<<TO HERE
+      setPostTitle('');					<<TO HERE
+      setPostBody('');					<<TO HERE
+      history.push('/');				<<TO HERE
+    } catch (err) {					<<<<<<<<<<<<<<<<<<<catch err
+        console.log(`Error: ${err.message}`);		<<<<<<<<<<<<<<<<<<<err.message
+    }
+  }
+
+
+so far we have
+but remember this was focused on a newPost
+so we address this now. So far we have
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody }; <<<<New Post created here so add line
+    try {
+      const response 					<<<<<<<<<HERE
       const allPosts = [...posts, newPost];
       setPosts(allPosts);
       setPostTitle('');
       setPostBody('');
       history.push('/');
     } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
 
+Now in the try block, we need to define a response
+so const response is equal to await api.
+but now we are posting a new blog post so its 	api.post
+Before we used api.get			const response = api.get('/posts');
+Now we use api.post			const response = api.post
+We use api.post b/c we are posting a new blog post
+Then we need to define the endpoint 	  	('/posts'
+then we pass in the new post			         , newPost);
+
+      const response
+      const response = await
+      const response = await api.
+      const response = await api.post()
+      const response = await api.post('/posts')
+      const response = await api.post('/posts', newPost);
+
+so now we have
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody }; <<<<New Post created here so add line
+    try {
+      const response = await api.post('/posts', newPost);
+      const allPosts = [...posts, newPost];
+      setPosts(allPosts);
+      setPostTitle('');
+      setPostBody('');
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+Now after we added the await api.post code
+we need to see where we are
+we need to now alter allPosts b/c we just added a new post but didnt yet change allPosts
+we need to change newPost to response.data
+      const response = await api.post('/posts', newPost);
+
+note that response.data should be the same as the newPost
+
+      const response = await api.post('/posts', newPost);
+      const allPosts = [...posts, newPost];
+				  ^^^^^^^
+why? b/c it should be just the api sending us the data back into response from line above it
+
+      const allPosts = [...posts, newPost];			// OLD
+      const allPosts = [...posts, response.data];		// NEW
+				  ^^^^^^^^^^^^^
+
+so what happens is we try to define response as response ingests the api newPost response
+then that newPost is the same as response.data
+so we just use response.data  
+
+    try {
+      const response = await api.post('/posts', newPost);
+      const allPosts = [...posts, newPost];
+
+
+      const allPosts = [...posts, newPost];
+				  ^^^^^^^
+      const allPosts = [...posts, response.data];
+				  ^^^^^^^^^^^^^
+
+so we now have
+response.data instead of newPost
+then we setPosts to allPosts
+we still empty out our controlled form that has the Title and the Body
+and then we use history.push to go back to the actual blog to 
+see the full list in the blog feed thus we now now have an updated history
+and nothing else changes
+so we just use axios to
+(1) send the new data 
+      const response = await api.post('/posts', newPost);
+(2) then we update the state with the actual response we get from the api
+    thus we extract the .data out of the response
+
+thus updated code is
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    try {
+      const response = await api.post('/posts', newPost);
+      const allPosts = [...posts, response.data];		// response.data is the newPost data
+      setPosts(allPosts);
+      setPostTitle('');
+      setPostBody('');
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+now save
+notice that we have an error
+b/c we added await but not add async to this as can can not await without async
+
+  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
+
+now save again
+App renders ok
+Lets make a New Post with the title: Test Post for Tutorial
+add Body text to the New Post
+Enter
+Rendered app now shows that Test Post in the Blog. It works.		v06.19.40

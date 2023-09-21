@@ -696,3 +696,32 @@ Lets make a New Post with the title: Test Post for Tutorial
 add Body text to the New Post
 Enter
 Rendered app now shows that Test Post in the Blog. It works.		v06.19.40
+start with this
+
+  const handleDelete = (id) => {
+    const postsList = posts.filter(post => post.id !== id);
+    setPosts(postsList);
+    history.push('/');
+  }
+
+
+add async
+Add try block
+Everything that was there before will now be inside of try block
+Then after try block we add the same catch block as used in handleSubmit
+v06.20.17
+
+
+  const handleDelete = async (id) => {					<<<<<<<add async
+    try {								<<<<<<<add try block
+      const postsList = posts.filter(post => post.id !== id);
+      setPosts(postsList);
+      history.push('/');
+    } catch (err) {							<<<<<<<add catch block
+        console.log(`Error: ${err.message}`);
+    }
+
+  }
+
+
+v06.20.17

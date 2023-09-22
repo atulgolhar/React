@@ -725,3 +725,133 @@ v06.20.17
 
 
 v06.20.17
+
+now inside to try, we may not get a response right away sp 
+we need to await a response				await 
+api.delete call delete					api.delete()
+use a template literal ``				(``)
+we pass in the endpoint /posts				(`/posts/`)
+we also need the specific post id 			${id}
+
+  const handleDelete = async (id) => {
+    try {
+      await api.delete
+      const postsList = posts.filter(post => post.id !== id);
+      setPosts(postsList);
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+      await api.delete
+      await api.delete()
+      await api.delete(``)
+      await api.delete(`/posts/`)
+      await api.delete(`/posts/${}`)
+      await api.delete(`/posts/${id}`)
+
+so we now have 
+
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/posts/${id}`)
+      const postsList = posts.filter(post => post.id !== id);
+      setPosts(postsList);
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+
+save
+Now in Chrome App, go to the Test Post page and try to delete the Post
+now everything seems to be working as it should for the delete operation
+So far we have Create, Read and Delete completed
+and now for the more complex of the 4 operations is Update
+
+App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home'; 
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';
+import api from './api/posts';
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    try {
+      const response = await api.post('/posts', newPost);
+      const allPosts = [...posts, response.data];
+      setPosts(allPosts);
+      setPostTitle('');
+      setPostBody('');
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/posts/${id}`)
+      const postsList = posts.filter(post => post.id !== id);
+      setPosts(postsList);
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+  return (
+     <div className="App">
+       <Header title="React JS Blog"/>
+       <Nav search={search} setSearch={setsearch} />
+       <Switch>		
+         <Route exact path="/"
+           <Home posts={posts}/>
+         </Route>
+         <Route exact path="/post"
+           <NewPost 
+             handleSubmit={handleSubmit}
+             postTitle={postTitle}
+             setPostTitle={setPostTitle}
+             postBody={postBody}
+             setPostBody={setPostBody}
+           />
+           <NewPost />
+         </Route>	
+         <Route path="/post/:id">
+           <PostPage posts={posts} handleDelete={handleDelete} />
+         </Route>
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}
+
+
+v06.21.08
+
+lets create the function
+call it handleEdit b/c we are going to edit the post
+add it just above handleDelete
+this will be async
+
+
+const handleEdit
+const handleEdit async		v06.21.13

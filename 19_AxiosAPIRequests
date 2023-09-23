@@ -850,8 +850,95 @@ v06.21.08
 lets create the function
 call it handleEdit b/c we are going to edit the post
 add it just above handleDelete
+its an anonymous function, need the id of the post
 this will be async
+now inside the handleEdit, we will need some new state	v06.21.30
+take postTitle and postBody lines, copy and paste then change
+to editTitle and editBody
+thus postTitle setPostTitle becomes editTitle setEditTitle
+thus postBody setPostBody becomes editBody setEditBody
+
+  const handleEdit
+  const handleEdit = async						v06.21.13
+  const handleEdit = () => {}
+  const handleEdit = (id) => {}
+  const handleEdit = async (id) => {}
+
+  const handleEdit = async (id) => {
+
+  }
 
 
-const handleEdit
-const handleEdit async		v06.21.13
+function App() {
+  const [posts, setPosts] = useState([])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');		<<<<<DULPLICATE THIS FOR editTitle, editBody
+  const [postBody, setPostBody] = useState('');
+  const history = useHistory();
+
+  const [postTitle, setPostTitle] = useState('');		<<<<<DULPLICATE THIS FOR editTitle, editBody
+  const [postBody, setPostBody] = useState('');
+  const [editTitle, setEditTitle] = useState('');		<<<<<DULPLICATE THIS FOR editTitle, editBody
+  const [editBody, setEditBody] = useState('');
+
+so we have 
+
+function App() {
+  const [posts, setPosts] = useState([])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');		<<<<<
+  const [postBody, setPostBody] = useState('');
+  const [editTitle, setEditTitle] = useState('');		<<<<<
+  const [editBody, setEditBody] = useState('');
+  const history = useHistory();
+
+so now we have editTitle editBody setEditTitle setEditBody
+and we use those in our function for handleEdit
+we start with needing the datetime and newPost lines from handleSubmit
+so first lets copy those 
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+then paste into handleEdit
+datetime will not change
+newPost will change to updatedPost
+and instead of postTitle, we have editTitle
+and instead of postBody, we have editBody
+why change these? b/c these will be controlled form where we make those edits
+so we need to pieces of controlled state as well to make those edits
+
+  const handleEdit = async (id) => {
+
+  }
+
+  const handleEdit = async (id) => {
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+  }
+
+
+    const newPost = { id, title: postTitle, datetime, body: postBody };		<<<<postTile, postBody  OLD
+    const updatedPost = { id, title: editTitle, datetime, body: editBody };	<<<<editTitle, editBody NEW
+
+
+so now we have
+
+  const handleEdit = async (id) => {
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    const updatedPost = { id, title: editTitle, datetime, body: editBody };
+  }
+
+now we can start the try {} block  
+
+  const handleEdit = async (id) => {
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    const updatedPost = { id, title: editTitle, datetime, body: editBody };
+    try{
+
+    }
+  }
+
+
+
+v06.22.47

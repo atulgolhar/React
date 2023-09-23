@@ -6,3 +6,32 @@ we only want to happen at load time
 
   useEffect()
   useEffect(() => {})
+
+
+// code tbd
+	    // map thru items here
+	    {}
+	    {items.map}
+	    {items.map()}
+	    {items.map(item => ())}
+	    {items.map(item => (
+            
+            ))}
+	    {items.map(item => (
+                <ListItem
+            ))}
+	    {items.map(item => (
+                <ListItem key=
+            ))}
+	    {items.map(item => (
+                <ListItem key={}
+            ))}
+	    {items.map(item => (
+                <ListItem key={item.id}
+            ))}
+	    {items.map(item => (
+                <ListItem key={item.id} item={item}
+            ))}
+	    {items.map(item => (
+                <ListItem key={item.id} item={item} />
+            ))}

@@ -929,16 +929,97 @@ so now we have
     const updatedPost = { id, title: editTitle, datetime, body: editBody };
   }
 
-now we can start the try {} block  
+now we can start the try {} block  				v06.22.47
+copy catch block from above
+inside the try block
+start with a const response				const response
+set that equal to await					= await 
+call our api and now we call .put()				api.put()
+instead of put, 
+we could use patch if we were updating specific fields
+but here we are replacing the entire post
+inside the put, we put in the endpoint (`/posts/`)			(`/posts/`)
+now we need to be specific to the id of the post using ${id}		(`/posts/${id}`)
+after this we pass in our new data which is the updatedPost		(`/posts/${id}`, updatedPost);
 
   const handleEdit = async (id) => {
     const newPost = { id, title: postTitle, datetime, body: postBody };
     const updatedPost = { id, title: editTitle, datetime, body: editBody };
     try{
-
+      const response		<<<<<<<<<<<<<<<<<<ADD HERE
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
     }
   }
 
+      const response = await 
+      const response = await api.put()
+      const response = await api.put(`/posts/`)
+      const response = await api.put(`/posts/${id}`)
+      const response = await api.put(`/posts/${id}`, updatePost);
 
+so now we have
 
-v06.22.47
+  const handleEdit = async (id) => {
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    const updatedPost = { id, title: editTitle, datetime, body: editBody };
+    try{
+      const response = await api.put(`/posts/${id}`, updatePost);
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+so now we have a response back from axios and the backend API
+we use setPosts() here 
+but this is a little more complex than we did earlier when 
+we just send in all the posts 
+      const allPosts = [...posts, response.data];
+      setPosts(allPosts);		<<<<<<<<<<<<<<<< simple version
+its more complex then the handleSubmit version b/c we need to use map
+      setPosts(posts.map)
+why?
+before all we did was send in the posts 
+now we need to use map
+b/c if we dont then we are creating an array of old and 
+then sending in the new posts as well
+key is to eliminate the old posts and just add the new info
+
+so with map
+we have each post iterated thru		      		(post => )
+map will create a new array by checking 
+the post.id strictly equals the new id we passed in	=> post.id === id ))
+then ternary statement					? )) 
+if true then within this expression {}			{}
+lets use the ...response.data				{ ...response.data}
+note that the response.data is the new post information
+and so if the id is equal to the post id passed in
+and if not :						:
+then just pass in the post as it is			post
+
+so all this means that only where the post ids match 	post.id === id
+is when we pass in the new data				? { ...response.data }
+so note that the updatedPost is the same as the destructured { ...response.data }
+so this will update our post state 			;
+
+      setPosts(posts.map)
+      setPosts(posts.map(post => post.id === id ))
+      setPosts(posts.map(post => post.id === id ? ))
+      setPosts(posts.map(post => post.id === id ? {} ))
+      setPosts(posts.map(post => post.id === id ? { ...response.data } ))
+      setPosts(posts.map(post => post.id === id ? { ...response.data } : ))
+      setPosts(posts.map(post => post.id === id ? { ...response.data } : post))
+      setPosts(posts.map(post => post.id === id ? { ...response.data } : post));
+
+so now we have  		v06.25.02
+
+  const handleEdit = async (id) => {
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    const updatedPost = { id, title: editTitle, datetime, body: editBody };
+    try{
+      const response = await api.put(`/posts/${id}`, updatePost);
+      setPosts(posts.map(post => post.id === id ? { ...response.data } : post));  <<<<<<<<<<<<<<<NEW
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }

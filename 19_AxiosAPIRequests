@@ -1023,3 +1023,180 @@ so now we have  		v06.25.02
         console.log(`Error: ${err.message}`);
     }
   }
+now we still need to setEditTitle('') back to a blank title
+we also need to setEditBody('') back to a blank b/c
+we dont want to hold that over for the controlled form in any way
+then after that we use history.push to go back to the main feed
+so we can see our editted post amongst all the other posts
+and save
+this should complete the handle edit function
+
+      setPosts(posts.map(post => post.id === id ? { ...response.data } : post));  <<<<<<<<<<<<<<<NEW
+      setEditTitle('');
+      setEditBody('');
+      history.push('/');
+
+so now we have  		v06.25.35
+
+  const handleEdit = async (id) => {
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    const updatedPost = { id, title: editTitle, datetime, body: editBody };
+    try{
+      const response = await api.put(`/posts/${id}`, updatePost);
+      setPosts(posts.map(post => post.id === id ? { ...response.data } : post));  <<<<<<<<<<<<<<<NEW
+      setEditTitle('');								<<<<<<<<<<<<<<<NEW
+      setEditBody('');								<<<<<<<<<<<<<<<NEW
+      history.push('/');							<<<<<<<<<<<<<<<NEW
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+save
+resize VSCode in order to see the Chrome rendered app
+right now we have no way to get to a new component and 
+we dont have the edit component yet
+so lets create the edit component and the pathway to get to it
+
+so file tree again in VSCode
+highlight the src folder
+create new file EditPost.js
+CONTROL ALT R to use ES React 7 snippets
+_rafce
+
+this produces
+
+const EditPost = () => {
+    return (
+        <div>
+
+        </div>
+    )
+}
+
+export default EditPost
+
+
+we need to make some imports at the top of this component
+the first import will be useEffect from react
+next import useParams and Link from react router DOM
+
+import { useEffect } from "react";
+import ( useParams, Link } from "react-router-dom";
+
+so we have
+
+import { useEffect } from "react";
+import ( useParams, Link } from "react-router-dom";
+
+const EditPost = () => {
+    return (
+        <div>
+
+        </div>
+    )
+}
+
+export default EditPost
+
+next inside EditPost
+we bring in somem props	{}
+we will need all the posts
+we will need our handleEdit function
+we will need the editBody function
+we will need the setEditBody
+we will need the editTitle and setEditTitle
+
+const EditPost = ({}) => {
+const EditPost = ({
+    posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle
+}) => {
+
+
+so we have
+
+import { useEffect } from "react";
+import ( useParams, Link } from "react-router-dom";
+
+const EditPost = ({
+    posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle
+}) => {
+    return (
+        <div>
+
+        </div>
+    )
+}
+
+export default EditPost
+
+next we build the function
+
+const EditPost = ({
+    posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle
+}) => {
+    // build out function here
+    return (
+        <div>
+
+        </div>
+    )
+}
+
+this is really a combination of our new post page 
+(where we created a newPost with a controlled form)
+but also our post detail page where we pulled in
+the post details from the parameters which is why we are using useParams
+create the id just like we did in the post page to get the post detail
+we use useParams right away to the id attribute that we need to set in the route
+
+    // build out function here
+    const {}
+    const { id }
+    const { id } = useParams
+    const { id } = useParams();
+
+then we need to get the specific posts
+so start with const post equal to
+posts.find just like we did on the post detail page
+using an arrow function
+we use (post.id).toString b/c when it comes out of the params in the url
+it is a string and that is what we are matching
+and we must set the post.id to toString to actually use strict equals.
+Note you could just use the double equals == and not do the toString() part
+but this is your preference
+
+    const post = 
+    const post = posts.find()
+    const post = posts.find(post => )
+    const post = posts.find(post => ())
+    const post = posts.find(post => (post.id).toString)
+    const post = posts.find(post => (post.id).toString())
+    const post = posts.find(post => (post.id).toString() === id);
+
+so now we have the post and id
+we can use useEffect()
+with an anonymous function
+so when this loads, we need to pull in this data
+and set the state for that 
+so for the dependencies inside the array we need post, setEditTitle, setEditBody
+
+    useEffect()
+    useEffect(() => {})
+    useEffect(() => {
+    })
+    useEffect(() => {
+    }, [])
+    useEffect(() => {
+    }, [post, setEditTitle, setEditBody])
+
+and now inside useEffect, we need to 
+set the state for both of these
+so if we have a post		        			if (post)
+
+    useEffect(() => {
+        if (post)
+    }, [post, setEditTitle, setEditBody])
+
+
+v06.29.08

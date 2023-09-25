@@ -248,7 +248,6 @@ import { format } from 'date-fns';
 import api from './api/posts';			<<<<<<<<<<<<<<<<<<<<<<<NEW  v06.09.19
 
 so now we have imported the API and can use it within the Application
-
 now within App.js underneath the useHistory line (line 20)
   const history = useHistory(); line
 press return and start another useEffect
@@ -692,10 +691,12 @@ b/c we added await but not add async to this as can can not await without async
 
 now save again
 App renders ok
+
 Lets make a New Post with the title: Test Post for Tutorial
 add Body text to the New Post
 Enter
 Rendered app now shows that Test Post in the Blog. It works.		v06.19.40
+
 start with this
 
   const handleDelete = (id) => {
@@ -720,7 +721,6 @@ v06.20.17
     } catch (err) {							<<<<<<<add catch block
         console.log(`Error: ${err.message}`);
     }
-
   }
 
 
@@ -786,6 +786,43 @@ import { useState, useEffect } from 'react';
 import { format } from 'date-fns';
 import api from './api/posts';
 
+function App() {
+  const [posts, setPosts] = useState([])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');		<<<<<DULPLICATE THIS FOR editTitle, editBody
+  const [postBody, setPostBody] = useState('');
+  const history = useHistory();
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try { 
+        const response = api.get('/posts');
+        setPosts(response.data)
+      } catch (err) {
+        if 
+          // Not in the 200 response range
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+      } else {
+          console.log(`Error: ${err.message}`)
+      }
+    }
+
+    fetchPosts();
+  }, [])
+
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+      ((post.body).toLowerCase()).includes(search.toLowerCase())
+      || ((post.title).toLowerCase()).includes(search.toLowerCase()));
+
+    setSearchResults(filterResults.reverse());
+  }, [posts, search])							
+
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const id = post.length ? posts[posts.length - 1].id + 1 : 1;
@@ -830,8 +867,6 @@ import api from './api/posts';
              postBody={postBody}
              setPostBody={setPostBody}
            />
-           <NewPost />
-         </Route>	
          <Route path="/post/:id">
            <PostPage posts={posts} handleDelete={handleDelete} />
          </Route>
@@ -1023,6 +1058,7 @@ so now we have  		v06.25.02
         console.log(`Error: ${err.message}`);
     }
   }
+
 now we still need to setEditTitle('') back to a blank title
 we also need to setEditBody('') back to a blank b/c
 we dont want to hold that over for the controlled form in any way
@@ -1130,18 +1166,25 @@ const EditPost = ({
 
 export default EditPost
 
+
 next we build the function
+
+import { useEffect } from "react";
+import ( useParams, Link } from "react-router-dom";
 
 const EditPost = ({
     posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle
 }) => {
-    // build out function here
+    // build out function here	<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<HERE
     return (
         <div>
 
         </div>
     )
 }
+
+export default EditPost
+
 
 this is really a combination of our new post page 
 (where we created a newPost with a controlled form)
@@ -1174,29 +1217,477 @@ but this is your preference
     const post = posts.find(post => (post.id).toString())
     const post = posts.find(post => (post.id).toString() === id);
 
+
+so now we have EditPost.js
+
+import { useEffect } from "react";
+import ( useParams, Link } from "react-router-dom";
+
+const EditPost = ({
+    posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle
+}) => {
+    const { id } = useParams();
+    const post = posts.find(post => (post.id).toString() === id);
+
+    // add useEffect() here
+
+    return (
+        <div>
+
+        </div>
+    )
+}
+
+export default EditPost
+
+
 so now we have the post and id
 we can use useEffect()
 with an anonymous function
-so when this loads, we need to pull in this data
+
+so when this loads, we need to pull in this data		v06.28.52
 and set the state for that 
-so for the dependencies inside the array we need post, setEditTitle, setEditBody
+so for the dependencies 
+inside the array we need post, setEditTitle, setEditBody
+
+post, setEditTitle, setEditBody are the dependencies 
 
     useEffect()
+
     useEffect(() => {})
+
     useEffect(() => {
     })
+
     useEffect(() => {
     }, [])
+
     useEffect(() => {
     }, [post, setEditTitle, setEditBody])
 
-and now inside useEffect, we need to 
-set the state for both of these
+and now inside useEffect, we need to 				v06.29.08
+set the state for both of these setEditTitle and setEditBody
+
 so if we have a post		        			if (post)
+why if?
+there is a chance the page is requested but
+the post does not exist
+
+so if we have a post
+then we setEditTitle				setEditTitle(post.title);
+and we setEditBody				setEditBody(post.body);
 
     useEffect(() => {
-        if (post)
+        if (post) {
+
+        }
+    }, [post, setEditTitle, setEditBody])
+
+    useEffect(() => {
+        if (post) {
+            setEditTitle(post.title);
+            setEditBody(post.body);
+        }
     }, [post, setEditTitle, setEditBody])
 
 
-v06.29.08
+so now we have EditPost.js
+
+import { useEffect } from "react";
+import ( useParams, Link } from "react-router-dom";
+
+const EditPost = ({
+    posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle
+}) => {
+    const { id } = useParams();
+    const post = posts.find(post => (post.id).toString() === id);
+
+    useEffect(() => {
+        if (post) {
+            setEditTitle(post.title);
+            setEditBody(post.body);
+        }
+    }, [post, setEditTitle, setEditBody])
+
+    return (
+        <div>
+
+        </div>
+    )
+}
+
+export default EditPost
+
+
+
+so now that we have these two, 
+		two means setEditTitle and setEditBody
+we have set the state
+and so the form will already be filled out
+(ie by setting the state, the form will therefore be filled out)
+
+and now our controlled form will be ready to edit the existing post
+
+Now the body of the post page will be much like the new post page
+so lets go to the new post page
+so we can select from the beginning of the main element to 
+the closing main element tag of NewPost.js
+
+and we take that NewPost.js code block (of <main> tag to closing </main> tag)
+
+
+for summary sake, the NewPost.js component code is
+
+const NewPost = ({
+    handleSubmit, postTitle, setPostTitle, postBody, setPostBody
+}) => {
+    return (
+        <main className="NewPost">				<<<<<<<<FROM HERE TO
+            <h2>New Post</h2>
+            <form className="newPostForm" onSubmit=>{handleSubmit}>
+	        <label htmlFor="postTitle">Title:</label>
+	        <input
+	            id="postTitle"
+	            type="text"
+	            required
+	            value={}
+	            onChange={(e) => setPostTitle(e.target.value)}
+	        />
+	        <label htmlFor="postBody">Post:</label>
+	        <textarea
+	          id="postBody'
+	          required
+	          value={postBody}
+	          onChange={(e) => setPostBody(e.target.value)}
+	        />
+                <button type="submit" \>Submit</button>
+            </form>
+        </main>							<<<<<<<<TO HERE
+    )
+}
+
+export default NewPost
+
+
+
+
+
+so now we have EditPost.js
+and copy in the <main> tag block over the <div> tags
+so we replace the <div> tags with the <main> tag block
+resulting in this code for EditPost.js component		v06.30.06
+Now there will be some slight changes to the code, we tackle
+that below this code block.
+
+import { useEffect } from "react";
+import ( useParams, Link } from "react-router-dom";
+
+const EditPost = ({
+    posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle
+}) => {
+    const { id } = useParams();
+    const post = posts.find(post => (post.id).toString() === id);
+
+    useEffect(() => {
+        if (post) {
+            setEditTitle(post.title);
+            setEditBody(post.body);
+        }
+    }, [post, setEditTitle, setEditBody])
+
+    return (
+        <main className="NewPost">				<<<<<<<<FROM HERE TO
+            <h2>New Post</h2>
+            <form className="newPostForm" onSubmit=>{handleSubmit}>
+	        <label htmlFor="postTitle">Title:</label>
+	        <input
+	            id="postTitle"
+	            type="text"
+	            required
+	            value={}
+	            onChange={(e) => setPostTitle(e.target.value)}
+	        />
+	        <label htmlFor="postBody">Post:</label>
+	        <textarea
+	          id="postBody'
+	          required
+	          value={postBody}
+	          onChange={(e) => setPostBody(e.target.value)}
+	        />
+                <button type="submit" \>Submit</button>
+            </form>
+        </main>							<<<<<<<<TO HERE
+    )
+}
+
+export default EditPost
+
+
+slight changes are needed here
+className remains the same
+format is the same
+but need to add new lines after main element		{}
+{if we have an editTitle && }
+(ie post needs to exist for it to have an editTitle)
+VSCode does not like this edit b/c in JSX you must have a parent element
+and right now no parent element exists
+
+        <main className="NewPost">
+            <h2>New Post</h2>
+            <form className="newPostForm" onSubmit=>{handleSubmit}>
+
+        <main className="NewPost">
+            {editTitle}
+            <h2>New Post</h2>
+            <form className="newPostForm" onSubmit=>{handleSubmit}>
+
+add ending culry brace after closing </form> tag
+and tab over the text
+
+            </form>
+        </main>
+
+                </form>
+            }
+        </main>
+
+now back to beginning of the <main> tag
+that JSX error is looking for a parent element
+so we can add a fragment tags here			<> </>
+
+
+        <main className="NewPost">
+            {editTitle}
+            <>
+                <h2>New Post</h2>
+                <form className="newPostForm" onSubmit=>{handleSubmit}>
+            </>
+
+so notice, by adding the fragment tag <> then VSCode accepts the change and
+thus the self generated VSCode errors are now gone
+
+more detail on VCode errors and parent element requirement - note that 
+<h2> and <form> tags are sibling elements so this is why JSX and VSCode 
+would not accept it
+
+so now we have this with new tabs
+
+    return (
+        <main className="NewPost">
+            {editTitle}
+            <>
+                <h2>New Post</h2>
+                <form className="newPostForm" onSubmit=>{handleSubmit}>
+	            <label htmlFor="postTitle">Title:</label>
+	            <input
+	                id="postTitle"
+       	                type="text"
+	                required
+	                value={postTitle}
+	                onChange={(e) => setPostTitle(e.target.value)}
+     	            />
+	            <label htmlFor="postBody">Post:</label>
+	            <textarea
+	                id="postBody'
+	                required
+	                value={postBody}
+	                onChange={(e) => setPostBody(e.target.value)}
+	            />
+                    <button type="submit" \>Submit</button>
+                </form>
+            </>
+        </main>
+    )
+
+
+change New Post title to Edit Post
+                <h2>New Post</h2>
+                <h2>Edit Post</h2>
+lets step thru each line of code and verify if keep or make changes
+                <form className="newPostForm" onSubmit=>{handleSubmit}>
+keep the className the same as want the same formatting from CSS
+but onSubmit should not be calling handleSubmit
+instead of this
+		onSubmit=>{handleSubmit}
+we want the event e to prevent default as 
+we have done in the past here with a form
+		onSubmit=>{(e) => e.preventDefault()}
+and so when this happens then that means inside the button 
+we will need to have an onClick and set this equal to anonymous function
+and inside this anonymous function we call the handleEdit
+and we need to pass in the post.id here
+and this is why we dont do this in the onSubmit code but rather do
+it in the onClick code
+
+                    <button type="submit" \>Submit</button>
+                    <button type="submit" onClick={} \>Submit</button>
+                    <button type="submit" onClick={() => } \>Submit</button>
+                    <button type="submit" onClick={() => handleEdit } \>Submit</button>
+                    <button type="submit" onClick={() => handleEdit(post.id)} \>Submit</button>
+
+Now for the controlled form to work
+we need to update some of the names in the input tag
+
+	            <input
+	                id="postTitle"
+       	                type="text"
+	                required
+	                value={postTitle}					<<<<<editTitle
+	                onChange={(e) => setPostTitle(e.target.value)}		<<<<<setEditTitle
+     	            />
+
+	            <input
+	                id="postTitle"
+       	                type="text"
+	                required
+	                value={editTitle}					<<<<<
+	                onChange={(e) => setEditTitle(e.target.value)}		<<<<<
+     	            />
+
+and the same logic applies here as well
+change postBody to editBody
+change setPostBody to setEditBody
+we could also change the id here 	id="postBody' 	but we know that 
+this component will not load at the same time as our new Post Form b/c 
+there will be only 1 form showing per page at a time
+
+	            <label htmlFor="postBody">Post:</label>
+	            <textarea
+	                id="postBody'
+	                required
+	                value={editBody} 					<<<<
+	                onChange={(e) => setEditBody(e.target.value)}		<<<<
+	            />
+
+
+so now we have EditPost.js 
+
+import { useEffect } from "react";
+import ( useParams, Link } from "react-router-dom";
+
+const EditPost = ({
+    posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle
+}) => {
+    const { id } = useParams();
+    const post = posts.find(post => (post.id).toString() === id);
+
+    useEffect(() => {
+        if (post) {
+            setEditTitle(post.title);
+            setEditBody(post.body);
+        }
+    }, [post, setEditTitle, setEditBody])
+
+    return (
+        <main className="NewPost">
+            {editTitle &&				// cut } from here and paste below in this code block
+                <>
+                    <h2>Edit Post</h2>
+                    <form className="newPostForm" onSubmit=>{(e) => e.preventDefault()}>
+	                <label htmlFor="postTitle">Title:</label>
+	                <input
+	                    id="postTitle"
+       	                    type="text"
+	                    required
+	                    value={editTitle}
+	                    onChange={(e) => setEditTitle(e.target.value)}
+     	                />
+	                <label htmlFor="postBody">Post:</label>
+	                <textarea
+	                    id="postBody'
+	                    required
+	                    value={editBody} 
+	                    onChange={(e) => setEditBody(e.target.value)}
+	                />
+                        <button type="submit" onClick={() => handleEdit(post.id)} \>Submit</button>
+                    </form>
+                </>
+           }
+     )
+}
+
+export default EditPost
+
+
+now save these changes   v06.32.52
+now we have created our new component
+but it is still not being routed to App.js
+thus we have no way of getting there
+so lets go to our App.js
+scroll down to the routes
+copy the <Route> block and paste it below
+
+  return (
+     <div className="App">
+       <Header title="React JS Blog"/>
+       <Nav search={search} setSearch={setsearch} />
+       <Switch>		
+         <Route exact path="/"
+           <Home posts={posts}/>
+         </Route>
+         <Route exact path="/post"		<<<<<ROUTES HERE, copy this code block
+           <NewPost 				<<<<<ROUTES HERE, copy this code block
+             handleSubmit={handleSubmit}	<<<<<ROUTES HERE, copy this code block
+             postTitle={postTitle}		<<<<<ROUTES HERE, copy this code block
+             setPostTitle={setPostTitle}	<<<<<ROUTES HERE, copy this code block
+             postBody={postBody}		<<<<<ROUTES HERE, copy this code block
+             setPostBody={setPostBody}		<<<<<ROUTES HERE, copy this code block
+           />					<<<<<ROUTES HERE, pasted here
+         <Route exact path="/post"		<<<<<ROUTES HERE, pasted here
+           <NewPost 				<<<<<ROUTES HERE, pasted here
+             handleSubmit={handleSubmit}	<<<<<ROUTES HERE, pasted here
+             postTitle={postTitle}		<<<<<ROUTES HERE, pasted here
+             setPostTitle={setPostTitle}	<<<<<ROUTES HERE, pasted here
+             postBody={postBody}		<<<<<ROUTES HERE, pasted here
+             setPostBody={setPostBody}		<<<<<ROUTES HERE, pasted here
+           />					<<<<<ROUTES HERE, pasted here
+         </Route>	
+         <Route path="/post/:id">
+           <PostPage posts={posts} handleDelete={handleDelete} />
+         </Route>
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+
+pasted above
+remove the exact
+change the path to edit				/post -->  /edit
+the add id parameter right after edit
+change <NewPost to <EditPost
+
+         <Route exact path="/post"
+         <Route path="/post"
+         <Route path="/edit"
+         <Route path="/edit/:id"
+           <NewPost
+           <EditPost
+
+
+now we need to pass in all the props we need
+we need posts={posts}
+instead of handleSubmit it will be handleEdit
+instead of postTitle it will be editTitle
+instead of setPostTitle it will be setEditTitle
+instead of postBody it will be editBody
+instead of setPostBody it will be setEditBody 		v06.34.10
+
+now we have all the props being passed in 
+and the correct routing in
+
+thus we have
+           <EditPost
+             posts={posts}
+             handleEdit={handleEdit}
+             editTitle={editTitle}
+             setEditTitle={setEditTitle}
+             editBody={editBody}
+             setEditBody={setEditBody}	
+           />	
+
+now we need to create the link and then have a way to go to that route
+
+v 06.34.19

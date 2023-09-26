@@ -1428,7 +1428,8 @@ className remains the same
 format is the same
 but need to add new lines after main element		{}
 {if we have an editTitle && }
-(ie post needs to exist for it to have an editTitle)
+(ie so post needs to exist for it to have an editTitle)   		v06.30.29
+
 VSCode does not like this edit b/c in JSX you must have a parent element
 and right now no parent element exists
 
@@ -1441,7 +1442,7 @@ and right now no parent element exists
             <h2>New Post</h2>
             <form className="newPostForm" onSubmit=>{handleSubmit}>
 
-add ending culry brace after closing </form> tag
+add ending curly brace after closing </form> tag
 and tab over the text
 
             </form>
@@ -1467,7 +1468,7 @@ so notice, by adding the fragment tag <> then VSCode accepts the change and
 thus the self generated VSCode errors are now gone
 
 more detail on VCode errors and parent element requirement - note that 
-<h2> and <form> tags are sibling elements so this is why JSX and VSCode 
+<h2> and <form> tags are both sibling elements so this is why JSX and VSCode 
 would not accept it
 
 so now we have this with new tabs
@@ -1507,16 +1508,24 @@ lets step thru each line of code and verify if keep or make changes
                 <form className="newPostForm" onSubmit=>{handleSubmit}>
 keep the className the same as want the same formatting from CSS
 but onSubmit should not be calling handleSubmit
+
 instead of this
 		onSubmit=>{handleSubmit}
+
+instead onSubmit will call a prevent default (as we often do with a form)
+
 we want the event e to prevent default as 
 we have done in the past here with a form
 		onSubmit=>{(e) => e.preventDefault()}
-and so when this happens then that means inside the button 
-we will need to have an onClick and set this equal to anonymous function
-and inside this anonymous function we call the handleEdit
-and we need to pass in the post.id here
-and this is why we dont do this in the onSubmit code but rather do
+and so when this happens then 
+that means inside the button 
+we need to have an onClick and 
+set this equal to anonymous function
+
+Inside this anonymous function we call the handleEdit
+and need to pass in the post.id
+
+This is why we dont do this in the onSubmit code but rather do
 it in the onClick code
 
                     <button type="submit" \>Submit</button>
@@ -1527,6 +1536,8 @@ it in the onClick code
 
 Now for the controlled form to work
 we need to update some of the names in the input tag
+instead of postTitle its editTitle
+instead of setPostTitle its setEditTitle		v 06.32.34
 
 	            <input
 	                id="postTitle"
@@ -1547,6 +1558,7 @@ we need to update some of the names in the input tag
 and the same logic applies here as well
 change postBody to editBody
 change setPostBody to setEditBody
+
 we could also change the id here 	id="postBody' 	but we know that 
 this component will not load at the same time as our new Post Form b/c 
 there will be only 1 form showing per page at a time
@@ -1558,7 +1570,6 @@ there will be only 1 form showing per page at a time
 	                value={editBody} 					<<<<
 	                onChange={(e) => setEditBody(e.target.value)}		<<<<
 	            />
-
 
 so now we have EditPost.js 
 
@@ -1579,7 +1590,7 @@ const EditPost = ({
     }, [post, setEditTitle, setEditBody])
 
     return (
-        <main className="NewPost">
+        <main className="NewPost">			
             {editTitle &&				// cut } from here and paste below in this code block
                 <>
                     <h2>Edit Post</h2>
@@ -1603,6 +1614,14 @@ const EditPost = ({
                     </form>
                 </>
            }
+           {!editTitle &&
+                <>
+                    <h2>Post Not Found</h2>
+                    <p>Well, that's disappointing.</p>
+                    <p>
+                        <Link to='/'>Visit Our Homepage</Link>
+                    </p>
+                </>
      )
 }
 
@@ -1611,8 +1630,11 @@ export default EditPost
 
 now save these changes   v06.32.52
 now we have created our new component
-but it is still not being routed to App.js
-thus we have no way of getting there
+
+once we save these changes, we will have created our new component 
+but (1) its still not being routed to in the App.js
+    (2) we have no way of navigating there (ie thus we have no way of getting there)
+
 so lets go to our App.js
 scroll down to the routes
 copy the <Route> block and paste it below
@@ -1675,19 +1697,132 @@ instead of setPostTitle it will be setEditTitle
 instead of postBody it will be editBody
 instead of setPostBody it will be setEditBody 		v06.34.10
 
+thus we have
+           <EditPost
+             posts={posts}			// we need posts={posts}
+             handleEdit={handleEdit}		// instead of handleSubmit it will be handleEdit
+             editTitle={editTitle}		// instead of setPostTitle it will be setEditTitle
+             setEditTitle={setEditTitle}	// instead of setPostTitle it will be setEditTitle
+             editBody={editBody}		// instead of postBody it will be editBody
+             setEditBody={setEditBody}		// instead of setPostBody it will be setEditBody
+           />	
+
 now we have all the props being passed in 
 and the correct routing in
 
-thus we have
-           <EditPost
-             posts={posts}
-             handleEdit={handleEdit}
-             editTitle={editTitle}
-             setEditTitle={setEditTitle}
-             editBody={editBody}
-             setEditBody={setEditBody}	
-           />	
+now we need to create the link and then have a way to go to that route	v06.34.19
 
-now we need to create the link and then have a way to go to that route
+lets go back to our EditPost component to complete something v06.34.51
+here we have the if editTitle exists
+which is essentially asking if 
+(1) the post exists (as a post will have the editTitle field)
 
-v 06.34.19
+            {editTitle &&				// cut } from here and paste below in this code block
+
+but 
+(2) if the post does NOT exist (and this poosibility exists as the page could be requested
+    but it in fact does not exist)
+    then we need to go ahead and update this from 	{! postTitle && 	to	{! editTitle &&
+
+if we do not have a title (ie the post does not exist)
+then we need to pass in our Post Not Found text which is where
+we use the react router link to go back to the home page
+
+    return (
+        <main className="NewPost">			
+            {editTitle &&				// cut } from here and paste below in this code block
+                <>
+                    <h2>Edit Post</h2>
+                    <form className="newPostForm" onSubmit=>{(e) => e.preventDefault()}>
+	                <label htmlFor="postTitle">Title:</label>
+	                <input
+	                    id="postTitle"
+       	                    type="text"
+	                    required
+	                    value={editTitle}
+	                    onChange={(e) => setEditTitle(e.target.value)}
+     	                />
+	                <label htmlFor="postBody">Post:</label>
+	                <textarea
+	                    id="postBody'
+	                    required
+	                    value={editBody} 
+	                    onChange={(e) => setEditBody(e.target.value)}
+	                />
+                        <button type="submit" onClick={() => handleEdit(post.id)} \>Submit</button>
+                    </form>
+                </>
+           }
+           {!editTitle &&			// if we do not have a title (ie the post does not exist)
+                <>
+                    <h2>Post Not Found</h2>			// then we need to pass in our Post Not Found text
+                    <p>Well, that's disappointing.</p>		//then we need to pass in our Post Not Found text
+                    <p>
+                        <Link to='/'>Visit Our Homepage</Link>	//we use react router link to go back to the home page
+                    </p>
+                </>
+     )
+}
+
+export default EditPost
+
+
+so now our edit post component				v06.35.05
+we have completed the edit component (see EditPost.js)
+
+and back in App.js we have completed the routing in App.js	v06.35.11
+
+so now that we have the routing, we just need to create a link to the EditPage
+
+Note that we already have a Delete button on the PostPage 
+so this PostPage could be a good place to add another button 
+to allow an Edit						v06.35.23
+
+so go to the PostPage.js and directly above the button tag			<<<<<<<<<<<<
+
+import { useParams, Link } from "react-router-dom";
+
+const PostPage = ({ posts, handleDelete }) => {
+    const { id } = useParams();
+    const post = posts.find(post => (post.id).toString() === id);
+    return (
+      <main className="PostPage">
+          <article className="post">
+              {post && 
+                  <>
+                      <h2>{post.title}</h2>
+                      <p className="postDate">{post.datetime}</p>
+                      <p className="postBody">{post.body}</p>
+		      <Link							<<<<<<<<<<<<HERE
+                      <button onClick={() => handleDelete(post.id)}>		<<<<<<<<<<<<HERE
+                          Delete Post
+                      </button>
+                  </>
+              }
+          </article>
+      </main>
+    )
+}
+
+export default PostPage
+
+
+add the code here
+use Link tag
+which we already imported above from react-router		Link to
+set this to 							=
+add a template literal						{``}
+and pass in the /edit path					/edit/
+and here this template literal will be  			${post.id}		v06.35.45
+
+		      // here  <Link
+                      <button onClick={() => handleDelete(post.id)}>
+
+		      <Link
+		      <Link to=
+		      <Link to={}
+		      <Link to={``}
+		      <Link to={`/edit/`}
+		      <Link to={`/edit/${}`}
+		      <Link to={`/edit/${post.id}`}
+

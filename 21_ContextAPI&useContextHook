@@ -1,1 +1,29 @@
 tbd
+
+// lets finish off the beginning of the Link tag	
+by typing > VSCode automatically gives you the ending tag
+
+		      <Link to={`/edit/${post.id}`}></Link>
+
+inside the link we add text for the button		<button>
+VSCode automatically adds the ending tag		</button> 
+give the button a classname 				editButton
+to differentiate if from the delete button		className="editButton"
+add text on the Button					Edit Post
+
+		      <Link to={`/edit/${post.id}`}><button></button></Link>
+		      <Link to={`/edit/${post.id}`}><button className=""></button></Link>
+		      <Link to={`/edit/${post.id}`}><button className="editButton"></button></Link>
+		      <Link to={`/edit/${post.id}`}><button className="editButton">Edit Post</button></Link>
+
+so far we have 
+
+                      <h2>{post.title}</h2>
+                      <p className="postDate">{post.datetime}</p>
+                      <p className="postBody">{post.body}</p>
+		      <Link to={`/edit/${post.id}`}><button className="editButton">Edit Post</button></Link>
+                      <button onClick={() => handleDelete(post.id)}>
+                          Delete Post
+                      </button>
+
+now lets give the deleteButton a className as well	className="deleteButton"

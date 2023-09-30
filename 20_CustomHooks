@@ -1,37 +1,37 @@
-now within App.js underneath the useHistory line (line 20)
-  const history = useHistory(); line
-press return and start another useEffect
-this useEffect is where we will fetch our data
-we only want to happen at load time
+App.js
 
-  useEffect()
-  useEffect(() => {})
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home'; 
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import EditPost from './EditPost';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';
+import api from './api/posts';
+
+function App() {
+  const [posts, setPosts] = useState([])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const [editTitle, setEditTitle] = useState('');
+  const [editBody, setEditBody] = useState('');
+  const history = useHistory();
 
 
-// code tbd
-	    // map thru items here
-	    {}
-	    {items.map}
-	    {items.map()}
-	    {items.map(item => ())}
-	    {items.map(item => (
-            
-            ))}
-	    {items.map(item => (
-                <ListItem
-            ))}
-	    {items.map(item => (
-                <ListItem key=
-            ))}
-	    {items.map(item => (
-                <ListItem key={}
-            ))}
-	    {items.map(item => (
-                <ListItem key={item.id}
-            ))}
-	    {items.map(item => (
-                <ListItem key={item.id} item={item}
-            ))}
-	    {items.map(item => (
-                <ListItem key={item.id} item={item} />
-            ))}
+2 terminal windows running
+- json server running in terminal 1
+- react app running in termainal 2
+
+
+
+
+
+
+

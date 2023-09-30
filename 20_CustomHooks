@@ -29,7 +29,6 @@ function App() {
 - json server running in terminal 1
 - react app running in termainal 2
 
-
 we will apply a couple of custom hooks
 
 rules for react
@@ -60,12 +59,21 @@ Now back to our own project
 Here in VSCode, we have App.js file open
 Select src folder
 create new folder inside it called hooks
-create new file inside hooks folder 
+create new file inside hooks folder 		v06.43.38
   new file is called useWindowSize.js
-import useState and useEffect
+import useState and useEffect b/c we can use these inside our custom hook
+every React hook starts with use__________
 const useWindowSize
 set this equal to an arrow function  v06.44.20
+and setWindowSize
+these both use state so we need to set the state
+so = useState()
+and now inside useState we use an { object }
+set this to width: undefined 
+b/c thats truely what it is at this point
+its an undefined value
 
+same for the height
 
 import {}
 import { useState, useEffect }
@@ -76,5 +84,38 @@ const useWindowSize = () => {
 }
 
 const useWindowSize = () => {
-    const 
+    const [windowSize, setWindowSize]
 }
+
+const useWindowSize = () => {
+    const [windowSize, setWindowSize] = useState()
+}
+
+const useWindowSize = () => {
+    const [windowSize, setWindowSize] = useState({  })
+}
+
+const useWindowSize = () => {
+    const [windowSize, setWindowSize] = useState({ 
+        width: undefined,
+        height: undefined
+    });
+}
+
+now our initial state is set
+next we add useEffect here
+with an arrow function		v06.45.14
+
+const useWindowSize = () => {
+    const [windowSize, setWindowSize] = useState({ 
+        width: undefined,
+        height: undefined
+    });
+
+    useEffect()				<<<<<<<<ADD HERE
+}
+
+    useEffect()
+    useEffect(()=> {})
+
+v06.45.14

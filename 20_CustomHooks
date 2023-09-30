@@ -30,8 +30,51 @@ function App() {
 - react app running in termainal 2
 
 
+we will apply a couple of custom hooks
+
+rules for react
+1 only call Hooks at the top level, 
+  dont call Hooks inside loops, conditions, or nested functions
+  Why? by following this rule, you ensure Hooks are
+  called in the same order each time a component renders
+  Thus Hooks can correctly preserve the state of Hooks between multiple 
+  useState and useEffect calls.
+  reactjs.org/docs/hooks-rules.html
+
+2 call Hooks from React function components
+  Why? by following this rule you ensure all stateful logic in a component
+  is clearly visible from its source code.
+
+3 can call Hooks from custom Hooks
 
 
+Collection of React Hooks
+nikgraf.github.io/react-hooks
+more than one hook that accomplishes the same thing b/c it has a different author
+
+npm
+react-use
+
+Now back to our own project
+
+Here in VSCode, we have App.js file open
+Select src folder
+create new folder inside it called hooks
+create new file inside hooks folder 
+  new file is called useWindowSize.js
+import useState and useEffect
+const useWindowSize
+set this equal to an arrow function  v06.44.20
 
 
+import {}
+import { useState, useEffect }
+import { useState, useEffect } from "react";  
 
+const useWindowSize = () => {
+
+}
+
+const useWindowSize = () => {
+    const 
+}

@@ -119,3 +119,78 @@ const useWindowSize = () => {
     useEffect(()=> {})
 
 v06.45.14
+
+    useEffect(()=> {
+        
+    })
+
+now focus on useEffect dependencies
+we want this to run at load time and that is the only time this will run	, [])
+now we define a function inside of useEffect called handleResize	const handleResize
+this function handles if the window is resized
+add an arrow function inside						= () => {}
+
+    useEffect(()=> {
+        
+    }, [])
+
+    useEffect(()=> {
+
+        const handleResize = () => {}
+
+    }, [])
+
+
+now we setWindowSize () 
+and set state inside of this function	{}
+
+    useEffect(()=> {
+
+        const handleResize = () => {
+            setWindowSize({})
+        }
+
+    }, [])
+
+
+so then we start defining the setWindowSize function
+with the width					width: 
+here we add window.innerWidth	     		width: window.innerWidth
+then we add the height				height: 
+her we add window.innerHeight			height: window.innerHeight
+both of these will track the value of the window size
+if this function is called into action
+(ie it grabs the innerWidth and innerHeight, then
+    that gets inserted into width and height, then
+    that gets used by setWindowSize in the handleResize function)	v06.46.11
+
+    useEffect(()=> {
+
+        const handleResize = () => {
+            setWindowSize({})
+                width:
+        }
+
+    }, [])
+
+    useEffect(()=> {
+
+        const handleResize = () => {
+            setWindowSize({})
+                width: window.innerWidth
+        }
+
+    }, [])
+
+    useEffect(()=> {
+
+        const handleResize = () => {
+            setWindowSize({})
+                width: window.innerWidth
+                height: window.innerHeight
+        }
+
+    }, [])
+
+
+v06.46.11

@@ -164,6 +164,8 @@ if this function is called into action
     that gets inserted into width and height, then
     that gets used by setWindowSize in the handleResize function)	v06.46.11
 
+add ;
+
     useEffect(()=> {
 
         const handleResize = () => {
@@ -190,7 +192,516 @@ if this function is called into action
                 height: window.innerHeight
         }
 
-    }, [])
+    }, []);
 
 
 v06.46.11
+ok - now we have created the handleResize function
+now we need to call it
+so we have handleResize() called into action
+
+    useEffect(()=> {
+
+        const handleResize = () => {
+            setWindowSize({})
+                width: window.innerWidth
+                height: window.innerHeight
+        }
+
+        handleResize();
+
+    }, []);
+
+
+so note, at load time we have initial values for the width and height
+this only happens once at load time b/c we included them as dependencies    []);
+
+but how to get those values to adjust when the window is resized?
+use an event listeners (just like in regular javascript)
+
+    useEffect(()=> {
+
+        const handleResize = () => {
+            setWindowSize({})
+                width: window.innerWidth
+                height: window.innerHeight
+        }
+
+        handleResize();
+
+        window.addEventListener() 		<<<<<<<<<<<<<<<<<ADD HERE
+
+    }, []);
+
+
+so lets add an event listener to the window		window.addEventListener()
+we listen for the resize event				("resize")
+
+we call this function into action by calling it		, handleResize
+
+
+        window.addEventListener()
+        window.addEventListener("resize")
+        window.addEventListener("resize", handleResize);
+
+so for useEffect now we have 
+
+    useEffect(()=> {
+
+        const handleResize = () => {
+            setWindowSize({})
+                width: window.innerWidth
+                height: window.innerHeight
+        }
+
+        handleResize();
+
+        window.addEventListener("resize", handleResize);
+
+    }, []);
+
+
+and for useWindowSize BEFORE and AFTER code added for useEffect
+this is what we need to get those values everytime
+b/c 
+1 we added this listener at the beginning so it was used only once
+2 but there is someelse we need to do: need to prevent a memory leak in the app
+  how? remove the event listener
+  useEffect has a cleanup function that will only run when the dependencies change for useEffect
+  and so we know the dependencies will NOT change here b/c this is only at load time
+  but it also happen when the application closes out.
+  Thus runs the cleanup function and removes that event listener	const cleanUp
+ 
+  Set cleanUp equal to an arrow function
+        const cleanUp
+        const cleanUp = () => {}
+
+
+const useWindowSize = () => {
+    const [windowSize, setWindowSize] = useState({ 
+        width: undefined,
+        height: undefined
+    });
+
+    useEffect()				<<<<<<<<ADD HERE
+}
+
+
+const useWindowSize = () => {
+    const [windowSize, setWindowSize] = useState({ 
+        width: undefined,
+        height: undefined
+    });
+
+    useEffect(()=> {
+
+        const handleResize = () => {
+            setWindowSize({})
+                width: window.innerWidth
+                height: window.innerHeight
+        }
+
+        handleResize();
+
+        window.addEventListener("resize", handleResize);
+
+        const cleanUp = () => {}
+  
+    }, []);
+}
+
+
+so combining useWindowSize, useEffect, handleResize, event listener, and now cleanUp
+we have overall
+lets add a console.log statement	console.log('runs if a useEffect dependency changes')
+so we will see this in the logs when this runs		v06.48.18
+then we call window.removeEventListener
+with text "resize" and remove the handleResize function from that event
+
+            window.removeEventListener
+            window.removeEventListener()
+            window.removeEventListener("resize")
+            window.removeEventListener("resize", handleResize)
+
+
+        const cleanUp = () => {
+            console.log('runs if a useEffect dependency changes')
+            // add removeEventListener
+        }
+
+
+        const cleanUp = () => {
+            console.log('runs if a useEffect dependency changes')
+            window.removeEventListener("resize", handleResize)
+        }
+
+ 
+note that we have not yet called cleanUp into action yet
+all we have done so far is defined cleanUp
+all you need to do to use cleanUp is add a return at the end
+so its
+
+        return cleanUp;
+
+and then now its called into action
+
+then we to return the windowSize value
+
+    return windowSize;
+
+then at the end of useWindowSize function is
+
+export default useWindowSize;
+
+
+
+so far overall we have
+
+
+import { useState, useEffect } from "react";  
+
+const useWindowSize = () => {
+    const [windowSize, setWindowSize] = useState({ 
+        width: undefined,
+        height: undefined
+    });
+
+    useEffect(()=> {
+
+        const handleResize = () => {
+            setWindowSize({
+                width: window.innerWidth
+                height: window.innerHeight
+            });
+        }
+
+        handleResize();
+
+        window.addEventListener("resize", handleResize);
+
+        const cleanUp = () => {
+            console.log('runs if a useEffect dependency changes')
+            window.removeEventListener("resize", handleResize);
+        }
+
+        return cleanUp;
+
+    }, []);
+
+    return windowSize;
+
+}
+
+export default useWindowSize;
+
+so summary of this is				v06.49.21
+
+start out with useState and useEffect		import { useState, useEffect } from "react";  
+
+define the hook					const useWindowSize = () => {
+
+set the state					const [windowSize, setWindowSize] = useState({ 
+
+we useEffect					useEffect(()=> {
+
+key part is to call it once at load time using 	
+						const handleResize();
+but we also add an event listener so anytime the resize event fires 
+						window.addEventListener("resize", handleResize);
+
+we can continue to call handleResize function
+						handleResize);
+
+then we call cleanUp function which is import to prevent a memory leak
+						const cleanUp = () => {
+						return cleanUp;
+
+so now we completed the entire custom hook and now lets use it in our application
+
+lets go back to the App.js file
+where we have our imports
+underneath the import api statement
+we add the import useWindowSize
+from .hooks / useWindowSize
+
+App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home'; 
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import EditPost from './EditPost';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';
+import api from './api/posts';
+import useWindowSize from './hooks/useWindowSize';		<<<<<<<<<<<<
+
+save
+so now we have saved it but not yet using it
+we only need to pull the width out so we destructure it
+and pull out width only			  		const { width } = useWindowSize();
+
+
+
+function App() {
+  const [posts, setPosts] = useState([])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const [editTitle, setEditTitle] = useState('');
+  const [editBody, setEditBody] = useState('');
+  const history = useHistory();
+  const { width } = useWindowSize();
+ 
+so now we have
+1 defined the function
+2 import the fuuntion
+3 now lets use it (ie width)
+lets pass it into the JSX Header
+
+       <Header title="React JS Blog"/>
+       <Header title="React JS Blog" width={wdith} />
+
+this completes the changes to the App.js file
+
+now lets add it to the Header.js file			v06.51.11
+
+open Header.js
+
+const Header = ({ title }) => {
+    return (
+        <header className="Header">
+            <h1>{title}</h1>
+        </header>
+    )
+}
+
+export default Header
+
+add width to the destructured props at the top of the header file
+
+const Header = ({ title }) => {
+const Header = ({ title, width }) => {
+
+now we also need to do an import
+we need FaLaptop
+and also FaTabletAlt
+and finally FaMobileAlt
+
+import {FaLaptop } 
+import {FaLaptop, FaTabletAlt } 
+import {FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+
+
+so now Header.js file looks like this
+
+import {FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+
+const Header = ({ title, width }) => {
+    return (
+        <header className="Header">
+            <h1>{title}</h1>
+        </header>
+    )
+}
+
+export default Header
+
+
+we need to make sure we imported react-icons/fa in package.json dependencies
+and checking that, we find that we do not have react-icons/fa installed
+so we need to install this
+so open new Terminal window
+$npm i react-icons		// this installs react-icons
+
+now its installed and we can see in package.json dependencies
+now we need to restart the react application as well
+now close terminal window and focus on VSCode
+
+back to Header.js file
+now we want to use those Fa icons in the header based on the width data
+width is now destructured 		const Header = ({ title, width })
+so we can use width inside the header component
+and we base this calculation upon the value of the width
+using a ternary statement
+if width is less than 768 then we use the FaMobileAlt icon
+then if width is less than 992 (so its greater then 768 but less than 992)
+then start another ternary statement
+    if this is true then <FaTabletAlt /> icon
+        finally if this is also false then we show <FaLaptop Value /> icon
+
+
+            <h1>{title}</h1>
+            // add width here
+
+            <h1>{title}</h1>
+            {width}
+
+            <h1>{title}</h1>
+            {width < 768 ? <FaMobileAlt />
+                : width < 992 ? < FaTabletAlt />
+                    : < FaLaptop />}
+
+
+so now Header.js file looks like this
+
+import {FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+
+const Header = ({ title, width }) => {
+    return (
+        <header className="Header">
+            <h1>{title}</h1>
+            {width < 768 ? <FaMobileAlt />
+                : width < 992 ? < FaTabletAlt />
+                    : < FaLaptop />}
+        </header>
+    )
+}
+
+export default Header
+
+
+save these changes
+and look at the application rendered in Chrome
+default view shows laptop icon in top right
+lets use DevTools to change screen sizing
+start to shrink screen size down and now we see tablet icon
+make it larger again to show laptop
+change itunes view to show iphone 6/7/8+ and this shows iphsfaone icon
+so our custom hook is working as expected		v 06.55.41
+
+now we go to the useWindow hook that we created  	v 06.56.10
+
+lets demonstrate the cleanUp function where the 
+cleanUp function will log to the window
+
+        const cleanUp = () => {
+            console.log('runs if a useEffect dependency changes')
+            window.removeEventListener("resize", handleResize);
+        }
+
+        return cleanUp;
+
+note there are no dependencies here 
+so the cleanUp just needs to reload
+reload can happen if there is any change to the code -- add a space
+
+            console.log('runs if a useEffect dependency changes')
+            console.log(' runs if a useEffect dependency changes')
+
+so add the space
+save
+reload now automatically occurs b/c there are no other dependencies and so
+the only change the code is the additional single text space added
+
+Terminal Console window shows this message
+
+  runs if a useEffect dep changes
+
+so this Terminal Console output shows that the cleanUp function does indeed run
+
+now lets
+refactor the cleanUp function
+delete the console.log line
+just return an anonymous function		        return () => 
+
+note we 
+	1 define cleanUp then 
+	2 we define console log
+	3 we define how cleanUp will run
+
+refactor 	is to delete line 2
+		then since 1 and 3 are essentially the same, delete 1 and left with 3 only	
+
+move removeEventListener line and place into anonymous function
+
+
+       const cleanUp = () => {
+            console.log('runs if a useEffect dependency changes')
+            window.removeEventListener("resize", handleResize);
+       }
+
+       return cleanUp;
+
+       const cleanUp = () => {
+            window.removeEventListener("resize", handleResize);
+       }
+
+       return cleanUp;
+
+       const cleanUp = () => {
+            window.removeEventListener("resize", handleResize);
+       }
+
+       return () => 
+
+
+       const cleanUp = () => {
+            window.removeEventListener("resize", handleResize);
+       }
+
+       return () => window.removeEventListener("resize", handleResize);
+
+so then this
+
+       const cleanUp = () => {
+       }
+
+       return () => window.removeEventListener("resize", handleResize);
+
+refactors or reduces to 
+
+       return () => window.removeEventListener("resize", handleResize);
+
+so we can see that they accomplish the same thing
+so note that the refactored cleanUp is only 1 line of code and sits inside the useEffect function
+
+
+so now we are left with useWindowSize.js
+
+import { useState, useEffect } from "react";  
+
+const useWindowSize = () => {
+    const [windowSize, setWindowSize] = useState({ 
+        width: undefined,
+        height: undefined
+    });
+
+    useEffect(()=> {
+
+        const handleResize = () => {
+            setWindowSize({
+                width: window.innerWidth
+                height: window.innerHeight
+            });
+        }
+
+        handleResize();
+
+        window.addEventListener("resize", handleResize);
+
+       return () => window.removeEventListener("resize", handleResize);
+
+    }, []);
+
+    return windowSize;
+
+}
+
+export default useWindowSize;
+
+
+Ok - so now we have finished the useWindowSize custom hook
+there are other recipes for useWindowSize other there by other authors
+
+Next we tackle a more complex custom hook 	v06.57.58
+the more complex hook is a useFetch hook
+but we add a twist given that we have already add Axios to our project
+so we will create a useAxiosFetch hook
+

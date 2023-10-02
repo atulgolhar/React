@@ -705,3 +705,80 @@ the more complex hook is a useFetch hook
 but we add a twist given that we have already add Axios to our project
 so we will create a useAxiosFetch hook
 
+open file tree
+new file inside hooks folder		useAxiosFetch.js
+hide file tree
+
+import useState and useEffect from react			import { useState, useEffect } from 'react';
+also import Axios from Axios					import axios from 'axios';
+next we define const useAxiosFetch using an arrow function	= () => {}
+it accepts a data url						(dataUrl)
+now inside the arrow function we add several pieces of state here
+now here instead of saying posts, we want this to be generic 
+so we could use it an another application
+so a custom hook is much like a utility function		const []
+so inside the custom hook we have data and setData		data, setData
+set this equal to useState and put in an empty array
+
+
+import { useState, useEffect } from 'react'; 
+import axios from 'axios';
+
+const useAxiosFetch = 
+const useAxiosFetch = () => {}
+
+const useAxiosFetch = (dataUrl) => {}
+
+const useAxiosFetch = (dataUrl) => {
+    const []
+
+}
+
+const useAxiosFetch = (dataUrl) => {
+    const [data, setData]
+
+}
+
+const useAxiosFetch = (dataUrl) => {
+    const [data, setData] = useState([]);
+
+}
+
+
+then we also need an empty array to hold fetchError		const [fetchError, ]
+and a setFetchError					    	const [fetchError, setFetchError]
+and set them equal to useState (null)				= useState(null)
+then we also need an emtpy array to hold the loading State
+where we hold isLoading and setIsLoading			const [isLoading, setIsLoading]
+and this is also equal to null					= useState(null);
+	
+const useAxiosFetch = (dataUrl) => {
+    const [data, setData] = useState([]);
+    const [fetchError, setFetchError] = useState(null);
+    const []
+
+}
+
+const useAxiosFetch = (dataUrl) => {
+    const [data, setData] = useState([]);
+    const [fetchError, setFetchError] = useState(null);
+    const [isLoading, setIsLoading] = useState(null);
+
+}
+
+
+now lets create our useEffect function
+
+const useAxiosFetch = (dataUrl) => {
+    const [data, setData] = useState([]);
+    const [fetchError, setFetchError] = useState(null);
+    const [isLoading, setIsLoading] = useState(null);
+
+    useEffect()
+}
+
+
+start with useEffect 				    useEffect()
+and an anonymous function			    useEffect(() => {})		v07.00.01
+    useEffect()
+    useEffect(() => {})

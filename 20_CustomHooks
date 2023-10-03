@@ -778,7 +778,477 @@ const useAxiosFetch = (dataUrl) => {
 }
 
 
-start with useEffect 				    useEffect()
-and an anonymous function			    useEffect(() => {})		v07.00.01
+start with useEffect 					useEffect()
+and an anonymous function				useEffect(() => {})		v07.00.01
+Define let isMounted equals true			let isMounted = true;
+we really want the component to be mounted
+and not attempt to apply something after it is unmounted
+Next we need to define a source				const source = axios
+for Axios we set a CancelToken				axios.CancelToken
+see Axios documentation for details on this
+this allows us to cancel the request if for whatever reason the component is unmounted
+so this becomes our source
+We define our fetchData function inside of useEffect	const fetchData = 
+we call it async and define it as url as we further define this function 	async (url)
+Note it can be confusing to name a parameter we are going to use
+and then use that same name when you create a definition
+			const useAxiosFetch = (dataUrl) =>			dataUrl
+			const fetchData = async (url) = >			url
+so better to use different names here
+b/c the url is just used in the definition of the function 
+
+
     useEffect()
+
     useEffect(() => {})
+
+    useEffect(() => {
+        let isMounted = true;
+        const source = axios.CancelToken.source();
+
+        const fetchData = async (url) => {}
+    })
+
+
+now inside our fetchData function, 
+the first thing we do is setIsLoading to true		setIsLoading(true);
+and then we go ahead and add a try {} block		try{}	
+and inside the try block 	
+we have a const response				const response
+and set this equal to await axios.get()			= axios.get()
+inside the url parameter we first include the url	(url)
+then we need to apply our cancel token			(url, )
+and this will allow us to cancel the url request if
+we unmount the component				(url, cancelToken: source.token
+
+since this second part is a complex object, it becomes a {}
+// see below for continued notes
+
+        const fetchData = async (url) => {}
+
+        const fetchData = async (url) => {
+            setIsLoading(true);
+	    try{}
+        }
+
+        const fetchData = async (url) => {
+            setIsLoading(true);
+	    try{
+                const response = 
+            }
+        }
+
+        const fetchData = async (url) => {
+            setIsLoading(true);
+	    try{
+                const response = await axios.get(url, )
+            }
+        }
+
+        const fetchData = async (url) => {
+            setIsLoading(true);
+	    try{
+                const response = await axios.get(url, {})
+            }
+        }
+
+so we set the cancel token here
+and this will allow us to cancel the url request if we unmount the component
+so here we set the cancel token						cancelToken: source.token
+in the cleanUp we execute or handle it the cancel token
+so here is the cancelToken send with the request url			});
+
+        const fetchData = async (url) => {
+            setIsLoading(true);
+	    try{
+                const response = await axios.get(url, {
+                    cancelToken: source.token
+                });
+            }
+        }
+
+then after we get a response, we need to check to see if the component is mounted
+then if the component is yes mounted, we can setData() with response.data	setData(response.data)
+then we set the fetchError to null				setFetchError(null)
+
+        const fetchData = async (url) => {
+            setIsLoading(true);
+	    try{
+                const response = await axios.get(url, {
+                    cancelToken: source.token
+                });
+                if (isMounted) {
+                    setData(response.data);
+                    setFetchError(null);
+                }
+            }
+        }
+
+
+so far we have
+new file useAxiosFetch.js		so far we have
+
+import { useState, useEffect } from 'react'; 
+import axios from 'axios';
+
+const useAxiosFetch = (dataUrl) => {
+    const [data, setData] = useState([]);
+    const [fetchError, setFetchError] = useState(null);
+    const [isLoading, setIsLoading] = useState(null);
+
+    useEffect(() => {
+        let isMounted = true;
+        const source = axios.CancelToken.source();
+
+        const fetchData = async (url) => {
+            setIsLoading(true);
+	    try{
+                const response = await axios.get(url, {
+                    cancelToken: source.token
+                });
+                if (isMounted) {
+                    setData(response.data);
+                    setFetchError(null);
+                }
+            }
+        }
+    })
+}
+
+
+side note here
+isLoading useState as a null may not be a good choice
+its better to set this to false to begin with			// false 
+then we set it to true when the function is called		// true when function is called
+
+    const [isLoading, setIsLoading] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);	<<<<<<FALSE HERE
+
+   useEffect(() => {
+        let isMounted = true;
+        const source = axios.CancelToken.source();
+
+        const fetchData = async (url) => {
+            setIsLoading(true);				<<<<<<TRUE HERE
+
+so now we have 
+
+new file useAxiosFetch.js		so far we have
+
+import { useState, useEffect } from 'react'; 
+import axios from 'axios';
+
+const useAxiosFetch = (dataUrl) => {
+    const [data, setData] = useState([]);
+    const [fetchError, setFetchError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);		<<<<<<<CHANGED HERE to false
+
+    useEffect(() => {
+        let isMounted = true;
+        const source = axios.CancelToken.source();
+
+        const fetchData = async (url) => {
+            setIsLoading(true);					<<<<<<set to true when called
+	    try{
+                const response = await axios.get(url, {
+                    cancelToken: source.token
+                });
+                if (isMounted) {
+                    setData(response.data);
+                    setFetchError(null);
+                }
+            }
+        }
+    })
+}
+ 
+v 07.02.41
+
+ok 
+we check to see if isMounted			if (isMounted) 
+we set the data 				setData(response.data);
+
+we set the fetch error to null			setFetchError(null);
+b/c there was no error otherwise
+
+so now we have finished our try block
+so now we need our catch block			catch (err)
+and once we catch an error we do this		{}
+we need to check if (isMounted)			(isMounted)
+
+and then if the component isMounted 
+we setFetchError()
+and this will be for the error message		setFetchError(err.message);
+and we setData() to an empty array		setData([]);
+note we set it to an empty array b/c we received an error
+thus we should not use that data anyway
+then we add a finally block below
+
+	    try{
+                const response = await axios.get(url, {
+                    cancelToken: source.token
+                });
+                if (isMounted) {
+                    setData(response.data);
+                    setFetchError(null);
+                }
+            } catch (err) {
+                if (isMounted)
+                    setFetchError(err.message);
+                    setData([]);
+            }
+
+
+now lets add a finally block 			finally {}
+
+	    try{
+                const response = await axios.get(url, {
+                    cancelToken: source.token
+                });
+                if (isMounted) {
+                    setData(response.data);
+                    setFetchError(null);
+                }
+            } catch (err) {
+                if (isMounted)
+                    setFetchError(err.message);
+                    setData([]);
+            } finally {
+            }
+
+
+and here want to check if the component is mounted && use a timeout here
+we use a timeout just to see the loading message for learning and development sake
+dont leave the timeout in your final production project
+we just do this to display the isLoading message in the console
+so setTimeout() and use an arrow function
+we setIsLoading to false but only after 2 seconds (ie 2000)
+so this 2 seconds will allow us time to see the IsLoading message and
+verify that it is in fact working
+
+            } finally {
+                isMounted && setTimeout()
+            }
+
+            } finally {
+                isMounted && setTimeout(() => )
+            }
+
+            } finally {
+                isMounted && setTimeout(() => setIsLoading(false), 2000);
+            }
+
+so far now we have
+
+import { useState, useEffect } from 'react'; 
+import axios from 'axios';
+
+const useAxiosFetch = (dataUrl) => {
+    const [data, setData] = useState([]);
+    const [fetchError, setFetchError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);		<<<<<<<CHANGED HERE to false
+
+    useEffect(() => {
+        let isMounted = true;
+        const source = axios.CancelToken.source();
+
+        const fetchData = async (url) => {
+            setIsLoading(true);					<<<<<<set to true when called
+	    try{
+                const response = await axios.get(url, {
+                    cancelToken: source.token
+                });
+                if (isMounted) {
+                    setData(response.data);
+                    setFetchError(null);
+                }
+            } catch (err) {
+                if (isMounted)
+                    setFetchError(err.message);
+                    setData([]);
+            } finally {
+                isMounted && setTimeout(() => setIsLoading(false), 2000);
+            }
+        }
+    })
+}
+
+then we want to call fetchData()
+and remember that the hook receives a data url 
+as the actual parameter
+
+	fetchData(dataUrl);
+
+so the dataUrl is what we actually pass in
+
+note in the definition we used url 			const fetchData = async (url) => {
+but above it actually receives the dataUrl		const useAxiosFetch = (dataUrl) => {
+
+so this dataUrl is what we call fetchData with		fetchData(dataUrl);
+
+        fetchData(dataUrl);				<<<<<<<<<<<<<HERE
+
+
+and after we call fetchData, then we define a cleanUp		v07.04.31
+cleanUp arrow function							const cleanUp = () => {}
+we add console.log('clean up function') so we know its running		console.log('clean up function')
+then after this we set the isMounted to false		isMounted = false;
+and we cancel the request				source.cancel();
+
+Notice if the request is already then this is ok (ie no harm no foul)
+but this will only run whenever the dependecy changes for the useEffect
+
+then we return the cleanUp function			return cleanUp;
+
+
+        fetchData(dataUrl);
+
+	const cleanUp = () => {}
+
+	const cleanUp = () => {
+            console.log('clean up function')
+            isMounted = false;
+            source.cancel();
+        }
+
+        return cleanUp;
+
+thus so far we have
+
+import { useState, useEffect } from 'react'; 
+import axios from 'axios';
+
+const useAxiosFetch = (dataUrl) => {
+    const [data, setData] = useState([]);
+    const [fetchError, setFetchError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);	
+
+    useEffect(() => {
+        let isMounted = true;
+        const source = axios.CancelToken.source();
+
+        const fetchData = async (url) => {
+            setIsLoading(true);			
+	    try{
+                const response = await axios.get(url, {
+                    cancelToken: source.token
+                });
+                if (isMounted) {
+                    setData(response.data);
+                    setFetchError(null);
+                }
+            } catch (err) {
+                if (isMounted)
+                    setFetchError(err.message);
+                    setData([]);
+            } finally {
+                isMounted && setTimeout(() => setIsLoading(false), 2000);
+            }
+        }
+
+        fetchData(dataUrl);				<<<<<<<<<<<<<HERE
+
+	const cleanUp = () => {				<<<<<<<<<<<<<HERE
+            console.log('clean up function')
+            isMounted = false;
+            source.cancel();
+        }
+
+        return cleanUp;					<<<<<<<<<<<<<HERE
+    })
+}
+
+
+after we return the cleanUp function, we want to set the dependencies for useEffect
+and so the dependency here will be the dataUrl that is passed into useAxiosFetch via 
+the code  		const useAxiosFetch = (dataUrl) => {
+and notice that if the dataUrl changes then we want to run it again thus its a dependency
+
+    })
+
+    }, [dataUrl]);
+
+now with that complete, we can return three things from our custom hook
+return 
+1 the data that we have in state
+2 the fetchError and
+3 isLoading
+
+    return {} 
+    return { data, } 
+    return { data, fetchError, } 
+    return { data, fetchError, isLoading }; 
+
+so we need all three of these things returned from our custom hook 
+
+       return cleanUp;
+    }, [dataUrl]);
+
+    return { data, fetchError, isLoading }; 
+
+}
+
+and now that the hook is complete, we need to export default useAxiosFetch;
+
+       return cleanUp;
+    }, [dataUrl]);
+
+    return { data, fetchError, isLoading }; 
+
+}
+
+export default useAxiosFetch;
+
+
+thus so far we have
+
+import { useState, useEffect } from 'react'; 
+import axios from 'axios';
+
+const useAxiosFetch = (dataUrl) => {
+    const [data, setData] = useState([]);
+    const [fetchError, setFetchError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);	
+
+    useEffect(() => {
+        let isMounted = true;
+        const source = axios.CancelToken.source();
+
+        const fetchData = async (url) => {
+            setIsLoading(true);			
+	    try{
+                const response = await axios.get(url, {
+                    cancelToken: source.token
+                });
+                if (isMounted) {
+                    setData(response.data);
+                    setFetchError(null);
+                }
+            } catch (err) {
+                if (isMounted)
+                    setFetchError(err.message);
+                    setData([]);
+            } finally {
+                isMounted && setTimeout(() => setIsLoading(false), 2000);
+            }
+        }
+
+        fetchData(dataUrl);
+
+	const cleanUp = () => {	
+            console.log('clean up function')
+            isMounted = false;
+            source.cancel();
+        }
+
+       return cleanUp;
+    }, [dataUrl]);
+
+    return { data, fetchError, isLoading }; 
+
+}
+
+export default useAxiosFetch;
+
+
+save			v 07.06.08

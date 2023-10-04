@@ -1252,3 +1252,617 @@ export default useAxiosFetch;
 
 
 save			v 07.06.08
+
+review of what happening here
+defined custom hook 				const useAxiosFetch = (dataUrl) => {
+
+import axios and useState useEffect		import { useState, useEffect } from 'react';
+						import axios from 'axios';
+
+we set different states here at the beginning   const [data, setData] = useState([]);
+						const [fetchError, setFetchError] = useState(null);
+						const [isLoading, setIsLoading] = useState(false);	
+
+we are recieving a data url			const useAxiosFetch = (dataUrl) => {
+
+then we defined our useEffect hook		useEffect(() => {
+we set an isMounted status to true		let isMounted = true;
+we also defined a cancelation token		const source = axios.CancelToken.source();
+then we defined the fetch data function		const fetchData = async (url) => {
+and inside this function we have 		try block, catch block, finally block
+we are constantly checking to see if the component is mounted		if (isMounted)
+and if it is mounted then we take action	setData(response.data); 
+(set data state and error to null)		setFetchError(null);
+if catch an error (set the error message)	setFetchError(err.message);
+and set the data to an empty array		setData([]);
+and finally happens no matter what		finally {
+check if component is still mounted and if so
+set loading to false 				isMounted && setTimeout(() => setIsLoading(false), 2000);
+with a delay to test the isLoading message
+we call that into action with the url received by the hook		fetchData(dataUrl);
+eventually we define and call the cleanup function		const cleanUp = () => {}        return cleanUp;
+the cleanup function will cancel a request if the component is unmounted during the request	source.cancel();
+and will also set isMounted to false		isMounted = false;
+we return the data, possible error and isLoading status		return { data, fetchError, isLoading }; 
+
+and so this is our useAxiosFetch custom hook
+
+now lets put it into action
+
+show file free CONTROL B
+go to App.js where we will apply our custom hook
+add an import statement
+
+import useAxiosFetch from './hooks/useAxiosFetch';
+
+so we have 
+App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home'; 
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import EditPost from './EditPost';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';
+import api from './api/posts';
+import useWindowSize from './hooks/useWindowSize';		
+import useAxiosFetch from './hooks/useAxiosFetch';		<<<<<<<<<<<<
+
+
+now after our import, we need to come down to where we define width and windowSize
+and under this we set
+const equal to
+we can destructure what we are receiving from Axios Fetch
+we receive the data
+the fetchError
+and isLoading
+and we all this equal to useAxiosFetch()
+and now we need to pass in the full url
+since we set up the AxiosFetch custom hook to be reusable, we did not specify the baseurl
+so what we need to do is put in the full url for our server (and this is the json server url)
+the full url is 		http://localhost:3500/posts
+we pass this full url to the useAxiosFetch custom hook
+
+  const 
+  const {} 
+  const { data, } 
+  const { data, fetchError, } 
+  const { data, fetchError, isLoading } 
+  const { data, fetchError, isLoading } = 
+  const { data, fetchError, isLoading } = useAxiosFetch()
+  const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+but notice we also need to remove the current useEffect that we getting our data with
+b/c keeping it would be redundant 				v07.09.51
+
+so we delete it (or comment it out)
+
+  useEffect(() => {						// delete this entire useEffect block
+    const fetchPosts = async () => {
+      try { 
+        const response = await api.get('/posts');
+        setPosts(response.data)
+      } catch (err) {
+        if 
+          // Not in the 200 response range
+          console.log(err.response.data);
+          console.log(err.response.status);
+          console.log(err.response.headers);
+      } else {
+          console.log(`Error: ${err.message}`)
+      }
+    }
+
+    fetchPosts();
+  }, [])							// delete this entire useEffect block
+
+
+but now we have data 
+but we do not have posts so there is 1 more step after we get our data back
+what do we do now? set the state as we are using it in the rest of the application  v07.10.08
+(note we could just use data if we were just displaying the data on the page but
+ since we are doing more than that with the application we need the additional code)
+so set a useEffect here 
+with an anonymous arrow function
+now once have the useEffect, then inside it we 
+setPosts equal to the data						setPosts(data);
+so this updates our Posts state
+and we only want to do this when the data changes			}, [data])
+this now completes everything we need here
+so save
+
+
+  useEffect()
+  useEffect(() => {})
+  
+  useEffect(() => {
+    setPosts(data);  
+  })
+
+
+  useEffect(() => {
+    setPosts(data);  
+  }, [data])
+
+
+
+  const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+// add posts code line here
+
+
+
+  const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+  useEffect(() => {
+    setPosts(data);  
+  }, [data])
+
+
+so now we have everything in place for data 
+but we are not using fetchError or isLoading
+
+save
+reload app
+notice that the app reloads 
+and we get the posts to load 
+
+so now lets put put fetchError and isLoading to work
+
+before we put fetchError and isLoading to work we have
+App.js
+
+function App() {
+  const [posts, setPosts] = useState([])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const [editTitle, setEditTitle] = useState('');
+  const [editBody, setEditBody] = useState('');
+  const history = useHistory();
+  const { width } = useWindowSize();
+
+  const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+  useEffect(() => {
+    setPosts(data);  
+  }, [data])
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+      ((post.body).toLowerCase()).includes(search.toLowerCase())
+      || ((post.title).toLowerCase()).includes(search.toLowerCase()));
+
+    setSearchResults(filterResults.reverse());
+  }, [posts, search])							
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    try {
+      const response = await api.post('/posts', newPost);
+      const allPosts = [...posts, response.data];
+      setPosts(allPosts);
+      setPostTitle('');
+      setPostBody('');
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/posts/${id}`)
+      const postsList = posts.filter(post => post.id !== id);
+      setPosts(postsList);
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+  return (
+     <div className="App">
+       <Header title="React JS Blog" width={width} />
+       <Nav search={search} setSearch={setsearch} />
+       <Switch>
+         <Route exact path="/">
+           <Home posts={searchResults} />
+         </Route>
+         <Route exact path="/post">
+           <NewPost 
+             handleSubmit={handleSubmit}
+             postTitle={postTitle}
+             setPostTitle={setPostTitle}
+             postBody={postBody}
+             setPostBody={setPostBody}
+           />
+         </Route>
+         <Route path="/edit/:id">
+           <EditPost
+             posts={posts}		
+             handleEdit={handleEdit}	
+             editTitle={editTitle}	
+             setEditTitle={setEditTitle}	
+             editBody={editBody}	
+             setEditBody={setEditBody}	
+           />	
+
+         <Route path="/post/:id">
+           <PostPage posts={posts} handleDelete={handleDelete} />
+         </Route>
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}
+
+
+from above:
+so now lets put put fetchError and isLoading to work
+we need to pass fetchError and isLoading to our home page
+so in App.js scroll down to JSX
+
+so we see posts with the {searchResults}
+so lets break this up into 3 lines
+
+           <Home posts={searchResults} />
+
+           <Home 
+             posts={searchResults} 
+           />
+
+then we add fetchError={fetchError}
+and we add isLoading={isLoading}
+now this finishes the changes for the App.js file
+next we make changes to the Home.js file below
+
+line by line progression is
+
+         <Route exact path="/">
+           <Home posts={searchResults} />
+         </Route>
+
+         <Route exact path="/">
+           <Home 
+             posts={searchResults} 
+           />
+         </Route>
+
+
+         <Route exact path="/">
+           <Home 
+             posts={searchResults} 
+             fetchError={fetchError}
+             isLoading={isLoading}
+           />
+         </Route>
+
+
+so App.js now is 
+
+function App() {
+  const [posts, setPosts] = useState([])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const [editTitle, setEditTitle] = useState('');
+  const [editBody, setEditBody] = useState('');
+  const history = useHistory();
+  const { width } = useWindowSize();
+
+  const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+  useEffect(() => {
+    setPosts(data);  
+  }, [data])
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+      ((post.body).toLowerCase()).includes(search.toLowerCase())
+      || ((post.title).toLowerCase()).includes(search.toLowerCase()));
+
+    setSearchResults(filterResults.reverse());
+  }, [posts, search])							
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    try {
+      const response = await api.post('/posts', newPost);
+      const allPosts = [...posts, response.data];
+      setPosts(allPosts);
+      setPostTitle('');
+      setPostBody('');
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/posts/${id}`)
+      const postsList = posts.filter(post => post.id !== id);
+      setPosts(postsList);
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+  return (
+     <div className="App">
+       <Header title="React JS Blog" width={width} />
+       <Nav search={search} setSearch={setsearch} />
+       <Switch>
+         <Route exact path="/">
+           <Home 				<<<<<<<<<<<<HERE
+             posts={searchResults} 		<<<<<<<<<<<<HERE
+             fetchError={fetchError}		<<<<<<<<<<<<HERE
+             isLoading={isLoading}		<<<<<<<<<<<<HERE
+           />					<<<<<<<<<<<<HERE
+         </Route>
+         <Route exact path="/post">
+           <NewPost 
+             handleSubmit={handleSubmit}
+             postTitle={postTitle}
+             setPostTitle={setPostTitle}
+             postBody={postBody}
+             setPostBody={setPostBody}
+           />
+         </Route>
+         <Route path="/edit/:id">
+           <EditPost
+             posts={posts}		
+             handleEdit={handleEdit}	
+             editTitle={editTitle}	
+             setEditTitle={setEditTitle}	
+             editBody={editBody}	
+             setEditBody={setEditBody}	
+           />	
+
+         <Route path="/post/:id">
+           <PostPage posts={posts} handleDelete={handleDelete} />
+         </Route>
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}
+
+so we have Home.js
+we need to destructure what we are passing in			destructured passin
+so we pass fetchError into this function 			need to pass in fetchError
+using a destructured format					const Home = ({ posts, fetchError })
+also pass in using destructured format 				const Home = ({ posts, fetchError, isLoading })
+note we want to remove all the <main> elements and start over in this file
+
+
+const Home = ({ posts }) => {
+const Home = ({ posts, fetchError }) => {
+const Home = ({ posts, fetchError, isLoading }) => {
+
+
+import Feed from './Feed';
+
+const Home = ({ posts }) => {
+  return (
+    <main className="Home">
+        {posts.length ? (
+            <Feed posts={posts} />
+        ) : (
+            <p style={{ marginTop: "2rem" }}>
+                No posts to display.
+            </p>
+        )}
+    </main>
+  )
+}
+
+export default Home
+
+
+
+remove all the <main> elements and start over in this file
+    <main className="Home">
+    </main>
+
+then the first thing we do is
+lets check if we have {isLoading}
+
+    <main className="Home">
+        {isLoading}
+    </main>
+
+if isLoading is true		&&
+then we set <p> tag 
+with a className="statusMsg"	v07.12.20
+(we will define statusMsg shortly)
+add isLoading					{isLoading
+want &&						           &&    
+add 2nd part of && which is the className	              <p className="statusMsg">
+add <p> and text				                                       Loading posts...</p>
+close }					  		                                                   }
+so we have                                      {isLoading && <p className="statusMsg">Loading posts...</p>}
+
+    <main className="Home">
+        {isLoading && }
+    </main>
+
+    <main className="Home">
+        {isLoading && <p className="statusMsg"}
+    </main>
+
+    <main className="Home">
+        {isLoading && <p className="statusMsg">Loading</p>}
+    </main>
+
+
+summary
+
+import Feed from './Feed';
+
+const Home = ({ posts }) => {
+  return (
+    <main className="Home">
+        {isLoading && <p className="statusMsg">Loading</p>}
+        // fetchError code here
+        // !isLoading && !fetchError code here
+    </main>
+  )
+}
+
+export default Home
+
+
+so if isLoading is true then we are loading posts and we can show it this way
+
+on the next line we check to see if we have a fetchError	        {fetchError}
+add &&
+add <p> tag with className="statusMsg"
+but lets add a style right here and need {{}}
+add color red b/c we know we have an error
+and inside the paragraph, we can set the fetchError to display
+
+        // fetcherror code here
+        {fetchError}
+        {fetchError && }
+        {fetchError && <p className="statusMsg"}
+        {fetchError && <p className="statusMsg" style={}}
+        {fetchError && <p className="statusMsg" style={{color: "red"}}}
+        {fetchError && <p className="statusMsg" style={{color: "red"}}>{}</p>}
+        {fetchError && <p className="statusMsg" style={{color: "red"}}>{fetchError}</p>}
+
+then we add one more line to show
+and its not the isLoading or the fetchError message 
+but to show the actual post 
+(notice, easier to read this right to left for the objects)
+
+now we want to show the post themselves 
+and so we code this
+if we do NOT have an isLoading message				{!isLoading }
+&& we do NOT have a fetchError message				            && !fetchError}
+&& posts.length using ternary statement
+so if the posts.length
+and here we add a ternary statement 
+if <Feed posts={posts} then close out this component />
+then add colon for false part
+and this false part is a p tag with className statusMsg
+then close this tag
+and inside the paragraph text we add No posts to display.
+add closing </p> tag
+save
+
+        {!isLoading }
+        {!isLoading && }
+        {!isLoading && !fetchError }
+        {!isLoading && !fetchError && ()}
+        {!isLoading && !fetchError && (posts.length)}
+        {!isLoading && !fetchError && (posts.length ? )}
+        {!isLoading && !fetchError && (posts.length ? <Feed posts={} )}
+        {!isLoading && !fetchError && (posts.length ? <Feed posts={posts} )}
+        {!isLoading && !fetchError && (posts.length ? <Feed posts={posts} /> )}
+        {!isLoading && !fetchError && (posts.length ? <Feed posts={posts} /> : )}
+        {!isLoading && !fetchError && (posts.length ? <Feed posts={posts} /> : <p className="statusMsg"> )}
+        {!isLoading && !fetchError && (posts.length ? <Feed posts={posts} /> : <p className="statusMsg">No posts to display.</p>)}
+
+so we save
+reload app
+we see the 2 second message showing text			Loading posts...
+then we see the current posts
+
+close Console
+and reload app so see again			v07.14.41
+
+so now we have Home.js
+
+import Feed from './Feed';
+
+const Home = ({ posts }) => {
+  return (
+    <main className="Home">
+        {isLoading && <p className="statusMsg">Loading</p>}
+        {fetchError && <p className="statusMsg" style={{color: "red"}}>{fetchError}</p>}
+        {!isLoading && !fetchError && (posts.length ? <Feed posts={posts} /> : <p className="statusMsg">No posts to display.</p>)}
+    </main>
+  )
+}
+
+export default Home
+
+
+now lets go back to App.js
+lets make an error on purpose so we know that our error message is also working
+add extra p
+          ^
+ie we create a problem with the url
+
+  const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+  const { data, fetchError, isLoading } = useAxiosFetch('httpp://localhost:3500/posts');
+							     ^
+rendered Chrome app shows in red text
+
+Network Error 
+
+now reload
+we see
+Loading posts...
+Network Error (in red)
+
+then after 2 second we only see
+Network Error (in red)
+
+so lets change this
+
+go back to the Home.js component
+
+
+import Feed from './Feed';
+
+const Home = ({ posts }) => {
+  return (
+    <main className="Home">
+        {isLoading && <p className="statusMsg">Loading</p>}
+        {fetchError && <p className="statusMsg" style={{color: "red"}}>{fetchError}</p>}
+        {!isLoading && !fetchError && (posts.length ? <Feed posts={posts} /> : <p className="statusMsg">No posts to display.</p>)}
+    </main>
+  )
+}
+
+export default Home
+
+
+lets change line 2 from				fetchError && p tag
+
+to 				  !isLoading && fetchError && p tag
+
+
+ 
+       {fetchError && <p className="statusMsg" style={{color: "red"}}>{fetchError}</p>}
+       {!isLoading && fetchError && <p className="statusMsg" style={{color: "red"}}>{fetchError}</p>}
+
+what does this do?
+
+before we had 
+

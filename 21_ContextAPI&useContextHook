@@ -1,29 +1,119 @@
-tbd
+today we are not adding any new functionality to the blog application
+instead we refactor
 
-// lets finish off the beginning of the Link tag	
-by typing > VSCode automatically gives you the ending tag
+we start with App.js
 
-		      <Link to={`/edit/${post.id}`}></Link>
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home'; 
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import EditPost from './EditPost';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';
+import api from './api/posts';
+import useWindowSize from './hooks/useWindowSize';		
+import useAxiosFetch from './hooks/useAxiosFetch';
 
-inside the link we add text for the button		<button>
-VSCode automatically adds the ending tag		</button> 
-give the button a classname 				editButton
-to differentiate if from the delete button		className="editButton"
-add text on the Button					Edit Post
+function App() {
+  const [posts, setPosts] = useState([])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const [editTitle, setEditTitle] = useState('');
+  const [editBody, setEditBody] = useState('');
+  const history = useHistory();
+  const { width } = useWindowSize();
 
-		      <Link to={`/edit/${post.id}`}><button></button></Link>
-		      <Link to={`/edit/${post.id}`}><button className=""></button></Link>
-		      <Link to={`/edit/${post.id}`}><button className="editButton"></button></Link>
-		      <Link to={`/edit/${post.id}`}><button className="editButton">Edit Post</button></Link>
+  const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
 
-so far we have 
+  useEffect(() => {
+    setPosts(data);  
+  }, [data])
 
-                      <h2>{post.title}</h2>
-                      <p className="postDate">{post.datetime}</p>
-                      <p className="postBody">{post.body}</p>
-		      <Link to={`/edit/${post.id}`}><button className="editButton">Edit Post</button></Link>
-                      <button onClick={() => handleDelete(post.id)}>
-                          Delete Post
-                      </button>
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+      ((post.body).toLowerCase()).includes(search.toLowerCase())
+      || ((post.title).toLowerCase()).includes(search.toLowerCase()));
 
-now lets give the deleteButton a className as well	className="deleteButton"
+    setSearchResults(filterResults.reverse());
+  }, [posts, search])							
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    try {
+      const response = await api.post('/posts', newPost);
+      const allPosts = [...posts, response.data];
+      setPosts(allPosts);
+      setPostTitle('');
+      setPostBody('');
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/posts/${id}`)
+      const postsList = posts.filter(post => post.id !== id);
+      setPosts(postsList);
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+  return (
+     <div className="App">
+       <Header title="React JS Blog" width={width} />
+       <Nav search={search} setSearch={setsearch} />
+       <Switch>
+         <Route exact path="/">
+           <Home 				<<<<<<<<<<<<HERE
+             posts={searchResults} 		<<<<<<<<<<<<HERE
+             fetchError={fetchError}		<<<<<<<<<<<<HERE
+             isLoading={isLoading}		<<<<<<<<<<<<HERE
+           />					<<<<<<<<<<<<HERE
+         </Route>
+         <Route exact path="/post">
+           <NewPost 
+             handleSubmit={handleSubmit}
+             postTitle={postTitle}
+             setPostTitle={setPostTitle}
+             postBody={postBody}
+             setPostBody={setPostBody}
+           />
+         </Route>
+         <Route path="/edit/:id">
+           <EditPost
+             posts={posts}		
+             handleEdit={handleEdit}	
+             editTitle={editTitle}	
+             setEditTitle={setEditTitle}	
+             editBody={editBody}	
+             setEditBody={setEditBody}	
+           />	
+
+         <Route path="/post/:id">
+           <PostPage posts={posts} handleDelete={handleDelete} />
+         </Route>
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+     </div>
+  )
+}
+
+
+v07.17.15

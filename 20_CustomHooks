@@ -1813,7 +1813,7 @@ export default Home
 
 
 now lets go back to App.js
-lets make an error on purpose so we know that our error message is also working
+lets make an error on purpose so we know that our error message is also working  v07.15.05
 add extra p
           ^
 ie we create a problem with the url
@@ -1827,16 +1827,19 @@ Network Error
 
 now reload
 we see
+
 Loading posts...
 Network Error (in red)
 
 then after 2 second we only see
+
 Network Error (in red)
 
-so lets change this
+we we loading messge at the same time as error message (so lets change this)		v07.15.21
 
 go back to the Home.js component
 
+ 
 
 import Feed from './Feed';
 
@@ -1853,16 +1856,123 @@ const Home = ({ posts }) => {
 export default Home
 
 
-lets change line 2 from				fetchError && p tag
+lets change line 2 from	v			fetchError && p tag
 
 to 				  !isLoading && fetchError && p tag
-
 
  
        {fetchError && <p className="statusMsg" style={{color: "red"}}>{fetchError}</p>}
        {!isLoading && fetchError && <p className="statusMsg" style={{color: "red"}}>{fetchError}</p>}
 
-what does this do?
+and change this from isLoading to !isLoading 
+and yes fetchError
+then save, reload
 
-before we had 
+now when reloading the rendered app we see
 
+Loading Error then Network Erro
+yes this looks correct		v07.15.42
+
+so lets go back to App.js and undo the intentional url error we put in earlier
+
+  const { data, fetchError, isLoading } = useAxiosFetch('httpp://localhost:3500/posts');
+  const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+now url is correct
+save
+reload app
+
+now see 
+Loading Posts
+then we see the posts (so no Network error as url was fixed)
+
+show file tree
+go back to custom hook useAxiosFetch.js
+hide file tree
+
+lets get rid of the timeout		
+delete setTimeout()			
+then delete the 2000 
+we know about the cleanUp function but we dont need the console.log so delete it
+but since we are doing two things here (isMounted is false, and cancelling the source), 
+so lets define it as cleanUp.
+so now when we reload, we barely see the Loading Posts message at all 	v07.16.42
+
+
+
+isMounted && setTimeout(() => setIsLoading(false), 2000);
+isMounted && setIsLoading(false), 2000);
+isMounted && setIsLoading(false);
+
+	const cleanUp = () => {	
+            console.log('clean up function')
+            isMounted = false;
+            source.cancel();
+        }
+
+	const cleanUp = () => {	
+            isMounted = false;
+            source.cancel(); 
+        }
+
+
+thus so far we have
+
+import { useState, useEffect } from 'react'; 
+import axios from 'axios';
+
+const useAxiosFetch = (dataUrl) => {
+    const [data, setData] = useState([]);
+    const [fetchError, setFetchError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);	
+
+    useEffect(() => {
+        let isMounted = true;
+        const source = axios.CancelToken.source();
+
+        const fetchData = async (url) => {
+            setIsLoading(true);			
+	    try{
+                const response = await axios.get(url, {
+                    cancelToken: source.token
+                });
+                if (isMounted) {
+                    setData(response.data);
+                    setFetchError(null);
+                }
+            } catch (err) {
+                if (isMounted)
+                    setFetchError(err.message);
+                    setData([]);
+            } finally {
+                isMounted && setIsLoading(false));			<<<<<<<<<<HERE
+            }
+        }
+
+        fetchData(dataUrl);
+
+	const cleanUp = () => {						<<<<<<<<<<<
+            isMounted = false;					
+            source.cancel();
+        }
+
+       return cleanUp;
+    }, [dataUrl]);
+
+    return { data, fetchError, isLoading }; 
+
+}
+
+export default useAxiosFetch;
+
+
+summary 
+v07.16.44 
+so we have created two custom hooks today useAxiosFetch and useWindowSize
+we might find different versions of these two functions on the web as
+they have different authors 
+use them like recipes or utility functions as you can pull them 
+into different projects over and over.
+Remember the rules for hooks
+
+Next Chapt 21 Content API

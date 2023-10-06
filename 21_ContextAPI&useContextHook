@@ -122,3 +122,80 @@ we will refactor useContext instead of drilling props down
 as becomes cumbersome, see current App.js so 
 1) refactor to create much neater App.js file
 2) be able to subscribe to use the Context API and use useContext hook to pull in the info
+v07.18.07
+
+create new folder called 					context
+create new file inside context folder called			DataContext.js
+
+note you can have more than 1 Context per application
+today we just create 1 to explain how it works
+but imagine a 
+User section where user entered information
+Completely seperate Context to manage state
+
+start with an import statement			
+createContext from react
+add import useState and useEffect as well
+
+file DataContext.js 
+
+import {}
+import { createContext }
+import { createContext } from 'react';
+import { createContext, useState, useEffect } from 'react';
+
+now define our DataContext
+set this equal to createContext that we just imported
+to start lets include an empty object {} inside createContext()
+
+const DataContext
+const DataContext = createContext
+const DataContext = createContext()
+const DataContext = createContext({});
+
+the DataProvider will provide the data to our different components
+then we export const DataProvider = ()
+we need an arrow function here
+inside the DataProvider are destructured children
+destructured children refer to the component that within the DataProvider		({ children })
+thus allowing the data to be available to the children of the DataProvider		({ children })
+so now that we have defined the DataProvider lets add a return statement inside it	return ()
+
+export 
+export const DataProvider = () => {}
+export const DataProvider = ({ children }) => {}
+export const DataProvider = ({ children }) => {			
+
+}
+
+export const DataProvider = ({ children }) => {
+    return ()
+}
+
+now we have JSX code					<
+so then inside the return statement, we have
+a DataContext.Provider					<DataContent.Provider
+and then here we have a value={{}}
+note we use 2 curly braces {{}}
+
+    return (
+        <DataContent.Provider value={{}}
+    )
+
+
+
+
+v07.19.46
+
+
+
+
+
+
+
+
+so overall we have
+
+import { createContext, useState, useEffect } from 'react';
+
+const DataContext = createContext({});

@@ -117,3 +117,8 @@ function App() {
 
 
 v07.17.15
+
+we will refactor useContext instead of drilling props down
+as becomes cumbersome, see current App.js so 
+1) refactor to create much neater App.js file
+2) be able to subscribe to use the Context API and use useContext hook to pull in the info

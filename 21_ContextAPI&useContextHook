@@ -122,6 +122,7 @@ we will refactor useContext instead of drilling props down
 as becomes cumbersome, see current App.js so 
 1) refactor to create much neater App.js file
 2) be able to subscribe to use the Context API and use useContext hook to pull in the info
+
 v07.18.07
 
 create new folder called 					context
@@ -210,6 +211,7 @@ so skeleton file DataContext.js is
 we will need to move state and anything else we want here
 that will provide here into the DataProvider 
 
+DataContext.js
 
 import { createContext, useState, useEffect } from 'react';
 
@@ -229,5 +231,354 @@ export const DataProvider = ({ children }) => {
 export default DataContext;
 
 
-Lets go back to the App.js	v07.20.47
+in App.js, we need to import our DataProvider
+import { DataProvider } from './context/DataContext';
+and now we can use the DataProvider to 
+provide data to any of these components in the JSX 
+such as 
+          <Home 			
+             posts={searchResults} 	
+             fetchError={fetchError}	
+             isLoading={isLoading}	
+           />			
+         </Route>
+         <Route exact path="/post">
+           <NewPost 
+             handleSubmit={handleSubmit}
+             postTitle={postTitle}
+             setPostTitle={setPostTitle}
+             postBody={postBody}
+             setPostBody={setPostBody}
+           />
+         </Route>
+
+but this JSX is still large as we have many props that we are drilling down
+we will clean this up 
+Now we want to put the DataProvider (as a wrapper) around all of the components
+and then the components within can subscribe at will to the DataProvider
+Now the DataProvider is a parent to all the components within (ie children)
+And so now the data that comes from the DataProvider will be available to all the
+components within if we choose to pull that data in using the useContext hook
+(need to tab over all those lines)
+
+
+So we have App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home'; 
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import EditPost from './EditPost';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';
+import api from './api/posts';
+import useWindowSize from './hooks/useWindowSize';		
+import useAxiosFetch from './hooks/useAxiosFetch';
+import { DataProvider } from './context/DataContext';		<<<<<<<<<<<<<<<<<<HERE
+
+function App() {
+  const [posts, setPosts] = useState([])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const [editTitle, setEditTitle] = useState('');
+  const [editBody, setEditBody] = useState('');
+  const history = useHistory();
+  const { width } = useWindowSize();
+
+  const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+  useEffect(() => {
+    setPosts(data);  
+  }, [data])
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+      ((post.body).toLowerCase()).includes(search.toLowerCase())
+      || ((post.title).toLowerCase()).includes(search.toLowerCase()));
+
+    setSearchResults(filterResults.reverse());
+  }, [posts, search])							
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    try {
+      const response = await api.post('/posts', newPost);
+      const allPosts = [...posts, response.data];
+      setPosts(allPosts);
+      setPostTitle('');
+      setPostBody('');
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/posts/${id}`)
+      const postsList = posts.filter(post => post.id !== id);
+      setPosts(postsList);
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+  return (
+     <div className="App">
+       <DataProvider>					<<<<<<<<<<<<<<<HERE
+       <Header title="React JS Blog" width={width} />
+       <Nav search={search} setSearch={setsearch} />
+       <Switch>
+         <Route exact path="/">
+           <Home 			
+             posts={searchResults} 	
+             fetchError={fetchError}	
+             isLoading={isLoading}	
+           />			
+         </Route>
+         <Route exact path="/post">
+           <NewPost 
+             handleSubmit={handleSubmit}
+             postTitle={postTitle}
+             setPostTitle={setPostTitle}
+             postBody={postBody}
+             setPostBody={setPostBody}
+           />
+         </Route>
+         <Route path="/edit/:id">
+           <EditPost
+             posts={posts}		
+             handleEdit={handleEdit}	
+             editTitle={editTitle}	
+             setEditTitle={setEditTitle}	
+             editBody={editBody}	
+             setEditBody={setEditBody}	
+           />	
+
+         <Route path="/post/:id">
+           <PostPage posts={posts} handleDelete={handleDelete} />
+         </Route>
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+       </DataProvider>   	<<<<<<<<<<<<<<<<<<<<<<<<HERE
+     </div>
+  )
+}
+
+
+
+Now lets start moving all those lines of state over to the DataContext.js component
+while we still leave it here as well so that we can keep the app working during the 
+transition as we refactor.
+
+Lets grab everything after the components here and move them to the DataContext.js file
+and copy into DataContext.js below
+
+
+So we have App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home'; 
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import EditPost from './EditPost';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';	<<<<<<<<<<<<<<MOVE (ie copy and paste for now)
+import { useState, useEffect } from 'react';			<<<<<<<<<<<<<<MOVE (ie copy and paste for now) 
+import { format } from 'date-fns';				<<<<<<<<<<<<<<MOVE (ie copy and paste for now)
+import api from './api/posts';					<<<<<<<<<<<<<<MOVE (ie copy and paste for now)
+import useWindowSize from './hooks/useWindowSize';		<<<<<<<<<<<<<<MOVE (ie copy and paste for now)
+import useAxiosFetch from './hooks/useAxiosFetch';		<<<<<<<<<<<<<<MOVE (ie copy and paste for now)
+import { DataProvider } from './context/DataContext';
+
+function App() {
+  const [posts, setPosts] = useState([])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const [editTitle, setEditTitle] = useState('');
+  const [editBody, setEditBody] = useState('');
+  const history = useHistory();
+  const { width } = useWindowSize();
+
+  const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+  useEffect(() => {
+    setPosts(data);  
+  }, [data])
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+      ((post.body).toLowerCase()).includes(search.toLowerCase())
+      || ((post.title).toLowerCase()).includes(search.toLowerCase()));
+
+    setSearchResults(filterResults.reverse());
+  }, [posts, search])							
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    try {
+      const response = await api.post('/posts', newPost);
+      const allPosts = [...posts, response.data];
+      setPosts(allPosts);
+      setPostTitle('');
+      setPostBody('');
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+  const handleDelete = async (id) => {
+    try {
+      await api.delete(`/posts/${id}`)
+      const postsList = posts.filter(post => post.id !== id);
+      setPosts(postsList);
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+  return (
+     <div className="App">
+       <DataProvider>					<<<<<<<<<<<<<<<HERE
+       <Header title="React JS Blog" width={width} />
+       <Nav search={search} setSearch={setsearch} />
+       <Switch>
+         <Route exact path="/">
+           <Home 			
+             posts={searchResults} 	
+             fetchError={fetchError}	
+             isLoading={isLoading}	
+           />			
+         </Route>
+         <Route exact path="/post">
+           <NewPost 
+             handleSubmit={handleSubmit}
+             postTitle={postTitle}
+             setPostTitle={setPostTitle}
+             postBody={postBody}
+             setPostBody={setPostBody}
+           />
+         </Route>
+         <Route path="/edit/:id">
+           <EditPost
+             posts={posts}		
+             handleEdit={handleEdit}	
+             editTitle={editTitle}	
+             setEditTitle={setEditTitle}	
+             editBody={editBody}	
+             setEditBody={setEditBody}	
+           />	
+
+         <Route path="/post/:id">
+           <PostPage posts={posts} handleDelete={handleDelete} />
+         </Route>
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+       </DataProvider>   
+     </div>
+  )
+}
+
+
+
+DataContext.js
+
+import { createContext, useState, useEffect } from 'react';
+import { Route, Switch, useHistory } from 'react-router'dom';	<<<<<<<<<<<<<<paste to here
+import { useState, useEffect } from 'react';			<<<<<<<<<<<<<<paste to here
+import { format } from 'date-fns';				<<<<<<<<<<<<<<paste to here
+import api from './api/posts';					<<<<<<<<<<<<<<paste to here
+import useWindowSize from './hooks/useWindowSize';		<<<<<<<<<<<<<<paste to here
+import useAxiosFetch from './hooks/useAxiosFetch';		<<<<<<<<<<<<<<paste to here
+
+const DataContext = createContext({});
+
+export const DataProvider = ({ children }) => {
+    return (
+        <DataContent.Provider value={{
+
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+
+}
+
+export default DataContext;
+
+
+Then we can begin cleaning up this file
+
+we can delete the useState, useEffect as we already got that
+import { useState, useEffect } from 'react';			<<<<DELETE THIS LINE
+
+we can delete the Route, Switch from line 2
+we need to keep useHistory
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useHistory } from 'react-router'dom';	
+
+we keep format
+import { format } from 'date-fns';				
+
+now when we get to the api, we need to recognize where this file is located
+we need to    v07.22.54<<<<<<<<<<<<<<<START FROM HERE
+
+import api from './api/posts';					
+import api from './api/posts';					
+
+
+
+DataContext.js
+
+import { createContext, useState, useEffect } from 'react';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';			<<<<DELETE THIS LINE
+import { format } from 'date-fns';				
+import api from './api/posts';					
+import useWindowSize from './hooks/useWindowSize';		
+import useAxiosFetch from './hooks/useAxiosFetch';		
+
+const DataContext = createContext({});
+
+export const DataProvider = ({ children }) => {
+    return (
+        <DataContent.Provider value={{
+
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+
+}
+
+export default DataContext;
+
+
 

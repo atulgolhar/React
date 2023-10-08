@@ -1975,4 +1975,33 @@ use them like recipes or utility functions as you can pull them
 into different projects over and over.
 Remember the rules for hooks
 
-Next Chapt 21 Content API
+// Next Chapt 21 Content API preview
+
+DataContext.js
+
+import { createContext, useState, useEffect } from 'react';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';				
+import api from './api/posts';					
+import useWindowSize from './hooks/useWindowSize';		
+import useAxiosFetch from './hooks/useAxiosFetch';		
+
+const DataContext = createContext({});
+
+export const DataProvider = ({ children }) => {
+    return (
+        <DataContent.Provider value={{
+	    // add data feeds here - tbd
+	    // add data feeds here - tbd
+	    // add data feeds here - tbd
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+}
+
+export default DataContext;
+
+
+

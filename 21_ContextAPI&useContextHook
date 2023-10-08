@@ -176,26 +176,58 @@ now we have JSX code					<
 so then inside the return statement, we have
 a DataContext.Provider					<DataContent.Provider
 and then here we have a value={{}}
-note we use 2 curly braces {{}}
+note we use 2 curly braces {{}}					v07.19.46
+add extra line and then close out greater than symbol >
 
     return (
-        <DataContent.Provider value={{}}
+        <DataContent.Provider value={{
+        //  put different values here, before passed as props, 
+        //  data is now requested by useContext hook, pass through DataContext.Provider
+        }}>
     )
 
 
+now lets finish this function
+add {children} in the JSX, 
+then after children we closeout </DataContext.Provider> in the JSX
+now save
+add export default DataContext;
+
+    return (
+        <DataContent.Provider value={{
+
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+
+}
+
+export default DataContext;
 
 
-v07.19.46
+so skeleton file DataContext.js is
+we will need to move state and anything else we want here
+that will provide here into the DataProvider 
 
-
-
-
-
-
-
-
-so overall we have
 
 import { createContext, useState, useEffect } from 'react';
 
 const DataContext = createContext({});
+
+export const DataProvider = ({ children }) => {
+    return (
+        <DataContent.Provider value={{
+
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+
+}
+
+export default DataContext;
+
+
+Lets go back to the App.js	v07.20.47
+

@@ -853,4 +853,82 @@ so lets add width right here
 
 Now lets look at the Header.js file
 v07.25.07
+in order to use width from the DataContext, 
+we need to remove width from the destructure here 
+(ie from being passed in as a prop) 
+so we have
 
+const Header = ({ title, width }) => {
+const Header = ({ title }) => {
+
+lets add an import at the top of Header.js
+this import will be to pull in useContext
+this will be the same format as the other hooks from react
+then we also need to import our DataContext that we defined earlier
+
+
+import { FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+
+import {FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+import { useContext } from 'react';
+
+import {FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+import { useContext } from 'react';						
+import DataContext from './context/DataContext';			<<<<<<<<<<<IMPORT DataContext
+
+so now that we have these, 
+we need to define width as are no longer pulling width in as a destructured prop above
+const width is set equal to useContext 
+from the DataContext
+So you can see how if you had more than one DataContext then you can
+import it and then pass it in to the useContext hook
+and in our case, we want the DataContext so we pass that in thru useContext hook
+So notice that we are 
+1 no longer passing down width (by prop drilling), instead we are
+2 importing it and then defining it near the top of the 
+function here just using the useContext hook
+
+import DataContext from './context/DataContext';			<<<<<<<<<<<IMPORT DataContext
+    const { width } = useContext(DataContext);				<<<<<<<<<<pass it in thru useContext hook
+
+
+const Header = ({ title }) => {
+
+const Header = ({ title }) => {
+    const { }
+
+const Header = ({ title }) => {
+    const { width }
+
+const Header = ({ title }) => {
+    const { width } = useContext();
+
+const Header = ({ title }) => {
+    const { width } = useContext(DataContext);				<<<<<<<<<<pass it in thru useContext hook
+
+
+save 
+
+so now Header.js file looks like this
+
+import { FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+import { useContext } from 'react';
+import DataContext from './context/DataContext';
+
+const Header = ({ title }) => {
+    const { width } = useContext(DataContext);
+
+    return (
+        <header className="Header">
+            <h1>{title}</h1>
+            {width < 768 ? <FaMobileAlt />
+                : width < 992 ? < FaTabletAlt />
+                    : < FaLaptop />}
+        </header>
+    )
+}
+
+export default Header
+
+
+v07.26.32

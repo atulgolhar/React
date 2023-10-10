@@ -450,6 +450,20 @@ function App() {
     }
   }
 
+  const handleEdit = async (id) => {
+    const newPost = { id, title: postTitle, datetime, body: postBody };
+    const updatedPost = { id, title: editTitle, datetime, body: editBody };
+    try{
+      const response = await api.put(`/posts/${id}`, updatePost);
+      setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 
+      setEditTitle('');	
+      setEditBody('');	
+      history.push('/');	
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
   const handleDelete = async (id) => {
     try {
       await api.delete(`/posts/${id}`)
@@ -568,14 +582,14 @@ import useWindowSize from '../hooks/useWindowSize';
 import useAxiosFetch from '../hooks/useAxiosFetch';		
 
 
-
+thus so far we have 
 DataContext.js
 
 import { createContext, useState, useEffect } from 'react';
 import { useHistory } from 'react-router'dom';
-import { useState, useEffect } from 'react';			<<<<DELETE THIS LINE  v07.22.33
+import { useState, useEffect } from 'react';
 import { format } from 'date-fns';				
-import api from './api/posts';					
+import api from '../api/posts';					
 import useWindowSize from '../hooks/useWindowSize';		
 import useAxiosFetch from '../hooks/useAxiosFetch';		
 
@@ -593,3 +607,250 @@ export const DataProvider = ({ children }) => {
 }
 
 export default DataContext;
+
+Next we go back to App.js and grab the rest of the needed info
+
+1 grab all of the state we have 	(ie grab all the useState code lines)
+
+  const [posts, setPosts] = useState([])
+  const [search, setSearch] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [postTitle, setPostTitle] = useState('');
+  const [postBody, setPostBody] = useState('');
+  const [editTitle, setEditTitle] = useState('');
+  const [editBody, setEditBody] = useState('');
+  const history = useHistory();
+  const { width } = useWindowSize();
+
+
+2 grab the Axios Fetch		(ie grab the useAxiosFetch)
+
+  const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+
+3 grab the useEffects as well
+
+  useEffect(() => {
+    setPosts(data);  
+  }, [data])
+
+  useEffect(() => {
+    const filteredResults = posts.filter(post => 
+      ((post.body).toLowerCase()).includes(search.toLowerCase())
+      || ((post.title).toLowerCase()).includes(search.toLowerCase()));
+
+    setSearchResults(filterResults.reverse());
+  }, [posts, search])							
+
+
+and now inside the DataContext.js file
+we add 123 inside the DataProvider
+NOTE we also leave that same code if the App.js file as well
+Why? to make sure the App.js continues working
+
+456 we can also copy all of the 
+4 handleSubmit, 
+5 handleEdit, 
+6 handleDelete
+and copy this 456 into the DataContext.js as well 
+
+
+DataContext.js
+
+import { createContext, useState, useEffect } from 'react';
+import { useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';				
+import api from '../api/posts';					
+import useWindowSize from '../hooks/useWindowSize';		
+import useAxiosFetch from '../hooks/useAxiosFetch';		
+
+const DataContext = createContext({});
+
+export const DataProvider = ({ children }) => {
+    // <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<ADD HERE
+    return (
+        <DataContent.Provider value={{
+
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+
+}
+
+export default DataContext;
+
+
+so we have
+
+
+DataContext.js
+
+import { createContext, useState, useEffect } from 'react';
+import { useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';				
+import api from '../api/posts';					
+import useWindowSize from '../hooks/useWindowSize';		
+import useAxiosFetch from '../hooks/useAxiosFetch';		
+
+const DataContext = createContext({});
+
+export const DataProvider = ({ children }) => {
+    const [posts, setPosts] = useState([])
+    const [search, setSearch] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [postTitle, setPostTitle] = useState('');
+    const [postBody, setPostBody] = useState('');
+    const [editTitle, setEditTitle] = useState('');
+    const [editBody, setEditBody] = useState('');
+    const history = useHistory();
+    const { width } = useWindowSize();
+
+    const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+ 
+    useEffect(() => {
+        setPosts(data);  
+    }, [data])
+
+    useEffect(() => {
+        const filteredResults = posts.filter(post => 
+            ((post.body).toLowerCase()).includes(search.toLowerCase())
+            || ((post.title).toLowerCase()).includes(search.toLowerCase()));
+
+    setSearchResults(filterResults.reverse());
+    }, [posts, search])							
+
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const newPost = { id, title: postTitle, datetime, body: postBody };
+    try {
+        const response = await api.post('/posts', newPost);
+        const allPosts = [...posts, response.data];
+        setPosts(allPosts);
+        setPostTitle('');
+        setPostBody('');
+        history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+    const handleEdit = async (id) => {
+      const newPost = { id, title: postTitle, datetime, body: postBody };
+      const updatedPost = { id, title: editTitle, datetime, body: editBody };
+    try{
+      const response = await api.put(`/posts/${id}`, updatePost);
+      setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 
+      setEditTitle('');	
+      setEditBody('');	
+      history.push('/');	
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+    const handleDelete = async (id) => {
+    try {
+      await api.delete(`/posts/${id}`)
+      const postsList = posts.filter(post => post.id !== id);
+      setPosts(postsList);
+      history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+    return (
+        <DataContent.Provider value={{
+
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+
+}
+
+export default DataContext;
+
+
+Note - if you have prior experience with React, then you might question why do this?
+this is dumping everything into DataContext.js
+We will get more organized later in this course
+We can think about efficiency later in this course
+Essentially we are taking 123456 (all the code from App.js) and moving it into our DataContext
+v07.23.55
+
+
+now at the bottom we are not providing anything yet
+but we will
+so now lets scroll down in App.js and the first thing we run across 
+is the DataProvider Header title.
+We can see the Header is receiving the width prop
+as well as the title.
+We will leave the title prop here as you can do both
+both means (1) pass the prop down as a title
+while (2) pulling the width data from the DataContext
+
+
+  return (
+     <div className="App">
+       <DataProvider>		
+       <Header title="React JS Blog" width={width} />		<<<<<<<<<<<<<<<HERE
+       <Nav search={search} setSearch={setsearch} />
+       <Switch>
+         <Route exact path="/">
+           <Home 			
+             posts={searchResults} 	
+             fetchError={fetchError}	
+             isLoading={isLoading}	
+           />			
+         </Route>
+
+
+so now v07.24.49 back in the DataContext we see this code
+
+    return (
+        <DataContent.Provider value={{
+
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+
+}
+
+export default DataContext;
+
+
+we have already defined width above in DataContent.js
+on line 19 
+
+    const { width } = useWindowSize();
+
+and now we pass it thru the DataProvider
+
+so lets add width right here
+(and if we provide more data then we need a comma after width like this
+
+            width 
+            width, moreData1, moreData2, moreData3
+
+
+
+        <DataContent.Provider value={{
+
+        }}>
+
+        <DataContent.Provider value={{
+            width 
+        }}>
+
+
+Now lets look at the Header.js file
+v07.25.07
+

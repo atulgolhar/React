@@ -548,22 +548,36 @@ we keep format
 import { format } from 'date-fns';				
 
 now when we get to the api, we need to recognize where this file is located
-we need to    v07.22.54<<<<<<<<<<<<<<<START FROM HERE
+we need to consider where the file is located		v07.22.54
+file tree shows  
+	src folder
+		context folder
+			DataContext.js file
+so we need to come up thus one dot .
+then we need to come up again thus one dot . 	(ie two dots now)
 
 import api from './api/posts';					
-import api from './api/posts';					
+import api from '../api/posts';					
+
+for the import hooks statements, its the same logic thus add a dot
+
+import useWindowSize from './hooks/useWindowSize';		
+import useAxiosFetch from './hooks/useAxiosFetch';		
+
+import useWindowSize from '../hooks/useWindowSize';		
+import useAxiosFetch from '../hooks/useAxiosFetch';		
 
 
 
 DataContext.js
 
 import { createContext, useState, useEffect } from 'react';
-import { Route, Switch, useHistory } from 'react-router'dom';
-import { useState, useEffect } from 'react';			<<<<DELETE THIS LINE
+import { useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';			<<<<DELETE THIS LINE  v07.22.33
 import { format } from 'date-fns';				
 import api from './api/posts';					
-import useWindowSize from './hooks/useWindowSize';		
-import useAxiosFetch from './hooks/useAxiosFetch';		
+import useWindowSize from '../hooks/useWindowSize';		
+import useAxiosFetch from '../hooks/useAxiosFetch';		
 
 const DataContext = createContext({});
 
@@ -579,6 +593,3 @@ export const DataProvider = ({ children }) => {
 }
 
 export default DataContext;
-
-
-

@@ -494,14 +494,14 @@ we need FaLaptop
 and also FaTabletAlt
 and finally FaMobileAlt
 
-import {FaLaptop } 
-import {FaLaptop, FaTabletAlt } 
-import {FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+import { FaLaptop } 
+import { FaLaptop, FaTabletAlt } 
+import { FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
 
 
 so now Header.js file looks like this
 
-import {FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+import { FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
 
 const Header = ({ title, width }) => {
     return (
@@ -551,7 +551,7 @@ then start another ternary statement
 
 so now Header.js file looks like this
 
-import {FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+import { FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
 
 const Header = ({ title, width }) => {
     return (
@@ -2002,6 +2002,3 @@ export const DataProvider = ({ children }) => {
 }
 
 export default DataContext;
-
-
-

@@ -494,14 +494,14 @@ we need FaLaptop
 and also FaTabletAlt
 and finally FaMobileAlt
 
-import { FaLaptop } 
-import { FaLaptop, FaTabletAlt } 
-import { FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+import {FaLaptop } 
+import {FaLaptop, FaTabletAlt } 
+import {FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
 
 
 so now Header.js file looks like this
 
-import { FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+import {FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
 
 const Header = ({ title, width }) => {
     return (
@@ -1838,7 +1838,6 @@ Network Error (in red)
 we we loading messge at the same time as error message (so lets change this)		v07.15.21
 
 go back to the Home.js component
-
  
 
 import Feed from './Feed';
@@ -1856,7 +1855,7 @@ const Home = ({ posts }) => {
 export default Home
 
 
-lets change line 2 from	v			fetchError && p tag
+lets change line 2 from				fetchError && p tag
 
 to 				  !isLoading && fetchError && p tag
 
@@ -1868,7 +1867,33 @@ and change this from isLoading to !isLoading
 and yes fetchError
 then save, reload
 
+// updated Home.js here
+ 
+import Feed from './Feed';
+
+const Home = ({ posts }) => {
+  return (
+    <main className="Home">
+        {isLoading && <p className="statusMsg">Loading</p>}
+        {!isLoading && fetchError && <p className="statusMsg" style={{color: "red"}}>{fetchError}</p>}
+        {!isLoading && !fetchError && (posts.length ? <Feed posts={posts} /> : <p className="statusMsg">No posts to display.</p>)}
+    </main>
+  )
+}
+
+export default Home
+
+
+
+
+
+
+
 now when reloading the rendered app we see
+
+
+
+
 
 Loading Error then Network Erro
 yes this looks correct		v07.15.42
@@ -1975,30 +2000,4 @@ use them like recipes or utility functions as you can pull them
 into different projects over and over.
 Remember the rules for hooks
 
-// Next Chapt 21 Content API preview
-
-DataContext.js
-
-import { createContext, useState, useEffect } from 'react';
-import { Route, Switch, useHistory } from 'react-router'dom';
-import { useState, useEffect } from 'react';
-import { format } from 'date-fns';				
-import api from './api/posts';					
-import useWindowSize from './hooks/useWindowSize';		
-import useAxiosFetch from './hooks/useAxiosFetch';		
-
-const DataContext = createContext({});
-
-export const DataProvider = ({ children }) => {
-    return (
-        <DataContent.Provider value={{
-	    // add data feeds here - tbd
-	    // add data feeds here - tbd
-	    // add data feeds here - tbd
-        }}>
-            {children}
-        </DataContext.Provider>
-    )
-}
-
-export default DataContext;
+Next Chapt 21 Content API

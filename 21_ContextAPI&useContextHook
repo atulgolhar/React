@@ -1204,5 +1204,455 @@ const Home = ({ posts }) => {
 
 export default Home
 
-// test from iphone 10/11/23 3:59pm
-// test day 2
+
+
+v 07.29.12 Logic:
+
+We will refactor useContext instead of drilling props down
+to avoid cumbersome current App.js
+
+1) refactor to create much neater App.js file
+2) be able to subscribe to use the Context API and use useContext hook to pull in the info
+
+Create new folder called 					context
+Create new file inside context folder called			DataContext.js
+
+note you can have more than 1 Context per application
+today we just create 1 to explain how it works
+but imagine a 
+User section where user entered information
+Completely seperate Context to manage state
+
+start with an import statement			
+createContext from react
+add import useState and useEffect as well
+
+v07.18.07 LOGIC SUMMARY
+
+in src folder
+create new folder called 					context
+create new file inside context folder called			DataContext.js
+
+Note you can have more than 1 Context per application, today we just create 1 to explain how it works
+but imagine a User section where user entered information and will want completely seperate Context to manage state
+
+import createContext, useState and useEffect from react			import { createContext, useState, useEffect } from 'react';
+Define DataContext = createContext({});
+export const DataProvider
+the DataProvider will provide the data to our different components	= () => {}
+Inside DataProvider are destructured children
+destructured children refer to the component thats within the DataProvider		({ children })
+thus allowing the data to be available to the children of the DataProvider		({ children })
+So now that we have defined the DataProvider lets add a return statement inside it	return ()
+Inside the return we have JSX code with DataContext.Provider with value
+DataContext.Provider contains the different values that 
+prior pass down props
+now pass thru JSX tag DataContext.Provider via useContext hook, add {children} inside Provider then closing tag
+add export default DataContext
+so now we have our skeleton file DataContext.js is
+inside Provider will be state and anything else we want here thru the DataProvider (ie pass thru vehicle)
+in App.js, we need to import our DataProvider		import { DataProvider } from './context/DataContext';
+and now we can use the DataProvider to provide data to any of these components in the JSX 
+
+Now put DataProvider (as a Parent wrapper) around all components and "then components within can subscribe at will" 
+thus parent to all the components within (ie children)
+
+Now the data that comes from DataProvider will be available to all the
+components within IF we choose to pull that data in using the useContext hook
+
+During refactor transition, need to keep app working so leave components in place WHILE SIMULANTEOUSLY
+start moving all state over to the DataContext.js component
+
+Grab everything after the components here and move them to the DataContext.js file
+Then begin cleaning up this file
+delete the useState, useEffect as duplicated 
+delete the Route, Switch			import { Route, Switch, useHistory } from 'react-router'dom';
+we need to keep useHistory			import { useHistory } from 'react-router'dom';	
+we keep format					import { format } from 'date-fns';				
+
+Now when we get to the api, we need to recognize where this file is located in file tree hierarchy
+need to come up again thus one dot . 	(ie two dots now)		import api from './api/posts';					
+									import api from '../api/posts';
+and now inside the DataContext.js file
+we add 123 inside the DataProvider
+NOTE we also leave that same code if the App.js file as well
+Why? to make sure the App.js continues working
+
+456 we can also copy all of the 
+4 handleSubmit, 
+5 handleEdit, 
+6 handleDelete
+and copy this 456 into the DataContext.js as well 
+
+Note - if you have prior experience with React, then you might question why do this?
+this is dumping everything into DataContext.js
+We will get more organized later in this course
+We can think about efficiency later in this course
+Essentially we are taking 123456 (all the code from App.js) and moving it into our DataContext
+v07.23.55
+
+now at the bottom we are not providing anything yet
+but we will
+so now lets scroll down in App.js and the first thing we run across 
+is the DataProvider Header title.
+
+We can see the Header is receiving the width prop as well as the title.
+We will leave the title prop here as you can do both
+both means (1) pass the prop down as a title
+while (2) pulling the width data from the DataContext.Provider
+
+if we provide more data then we need a comma after width like this		ATUL123
+            width 
+            width, moreData1, moreData2, moreData3
+
+Now lets look at the Header.js file		v07.25.07
+in order to use width from the DataContext, we need to remove width from the destructure here 
+(ie from being passed in as a prop) 
+
+so we have
+
+const Header = ({ title, width }) => {
+const Header = ({ title }) => {
+
+lets add an import at the top of Header.js, this import will be to pull in useContext
+this will be the same format as the other hooks from react
+then we also need to import our DataContext that we defined earlier
+
+
+import { FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+
+import {FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+import { useContext } from 'react';
+
+import {FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+import { useContext } from 'react';						
+import DataContext from './context/DataContext';			<<<<<<<<<<<IMPORT DataContext
+
+so now that we have these, 
+we need to define width as are no longer pulling width in as a destructured prop above
+const width is set equal to useContext 
+from the DataContext
+So you can see how if you had more than one DataContext then you can
+import it and then pass it in to the useContext hook
+and in our case, we want the DataContext so we pass that in thru useContext hook
+So notice that we are 
+1 no longer passing down width (by prop drilling), instead we are
+2 importing it and then defining it near the top of the function here just using the useContext hook
+
+import DataContext from './context/DataContext';			<<<<<<<<<<<IMPORT DataContext
+    const { width } = useContext(DataContext);				<<<<<<<<<<pass it in thru useContext hook
+
+
+const Header = ({ title }) => {
+
+const Header = ({ title }) => {
+    const { }
+
+const Header = ({ title }) => {
+    const { width }
+
+const Header = ({ title }) => {
+    const { width } = useContext();
+
+const Header = ({ title }) => {
+    const { width } = useContext(DataContext);				<<<<<<<<<<pass it in thru useContext hook
+
+
+save 
+
+so now Header.js file looks like this
+
+import { FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+import { useContext } from 'react';
+import DataContext from './context/DataContext';
+
+const Header = ({ title }) => {
+    const { width } = useContext(DataContext);
+
+    return (
+        <header className="Header">
+            <h1>{title}</h1>
+            {width < 768 ? <FaMobileAlt />
+                : width < 992 ? < FaTabletAlt />
+                    : < FaLaptop />}
+        </header>
+    )
+}
+
+export default Header
+
+
+v07.26.32
+
+For example if grabbing data from 3 additional sources, we might do this
+
+import DataContext from './context/DataContext';			<<<<<<<<<<<IMPORT DataContext
+import DataContextTopic1 from './context/DataContextTopic1';		<<<<<<<<<<<IMPORT DataContext
+import DataContextTopic2 from './context/DataContextTopic2';		<<<<<<<<<<<IMPORT DataContext
+import DataContextTopic3 from './context/DataContextTopic3';		<<<<<<<<<<<IMPORT DataContext
+
+
+    const { width } = useContext(DataContext);				<<<<<<<<<<pass it in thru useContext hook
+    const { dataStream1 } = useContext(DataContextTopic1);		<<<<<<<<<<pass it in thru useContext hook
+    const { dataStream2 } = useContext(DataContextTopic1);		<<<<<<<<<<pass it in thru useContext hook
+    const { dataStream3 } = useContext(DataContextTopic2);		<<<<<<<<<<pass it in thru useContext hook
+    const { dataStream4 } = useContext(DataContextTopic3);		<<<<<<<<<<pass it in thru useContext hook
+
+save
+
+go to the Application
+width is still working, icon changes as we resize the screen
+
+ignore the warnings (is assigned a value but never used)
+we will switch each component over and then eliminate warnings along the way
+
+now we go back to Header.js
+
+copy these two lines for pasting into every component 
+that will useContext(DataContext) subscription
+
+import { useContext } from 'react';
+import DataContext from './context/DataContext';
+
+
+so now looking at the JSX for App.js
+we want to eliminate the width
+       <Header title="React JS Blog" width={width} />	<<<<<<<<<<<<<<<<<<<<<<HERE
+       <Header title="React JS Blog" />			<<<<<<<<<<<<<<<<<<<<<<HERE
+then we go to the Nav and it receives Search and setSearch 				<<<<<<
+so we save the App and 
+open up Nav.js
+
+
+  return (
+     <div className="App">
+       <DataProvider>					
+       <Header title="React JS Blog" width={width} />	<<<<<<<<<<<<<<<<<<<<<<HERE
+       <Nav search={search} setSearch={setsearch} />					<<<<<<
+       <Switch>
+         <Route exact path="/">
+           <Home 			
+             posts={searchResults} 	
+             fetchError={fetchError}	
+             isLoading={isLoading}	
+           />			
+         </Route>
+         <Route exact path="/post">
+           <NewPost 
+             handleSubmit={handleSubmit}
+             postTitle={postTitle}
+             setPostTitle={setPostTitle}
+             postBody={postBody}
+             setPostBody={setPostBody}
+           />
+         </Route>
+         <Route path="/edit/:id">
+           <EditPost
+             posts={posts}		
+             handleEdit={handleEdit}	
+             editTitle={editTitle}	
+             setEditTitle={setEditTitle}	
+             editBody={editBody}	
+             setEditBody={setEditBody}	
+           />	
+
+         <Route path="/post/:id">
+           <PostPage posts={posts} handleDelete={handleDelete} />
+         </Route>
+         <Route path="/about" component={About} />
+         <Route path="*" component={Missing} />
+
+       </Switch>
+       <Footer />
+       </DataProvider>   
+     </div>
+  )
+}
+
+
+
+open up Nav.js
+we need to paste those two import statements into Nav.js
+
+import { useContext } from 'react';
+import DataContext from './context/DataContext';
+
+
+we also grab this line from Header.js			v07.27.44
+(this line of code uses the Context)
+
+    const { width } = useContext(DataContext);
+
+and put this line into our Nav.js
+
+so now our Nav.js file shows	
+
+import { Link } from 'react-router-dom';				<<<<<<<<<ADDED HERE
+import { useContext } from 'react';					<<<<<<<<<ADDED HERE
+import DataContext from './context/DataContext';			<<<<<<<<<ADDED HERE
+
+const Nav = ({ search, setSearch }) => {
+    const { width } = useContext(DataContext);				<<<<<<<<<ADDED HERE
+    return (    
+        <nav className="Nav">
+            <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
+                <label htmlFor="search">Search Posts</label>
+	        <input
+	            id="search"
+	            type="text"
+	            placeholder="Search Posts"
+	            value={search}
+	            onChange={(e) => setSearch(e.target.value)}
+            </form> 
+            <ul>
+                <li><Link to="/">Home</li>
+                <li><Link to="/post">Post</li>
+                <li><Link to="/about">About</li>
+            </ul> 
+        </nav>
+        </nav>
+    )
+}
+
+export default Nav
+
+but there is a pattern that emerges from these changes as we 
+are no longer destructuring as props but instead 
+we insert those props right inside the useContext as we use that hook
+then we can eliminate the props here in the function parenthesis  v07.28.16
+
+
+const Nav = ({ search, setSearch }) => {			// 1st show the code to be changed
+    const { width } = useContext(DataContext);	
+
+const Nav = ({ search, setSearch }) => {			// grab search, setSearch
+    const { search, setSearch } = useContext(DataContext);
+
+const Nav = () => {
+    const { search, setSearch } = useContext(DataContext);
+
+
+we also see that Home receives searchResults, fetchError and isLoading
+
+  return (
+     <div className="App">
+       <DataProvider>					
+       <Header title="React JS Blog" width={width} />					<<<<<<
+       <Nav search={search} setSearch={setsearch} />					<<<<<<
+       <Switch>
+         <Route exact path="/">
+           <Home 			
+             posts={searchResults} 							<<<<<<
+             fetchError={fetchError}							<<<<<<
+             isLoading={isLoading}							<<<<<<
+           />			
+         </Route>
+
+and now in DataContext.js we need to remember to pass along search and setSearch in the DataContext
+
+        <DataContent.Provider value={{
+            width 
+        }}>
+
+so adding the additional two terms here
+
+        <DataContent.Provider value={{
+            width, search, setSearch,
+        }}>
+
+
+and now we see that Home receives searchResults eventhough
+we labeled it as posts
+also we need fetchError and isLoading so...
+
+           <Home 			
+             posts={searchResults} 							<<<<<<
+             fetchError={fetchError}							<<<<<<
+             isLoading={isLoading}							<<<<<<
+ 
+...so adding the additional two terms here
+
+        <DataContent.Provider value={{
+            width, search, setSearch,
+            searchResults, fetchError, isLoading
+        }}>
+
+save
+
+now pull up the Home.js component		v 07.29.12
+
+
+// updated Home.js here
+ 
+import Feed from './Feed';
+
+const Home = ({ posts }) => {
+  return (
+    <main className="Home">
+        {isLoading && <p className="statusMsg">Loading</p>}
+        {!isLoading && fetchError && <p className="statusMsg" style={{color: "red"}}>{fetchError}</p>}
+        {!isLoading && !fetchError && (posts.length ? <Feed posts={posts} /> : <p className="statusMsg">No posts to display.</p>)}
+    </main>
+  )
+}
+
+export default Home
+
+
+in Home.js component, from Header.js		
+import both useContext, DataContext
+pull into const Home const { searchResults, fetchError, isLoading } = useContext(DataContext);
+
+inside Home.js function, need to change posts.length ternary to searchResults.length
+			 need to change posts={posts} to posts={searchResults}
+
+in Nav.js component
+import both useContext, DataContext
+
+in DataContext.js
+return all these values: width, search, setSearch, searchResults, fetchError, isLoading
+
+check application to verify its working, reload, test search.
+
+back in App.js
+we have eliminated (ie delete) all 3 props that were being drilled down to Home.js component
+	posts={searchResults}	fetchError={fetchError}		isLoading={isLoading}
+can specify in Route exact path component={Home}
+
+SUMMARY: BEFORE { receive 5 deconstructed props }, AFTER import from useContext(DataContext)
+CHANGE: how we receive the data: BEFORE deconstructed, AFTER import from useContext(DataContext).Provider
+DETAILS:
+NewPost.js receives 5 different props that are being drilled down	handleSubmit, postTitle, setPostTitle, postBody, setPostBody
+in Header.js file, copy 2 import statements useContext, DataContext, paste into NewPost.js
+from Header.js copy const width = useContext(DataContext) line and paste into NewPost
+then take all 5 props and paste into const { pastehere } = useContent(DataContext)
+then in NewPost eliminate 5 deconstructors
+Need to switch the Route path into a component path
+
+in EditPost
+COPY/PASTE both import statements
+BEFORE: drilling down deconstructed 6 props: {posts, handleEdit, editTitle, setEditTitle, editBody, setEditBody}
+AFTER: import via useContext(DataContext).Provider
+VERIFY: 6 props are being passed thru the JSX DataContext.Provider value={{here}}
+Switch Route path into a component path
+Reload app and test
+
+in PostPage
+COPY/PASTE both import statements
+COPY const { search, setSearch } = useContext(DataContext)
+PASTE into PostPage arrow function
+REPLACE cut out deconstructed terms { posts, handleDelete } and paste into useContext(DataContext)
+VERIFY: { posts, handleDelete } are being passed thru the JSX DataContext.Provider
+Switch Route path into a component path
+
+Review
+App.js file is much slimmer, cleaner
+JSX <DataProvider> surrounds everything
+Notice we are not passing down any props at all, so these functions can be identified as components
+TEST make sure app is working
+Remove anything not needed in App.js file thus can delete useHistory, useState, useEffect, format, api, useWindowSize, useAxiosFetch
+we are left with import components, destructure Route, Switch from react-router-dom and import DataProvider from DataContext
+we can remove all these pieces of useState, useHistory, useWindowSize
+we can remove useEffect, setSearchResults, 
+we can remove all the different functions handleSubmit, handleEdit, handleDelete
+now App.js is much smaller	v07.40.16

@@ -96,3 +96,17 @@ The app is still loaded in the browser
 
 Next tutorial, we start modifying the generalized app that we started with
 and learn how to apply more changes the React app.
+
+// Add Summary (Roadmap)
+
+Review
+App.js file is much slimmer, cleaner
+JSX <DataProvider> surrounds everything
+Notice we are not passing down any props at all, so these functions can be identified as components
+TEST make sure app is working
+Remove anything not needed in App.js file thus can delete useHistory, useState, useEffect, format, api, useWindowSize, useAxiosFetch
+we are left with import components, destructure Route, Switch from react-router-dom and import DataProvider from DataContext
+we can remove all these pieces of useState, useHistory, useWindowSize
+we can remove useEffect, setSearchResults, 
+we can remove all the different functions handleSubmit, handleEdit, handleDelete
+now App.js is much smaller	v07.40.16

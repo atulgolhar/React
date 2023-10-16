@@ -1656,3 +1656,15 @@ we can remove all these pieces of useState, useHistory, useWindowSize
 we can remove useEffect, setSearchResults, 
 we can remove all the different functions handleSubmit, handleEdit, handleDelete
 now App.js is much smaller	v07.40.16
+
+Add App.js v07.41.59
+
+
+when parent component renders then children components also render causing many re-renders
+but now everything that subscribes to DataContext will re-render when Context gets updated
+so is this effective and efficient as possible?
+look at App.js and look at each component
+ex 1 Header does not need to recieve any of the Post data as Header only 
+	1 receives title prop
+	2 passing width to Header which determines icon for Header
+ex 2 Footer is 

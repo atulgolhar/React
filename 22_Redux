@@ -1,1 +1,17 @@
 tbd
+
+
+rom DataContext.js
+
+    return (
+        <DataContext.Provider value={{
+            width, search, setSearch,					<<<<<<<<<<<<<HERE delete width
+            searchResults, fetchError, isLoading,
+            handleSubmit, postTitle, setPostTitle, postBody, setPostBody,
+            posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle,
+            handleDelete
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+}

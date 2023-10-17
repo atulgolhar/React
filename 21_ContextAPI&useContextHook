@@ -1657,8 +1657,30 @@ we can remove useEffect, setSearchResults,
 we can remove all the different functions handleSubmit, handleEdit, handleDelete
 now App.js is much smaller	v07.40.16
 
+
 Add App.js v07.41.59
 
+FROM
+
+function App() {
+  return (
+    <div className="App">
+      <DataProvider>
+        <Header title="React JS Blog" />
+        <Nav />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/post" component={NewPost} />
+          <Route path="/edit/:id" component={EditPost} />
+          <Route path="/post/:id" component={PostPage} />
+          <Route path="/about" component={About} />
+          <Route path="*" component={Missing} />
+        </Switch>
+        <Footer />
+      </DataProvider>
+    </div>
+  )
+}
 
 when parent component renders then children components also render causing many re-renders
 but now everything that subscribes to DataContext will re-render when Context gets updated
@@ -1667,4 +1689,220 @@ look at App.js and look at each component
 ex 1 Header does not need to recieve any of the Post data as Header only 
 	1 receives title prop
 	2 passing width to Header which determines icon for Header
-ex 2 Footer is 
+ex 2 Footer is not receiving any data either so does not need to be there
+
+we could move the <DataProvider> tag and wrap it around everything starting at <Nav>
+and ending </DataProvider> after the </Switch> route
+b/c that really needs the post data
+
+function App() {
+  return (
+    <div className="App">
+      <DataProvider>					<<<<FROM HERE 
+        <Header title="React JS Blog" />		<<<<TO AFTER THIS
+        <Nav />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/post" component={NewPost} />
+          <Route path="/edit/:id" component={EditPost} />
+          <Route path="/post/:id" component={PostPage} />
+          <Route path="/about" component={About} />
+          <Route path="*" component={Missing} />
+        </Switch>
+        <Footer />
+      </DataProvider>
+    </div>
+  )
+}
+
+
+function App() {
+  return (
+    <div className="App">
+      <DataProvider>					<<<<FROM HERE 
+        <Header title="React JS Blog" />		<<<<TO AFTER THIS
+        <Nav />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/post" component={NewPost} />
+
+
+
+function App() {
+  return (
+    <div className="App">
+      <Header title="React JS Blog" />			<<<<
+      <DataProvider>					<<<<
+        <Nav />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/post" component={NewPost} />
+
+
+
+          <Route path="*" component={Missing} />
+        </Switch>
+        <Footer />					<<<FROM HERE
+      </DataProvider>					<<<FROM after Footer
+    </div>
+
+
+          <Route path="*" component={Missing} />
+        </Switch>
+      </DataProvider>					<<<
+      <Footer />					<<<to now before Footer
+    </div>
+
+
+so now we have this
+
+function App() {
+  return (
+    <div className="App">
+      <Header title="React JS Blog" />			<<<<TO AFTER THIS
+      <DataProvider>					<<<<FROM HERE 
+        <Nav />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/post" component={NewPost} />
+          <Route path="/edit/:id" component={EditPost} />
+          <Route path="/post/:id" component={PostPage} />
+          <Route path="/about" component={About} />
+          <Route path="*" component={Missing} />
+        </Switch>
+      </DataProvider>
+      <Footer />
+    </div>
+  )
+}
+
+
+Now that we have changed that, we still need to change the Header just a little
+b/c right now the Header does depend on the data from DataProvider
+
+so lets look at Header.js
+and we can remove import useContext and import DataContext
+but then we need to think about how to get the width
+
+BEFORE 
+
+import { FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+import { useContext } from 'react';					<<<REMOVE THIS IMPORT
+import DataContext from './context/DataContext';			<<<REMOVE THIS IMPORT
+
+const Header = ({ title }) => {
+    const { width } = useContext(DataContext);
+
+    return (
+        <header className="Header">
+            <h1>{title}</h1>
+            {width < 768 ? <FaMobileAlt />
+                : width < 992 ? < FaTabletAlt />
+                    : < FaLaptop />}
+        </header>
+    )
+}
+
+export default Header
+
+
+
+but then we need to think about how to get the width
+but notice that it never had to be passed down to begin with (ATUL *freeway overpass)
+so what we could is just import useWindowSize hook
+like this
+import useWindowSize from '../hooks/useWindowSize';
+
+and now that we have the useWindowSize hook
+STOP: defining it using DataContext	const { width } = useContext(DataContext);
+NOW YES: define it from useWindowSize		const { width } = useWindowSize();			v07.42.11
+
+Note: this is a very simple change but it 
+de-coupled the Header from all the data that was involved with the Post
+Now go back to DataContext 
+1) remove import useWindowSize from hooks/useWindowSize
+2) dont need to define width inside DataProvider using const { width } = useWindowSize();
+3) dont need to pass width down at all as it can be contained within the Header component itself
+   thus the Header component can just use that hook
+
+AFTER
+
+import { FaLaptop, FaTabletAlt, FaMobileAlt } from 'react-icons/fa';
+import useWindowSize from '../hooks/useWindowSize';				<<<<<<<<<<ADDED HERE
+
+const Header = ({ title }) => {
+    const { width } = useWindowSize();						<<<<<<<<<<CHANGED HERE see 2) 
+
+    return (
+        <header className="Header">
+            <h1>{title}</h1>
+            {width < 768 ? <FaMobileAlt />
+                : width < 992 ? < FaTabletAlt />
+                    : < FaLaptop />}
+        </header>
+    )
+}
+
+export default Header
+
+
+v07.42.20
+then we go back to the DataContext.js
+
+BEFORE DataContext.js
+
+import { createContext, useState, useEffect } from 'react';
+import { useHistory } from 'react-router'dom';
+import { format } from 'date-fns';				
+import api from '../api/posts';					
+import useWindowSize from '../hooks/useWindowSize';		<<<DONT NEED THIS ANYMORE
+import useAxiosFetch from '../hooks/useAxiosFetch';		
+
+const DataContext = createContext({});
+
+export const DataProvider = ({ children }) => {
+    const [posts, setPosts] = useState([])
+    const [search, setSearch] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [postTitle, setPostTitle] = useState('');
+    const [postBody, setPostBody] = useState('');
+    const [editTitle, setEditTitle] = useState('');
+    const [editBody, setEditBody] = useState('');
+    const history = useHistory();
+    const { width } = useWindowSize();				<<<DONT need to define v07.42.30
+
+    const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+ 
+
+
+from DataContext.js
+
+    return (
+        <DataContext.Provider value={{
+            width, search, setSearch,					<<<<<<<<<<<<<HERE delete width
+            searchResults, fetchError, isLoading,
+            handleSubmit, postTitle, setPostTitle, postBody, setPostBody,
+            posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle,
+            handleDelete
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+}
+
+
+
+
+            width, search, setSearch,					<<<<<<<<<<<<<HERE delete width
+            search, setSearch,						<<<<<<<<<<<<<HERE deleted
+
+
+Now, if we stop and think about our other components, 
+some info that we previously had in a parent, now, does not
+need to be passed down either.
+Examples:
+handleDelete is probably going to be only on the PostPage where the delete button is located
+handleEdit is probably going to be only on the page where the Edit button is located
+handleSubmit is probably only on the NewPost page	v07.43.07
+
+so lets look at the NewPost.js page

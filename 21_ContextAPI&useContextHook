@@ -1905,32 +1905,43 @@ handleDelete is probably going to be only on the PostPage where the delete butto
 handleEdit is probably going to be only on the page where the Edit button is located
 handleSubmit is probably only on the NewPost page	v07.43.07
 
-so lets look at the NewPost.js page
-
 part of NewPost.js is here
 
 import { useContext } from 'react';
 import DataContext from './context/DataContext';
 
 const NewPost = ({
-    const { handleSubmit, postTitle, setPostTitle, postBody, setPostBody } = useContext(DataContext);
+    const { handleSubmit, postTitle, setPostTitle, postBody, setPostBody } = useContext(DataContext);	<<<LOOK HERE
     return (
         <main className="NewPost">
-            <h2>New Post</h2>
-            <form className="newPostForm" onSubmit=>{handleSubmit}>
-                <label htmlFor="postTitle">Title:</label>
-                <input
-                    id="postTitle"
-                    type="text"
-                    required
-                    value={}
-                    onChange={(e) => setPostTitle(e.target.value)}
-                />
-                <label htmlFor="postBody">Post:</label>
-                <textarea
-                    id="postBody'
-                    required
-                    value={postBody}
-                    onChange={(e) => setPostBody(e.target.value)}
-                />
+
+
+
+so lets look at the NewPost.js page		v 07.43.13
+    const { handleSubmit, postTitle, setPostTitle, postBody, setPostBody } = useContext(DataContext);   <<<LOOK HERE
+			  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+			  this is only for the this form. It has no other role in the application
+
+So we could keep this in state with this component WITHOUT sending it to a Context
+b/c it does not need to be shared with other components.
+Context is about sharing with other components (ie sub/pub).
+
+so at the top of NewPost.js we could import useState
+
+import ( useContext } from 'react';
+import ( useState, useContext } from 'react';
+
+Now we go back to DataContext.js
+
+export const DataProvider = ({ children }) => {
+    const [posts, setPosts] = useState([])
+    const [search, setSearch] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [postTitle, setPostTitle] = useState('');		<<<<CUT OUT
+    const [postBody, setPostBody] = useState('');		<<<<CUT OUT
+    const [editTitle, setEditTitle] = useState('');
+    const [editBody, setEditBody] = useState('');
+    const history = useHistory();
+
+    const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
 

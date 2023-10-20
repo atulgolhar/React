@@ -1,55 +1,4 @@
-// Summary of Chapter
-v07.18.07 LOGIC SUMMARY
-
-in src folder
-create new folder called 					context
-create new file inside context folder called			DataContext.js
-
-Note you can have more than 1 Context per application, today we just create 1 to explain how it works
-but imagine a User section where user entered information and will want completely seperate Context to manage state
-
-import createContext, useState and useEffect from react			import { createContext, useState, useEffect } from 'react';
-Define DataContext = createContext({});
-export const DataProvider
-the DataProvider will provide the data to our different components	= () => {}
-Inside DataProvider are destructured children
-destructured children refer to the component thats within the DataProvider		({ children })
-thus allowing the data to be available to the children of the DataProvider		({ children })
-So now that we have defined the DataProvider lets add a return statement inside it	return ()
-Inside the return we have JSX code with DataContext.Provider with value
-DataContext.Provider contains the different values that 
-prior pass down props
-now pass thru JSX tag DataContext.Provider via useContext hook, add {children} inside Provider then closing tag
-add export default DataContext
-so now we have our skeleton file DataContext.js is
-inside Provider will be state and anything else we want here thru the DataProvider (ie pass thru vehicle)
-in App.js, we need to import our DataProvider		import { DataProvider } from './context/DataContext';
-and now we can use the DataProvider to provide data to any of these components in the JSX 
-
-Now put DataProvider (as a Parent wrapper) around all components and "then components within can subscribe at will" 
-thus parent to all the components within (ie children)
-
-Now the data that comes from DataProvider will be available to all the
-components within IF we choose to pull that data in using the useContext hook
-
-During refactor transition, need to keep app working so leave components in place WHILE SIMULANTEOUSLY
-start moving all state over to the DataContext.js component
-
-Grab everything after the components here and move them to the DataContext.js file
-Then begin cleaning up this file
-delete the useState, useEffect as duplicated 
-delete the Route, Switch			import { Route, Switch, useHistory } from 'react-router'dom';
-we need to keep useHistory			import { useHistory } from 'react-router'dom';	
-we keep format					import { format } from 'date-fns';				
-
-Now when we get to the api, we need to recognize where this file is located in file tree hierarchy
-need to come up again thus one dot . 	(ie two dots now)		import api from './api/posts';					
-									import api from '../api/posts';
-For the import hooks statements, its the same logic thus add a dot
-
-// End of summary
-
-Today we are not adding any new functionality to the blog application
+today we are not adding any new functionality to the blog application
 instead we refactor
 
 we start with App.js
@@ -95,9 +44,9 @@ function App() {
     setSearchResults(filterResults.reverse());
   }, [posts, search])							
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {							added async
     e.preventDefault();
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), 'MMMM dd, yyyy pp');
     const newPost = { id, title: postTitle, datetime, body: postBody };
     try {
@@ -176,8 +125,8 @@ as becomes cumbersome, see current App.js so
 
 v07.18.07
 
-create new folder called 					context
-create new file inside context folder called			DataContext.js
+Create new folder called 					context
+Create new file inside context folder called			DataContext.js
 
 note you can have more than 1 Context per application
 today we just create 1 to explain how it works
@@ -357,9 +306,9 @@ function App() {
     setSearchResults(filterResults.reverse());
   }, [posts, search])							
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {							added async
     e.preventDefault();
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), 'MMMM dd, yyyy pp');
     const newPost = { id, title: postTitle, datetime, body: postBody };
     try {
@@ -484,9 +433,9 @@ function App() {
     setSearchResults(filterResults.reverse());
   }, [posts, search])							
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {								added async
     e.preventDefault();
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), 'MMMM dd, yyyy pp');
     const newPost = { id, title: postTitle, datetime, body: postBody };
     try {
@@ -774,9 +723,9 @@ export const DataProvider = ({ children }) => {
     }, [posts, search])							
 
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {								added async
         e.preventDefault();
-        const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+        const id = posts.length ? posts[posts.length - 1].id + 1 : 1;				added s
         const datetime = format(new Date(), 'MMMM dd, yyyy pp');
         const newPost = { id, title: postTitle, datetime, body: postBody };
     try {
@@ -1918,6 +1867,9 @@ const NewPost = ({
 
 
 so lets look at the NewPost.js page		v 07.43.13
+
+const NewPost = () => {
+
     const { handleSubmit, postTitle, setPostTitle, postBody, setPostBody } = useContext(DataContext);   <<<LOOK HERE
 			  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 			  this is only for the this form. It has no other role in the application
@@ -1932,6 +1884,12 @@ import ( useContext } from 'react';
 import ( useState, useContext } from 'react';
 
 Now we go back to DataContext.js
+for these elements		const postTitle, setPostTitle, postBody, setPostBody
+we CUT out those lines from DataContext.js 
+and paste into NewPost.js
+
+
+BEFORE	DataContext.js
 
 export const DataProvider = ({ children }) => {
     const [posts, setPosts] = useState([])
@@ -1944,4 +1902,91 @@ export const DataProvider = ({ children }) => {
     const history = useHistory();
 
     const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+AFTER	DataContext.js
+
+export const DataProvider = ({ children }) => {
+    const [posts, setPosts] = useState([])
+    const [search, setSearch] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [editTitle, setEditTitle] = useState('');
+    const [editBody, setEditBody] = useState('');
+    const history = useHistory();
+
+    const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+
+BEFORE NewPost.js
+
+import { useContext } from 'react';
+import DataContext from './context/DataContext';
+
+const NewPost = ({
+    const { handleSubmit, postTitle, setPostTitle, postBody, setPostBody } = useContext(DataContext);	<<<LOOK HERE
+    return (
+        <main className="NewPost">
+
+
+AFTER NewPost.js
+
+import { useContext } from 'react';
+import DataContext from './context/DataContext';
+
+const NewPost = ({
+    const [postTitle, setPostTitle] = useState('');		<<<<PASTE HERE
+    const [postBody, setPostBody] = useState('');		<<<<PASTE HERE
+    const { handleSubmit, postTitle, setPostTitle, postBody, setPostBody } = useContext(DataContext);	<<<LOOK HERE
+    return (
+        <main className="NewPost">
+
+
+now notice the duplication here
+
+           postTitle, setPostTitle
+           postBody, setPostBody
+    const { handleSubmit, postTitle, setPostTitle, postBody, setPostBody } = useContext(DataContext);
+			  ^^^^^^^^^  ^^^^^^^^^^^^  ^^^^^^^^  ^^^^^^^^^^^
+
+thus can eliminate here  v07.44.08
+    const { handleSubmit, postTitle, setPostTitle, postBody, setPostBody } = useContext(DataContext);
+    const { handleSubmit } = useContext(DataContext);
+
+
+And now the same can be done with handleSubmit as this is the only place that function is called
+1 inside NewPost.js is the only place that function is called
+2 we might need some other state that is used inside of handleSubmit
+3 but we could easily import that other state from the Context
+4 so we go back to DataContext.js and grab (cut out) handleSubmit function
+5 paste handleSubmit into the NewPost.js component
+6 delete the handleSubmit from destructured useContext hook
+7 but keep useContext hook line b/c handleSubmit probably has something else we need related to Post
+
+const NewPost = ({
+    const [postTitle, setPostTitle] = useState('');
+    const [postBody, setPostBody] = useState('');
+    const { handleSubmit } = useContext(DataContext);		<<<<<<<is the only place that function is called
+    return (
+        <main className="NewPost">
+
+
+
+so lets look more closely at handleSubmit			v07.44.55
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const newPost = { id, title: postTitle, datetime, body: postBody };
+    try {
+        const response = await api.post('/posts', newPost);
+        const allPosts = [...posts, response.data];
+        setPosts(allPosts);
+        setPostTitle('');
+        setPostBody('');
+        history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
 

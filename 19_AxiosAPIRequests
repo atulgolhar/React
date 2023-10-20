@@ -504,7 +504,7 @@ this is the C in CRUD		Create a new post
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), 'MMMM dd, yyyy pp');
     const newPost = { id, title: postTitle, datetime, body: postBody }; <<<<New Post created here so add line
     // add C code here
@@ -542,7 +542,7 @@ ie we are acknowledging that we might get an error in this development applicati
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), 'MMMM dd, yyyy pp');
     const newPost = { id, title: postTitle, datetime, body: postBody }; <<<<New Post created here so add line
     // add C code here
@@ -569,7 +569,7 @@ so we address this now. So far we have
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), 'MMMM dd, yyyy pp');
     const newPost = { id, title: postTitle, datetime, body: postBody }; <<<<New Post created here so add line
     try {
@@ -604,7 +604,7 @@ so now we have
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), 'MMMM dd, yyyy pp');
     const newPost = { id, title: postTitle, datetime, body: postBody }; <<<<New Post created here so add line
     try {
@@ -667,7 +667,7 @@ thus updated code is
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), 'MMMM dd, yyyy pp');
     const newPost = { id, title: postTitle, datetime, body: postBody };
     try {
@@ -687,7 +687,7 @@ notice that we have an error
 b/c we added await but not add async to this as can can not await without async
 
   const handleSubmit = (e) => {
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {							handleSubmit async
 
 now save again
 App renders ok
@@ -797,7 +797,7 @@ function App() {
   useEffect(() => {
     const fetchPosts = async () => {
       try { 
-        const response = api.get('/posts');
+        const response = await api.get('/posts');
         setPosts(response.data)
       } catch (err) {
         if 
@@ -825,7 +825,7 @@ function App() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), 'MMMM dd, yyyy pp');
     const newPost = { id, title: postTitle, datetime, body: postBody };
     try {
@@ -1854,9 +1854,174 @@ so far we have
                           Delete Post
                       </button>
 
-now lets give the deleteButton a className as well	className="deleteButton"
+now lets give the deleteButton a className as well	className="deleteButton"	v06.36.18
 
                       <button onClick={() => handleDelete(post.id)}>
                       <button clasName="deleteButton" onClick={() => handleDelete(post.id)}>
 
-v06.36.18
+save
+
+one more change to the App.js that we didnt do earlier
+lets import the EditPost component in App.js
+right under the PostPage
+
+
+
+App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home'; 
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import EditPost from './EditPost';		<<<<<<<<<<<<<<<<
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch, useHistory } from 'react-router'dom';
+import { useState, useEffect } from 'react';
+import { format } from 'date-fns';
+import api from './api/posts';
+
+save
+reload the app
+everything seems to be working
+click on the top blog post to see the buttons
+this shows an EditPost button 
+maybe add a className for color and add some space to the button itself
+If we click EditPost, the post is ready to edit
+Note the form is already filled out (prefilled)
+Now change the text inside the EditPost text field
+click Submit
+click on the top blog post to see the buttons
+Go back to Home
+Create a new post (5th post)
+Form is empty but its a controlled post
+Move mouse into Title field and notice drop down text options automatically are offered
+Type "another post"
+in Body: type "once again"
+Yes this works
+try to edit again
+in Body: add "!"
+Yes this works
+
+Check for errors in DevTools
+Right click Inspect
+or CONTROL SHIFT I
+now check the Console
+this will show any errors or warnings
+Console looks clear
+Reload
+No errors
+
+Ok - lets go back to VSCode
+
+click on folder index.css
+delete .Missing h2, .PostPage h2
+add onto existing line 		.NewPost p		// p stands for paragraph VSCode suggests
+change 		margin-bottom: 1rem;
+to this 	margin-top: 1rem;
+
+
+OLD
+
+.Missing h2, .PostPage h2, 			<<<<<<DELETE THIS LINE
+.Missing p, .PostPage p {
+  margin-bottom: 1rem;
+}
+
+NEW
+
+.Missing p, .PostPage p, .NewPost p
+{
+  margin-top: 1rem;
+}
+
+
+
+save
+in app click on Post in nav bar
+nothing has changed (so its all ok)
+click on Home
+then click on top post
+then click on Edit button
+Edit Post looks ok
+
+Now lets try to edit a post that does not exist
+in url currently shows		localhost:3000/edit/5
+so change the url to 		localhost:3000/edit/9		// does not exist as its a made up #
+App renders Post Not Found page
+looks ok
+
+Now click the back arrow and 
+now on actual post page showing two buttons Edit Post and Delete Post
+now we want to fix these buttons
+
+delete this line from .PostPage button 		background-color: red;
+
+OLD
+
+.PostPage button {
+  height: 48px;
+  min-width: 48px;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  background-color: red;	<<<<<DELETE THIS LINE
+  color: #fff;
+  cursor: pointer;
+}
+
+so now the buttons are gray
+
+so create class deleteButton
+add that deleted css code 	background-color: red;
+
+
+add this code
+
+.deleteButton {
+  background-color: red;
+}
+
+save will automatically occur
+notice now Delete Post button is red
+
+Now create the Edit Button class
+add .editButton {
+paste in the background-color line from above
+change the color from red to #333 which is the same as the nav menu
+
+.editButton {
+  background-color: #333; 
+}
+
+save will automatically occur
+now Edit Post button will be white text black background
+
+we still need a little space here between the buttons
+
+.PostPage button {
+  height: 48px;
+  min-width: 48px;
+  border-radius: 0.25rem;
+  padding: 0.5rem;		<<<<<<ADD LINE BELOW THIS
+				<<<<<<HERE
+  font-size: 1rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+now add 
+
+  padding: 0.5rem;		<<<<<<ADD LINE BELOW THIS
+  margin-right: 0.5rem;
+
+now we get a little space between the two buttons
+everything seems to be working well
+we can read posts
+we can create new posts
+we can delete posts
+we can edit posts
+so we have applied Axios and all CRUD operations to our app
+next move onto Custom Hooks v06.40.46

@@ -378,11 +378,11 @@ and instead of Header in the h1, we will pass in the {title} prop to display
 we now have Header.js 
 
 const Header = ({ title }) => {
-  return (
-    <header className="Header">
-        <h1>{title}</h1>
-    </header>
-  )
+    return (
+        <header className="Header">
+            <h1>{title}</h1>
+        </header>
+    )
 }
 
 export default Header
@@ -473,7 +473,7 @@ hide file tree CONTROL B to give more room
         <form className="searchForm" onSubmit={(e) => e.preventDefault()}></form> 
     </nav>
 
-so far we have
+so far we have Nav.js
 
 const Nav = ({ search, setSearch }) => {
   return (
@@ -521,7 +521,7 @@ then close the input tag
             <label htmlFor="search">Search Posts</label>
 	    <input
 	        id=
-	        id="serach"
+	        id="search"
 	        type=
 	        type="text"
 	        placeholder=
@@ -535,7 +535,8 @@ then close the input tag
 	    />
         </form> 
 
-so far we have
+so far we have Nav.js
+
 
 const Nav = ({ search, setSearch }) => {
   return (
@@ -543,7 +544,7 @@ const Nav = ({ search, setSearch }) => {
         <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
             <label htmlFor="search">Search Posts</label>
 	    <input
-	        id="serach"
+	        id="search"
 	        type="text"
 	        placeholder="Search Posts"
 	        value={search}
@@ -582,7 +583,7 @@ import { Link } from 'react-router-dom';
     </nav>
 
 
-so we have
+so we have Nav.js
 
 import { Link } from 'react-router-dom';
 
@@ -591,7 +592,7 @@ const Nav = ({ search, setSearch }) => {
         <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
             <label htmlFor="search">Search Posts</label>
 	    <input
-	        id="serach"
+	        id="search"
 	        type="text"
 	        placeholder="Search Posts"
 	        value={search}
@@ -635,7 +636,7 @@ and a link to about and text is About		v05.09.39
             <li><Link to="/about">About</li>
 
 
-so we have
+so we have Nav.js
 
 import { Link } from 'react-router-dom';
 
@@ -644,7 +645,7 @@ const Nav = ({ search, setSearch }) => {
         <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
             <label htmlFor="search">Search Posts</label>
 	    <input
-	        id="serach"
+	        id="search"
 	        type="text"
 	        placeholder="Search Posts"
 	        value={search}
@@ -1434,7 +1435,7 @@ to see the full post with all its text (ie code from above)    <Link to={`/post/
 
 so far we have this
 
-import { Link } fro 'react-router-dom';v 
+import { Link } from 'react-router-dom';
 
 const Post = ({ post }) => {
   return (
@@ -1897,7 +1898,7 @@ and PostPage.js code is
 
 
               }
-              {!post && 
+              {!post &&				// should be {!postTitle && 		// need to check  v06.34.51
                   <>
                   <h2>Post Not Found</h2>
                   <p>Well, that's disappointing.</p>
@@ -2331,7 +2332,7 @@ Now this will not just be an input that is a type text
         <form>
         <form className="newPostForm">
         <form className="newPostForm" onSubmit=>
-        <form className="newPostForm" onSubmit=>{handleSubmit}
+        <form className="newPostForm" onSubmit=>{handleSubmit}>
 
 	    <label
 	    <label htmlFor=
@@ -2446,31 +2447,31 @@ and then we assign id 1 to it				1;
   }
 
   const handleSubmit = (e) => {
-    const id = post.length ?
+    const id = posts.length ?
   }
 
   const handleSubmit = (e) => {
-    const id = post.length ? posts[]
+    const id = posts.length ? posts[]
   }
 
   const handleSubmit = (e) => {
-    const id = post.length ? posts[posts.length - 1]
+    const id = posts.length ? posts[posts.length - 1]
   }
 
   const handleSubmit = (e) => {
-    const id = post.length ? posts[posts.length - 1].id
+    const id = posts.length ? posts[posts.length - 1].id
   }
 
   const handleSubmit = (e) => {
-    const id = post.length ? posts[posts.length - 1].id + 1
+    const id = posts.length ? posts[posts.length - 1].id + 1
   }
 
   const handleSubmit = (e) => {
-    const id = post.length ? posts[posts.length - 1].id + 1 : 
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 
   }
 
   const handleSubmit = (e) => {
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
   }
 
 note that now that we have defined the id, we also 
@@ -2483,7 +2484,7 @@ set to empty string for now				= '';
 thus so far we have 
 
   const handleSubmit = (e) => {
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = '';
   }
 
@@ -2535,7 +2536,7 @@ then we specify the format
 
 
   const handleSubmit = (e) => {
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = ;
   }
 
@@ -2555,7 +2556,7 @@ now we need to create our new post				const newPost
 so far we have
 
   const handleSubmit = (e) => {
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), 'MMMM dd, yyyy pp');
     // create new post here (see below)
     // create new array with all posts (see below)
@@ -2607,7 +2608,7 @@ so handleSubmit component now is
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), 'MMMM dd, yyyy pp');
     const newPost = { id, title: postTitle, datetime, body: postBody };
     const allPosts = [...posts, newPost];
@@ -2716,6 +2717,8 @@ we want to do the same thing that we did for the post body and also for the post
 				((post.body).toLowerCase()).includes(search.toLowerCase()))
 				((post.title).toLowerCase()).includes(search.toLowerCase()))
 
+so if either the post.body or post.title has a match then we will know.
+
 
   useEffect(() => {
     const filteredResults
@@ -2750,7 +2753,7 @@ we want to do the same thing that we did for the post body and also for the post
   useEffect(() => {
     const filteredResults = posts.filter(post => 
     ((post.body).toLowerCase()).includes(search.toLowerCase())
-    || 
+    || ((post.title).toLowerCase()).includes(search.toLowerCase())
     )
   }, [posts, search])							
 
@@ -2802,7 +2805,8 @@ in the search field nothing changes for search match feed b/c
 our Home component below is still receiving 
 the Post results and not the Search results
 
-           <Home posts={posts}/>			<<<<<<<<<<<<<<<<<<<HERE
+           
+			<<<<<<<<<<<<<<<<<<<HERE
            <Home posts={searchResults}/>		<<<<<<<<<<<<<<<<<<<HERE
 
 then save
@@ -2850,7 +2854,7 @@ Need to look at handleSubmit function
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const id = post.length ? posts[posts.length - 1].id + 1 : 1;
+    const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
     const datetime = format(new Date(), 'MMMM dd, yyyy pp');
     const newPost = { id, title: postTitle, datetime, body: postBody };
     const allPosts = [...posts, newPost];				<<<<<<SHOULD BE AN ARRAY

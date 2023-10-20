@@ -556,3 +556,561 @@ and you can place-content: center;
 v06.01.09
 you will want that consistent width and not be an accordian that
 changes width based upon the page that you go to
+setting height and width of react application
+React application provides a few differences
+must consider how react app is structured
+
+index.css is open
+
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  min-height: 100vh;
+  font-family: 'Open Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #efefef;
+}
+
+.App {
+  width: 100%;
+  max-width: 800px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  border: 1px solid #333;
+  box-shadow: 0px 0px 15px gray;
+}
+
+.Header, .Footer {
+  width: 100%;
+  background-color: #66d8f5;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.Header h1 {
+  font-size: 1.5rem;
+}
+
+.Header svg {
+  font-size: 2rem;
+}
+
+.Footer {
+  padding: 0.75rem;
+  display: grid;
+  place-content: center;
+}
+
+.Nav {
+  width: 100%;
+  background-color: #333;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.searchForm {
+  width: 80%;
+  padding: 1rem 0 0 0.75rem;
+}
+
+.searchForm input[type="text"] {
+  font-family: 'Open Sans', sans-serif;
+  width: 100%;
+  min-height: 48px;
+  font-size: 1rem;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  outline: none;
+}
+
+.searchForm label {
+  position: absolute;
+  left: -99999px;
+}
+
+.Nav ul {
+  color: #fff;
+  list-style-type: none;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.Nav li {
+  padding: 1rem;
+}
+
+.Nav li:hover, 
+.Nav li:focus {
+  padding: 1rem;
+}
+
+.Nav li a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.Nav li:hover, 
+.Nav li:focus, 
+.Nav li:hover a, 
+.Nav li:focus a  {
+  background-color: #eee;
+  color: #333;
+}
+
+.Nav li:hover a, 
+.Nav li:focus a {
+  cursor: pointer;
+}
+
+.Home, .NewPost, .PostPage, .About, .Missing {
+  width: 100%;
+  flex-grow: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+.post {
+  margin-top: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid lightgray;
+}
+
+.Home .post a {
+  text-decoration: none;
+}
+
+.Home .post a, 
+.Home .post a:visited {
+  color: #000;
+}
+
+.post:first-child {
+  margin-top: 0;
+}
+
+.post:last-child {
+  border-bottom: none;
+}
+
+.postDate {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.postBody {
+  margin: 1rem 0;
+}
+
+.newPostForm {
+  display: flex;
+  flex-direction: column;
+}
+
+.newPostForm label {
+  margin-top: 1rem;
+}
+
+.newPostForm input[type='text'], 
+.newPostForm textarea {
+  font-family: 'Open Sans', sans-serif;
+  width: 100%;
+  min-height: 48px;
+  font-size: 1rem;
+  padding: 0.25rem;
+  border-radius: 0.25rem;
+  margin-right: 0.25rem;
+  outline: none;
+}
+
+.newPostForm textarea {
+  height: 100px;
+}
+
+.newPostForm button {
+  margin-top: 1rem;
+  height: 48px;
+  min-width: 48px;
+  border-radius: 10px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.Missing h2, .PostPage h2, 
+.Missing p, .PostPage p {
+  margin-bottom: 1rem;
+}
+
+.PostPage button {
+  height: 48px;
+  min-width: 48px;
+  border-radius: 0.25rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  background-color: red;
+  color: #fff;
+  cursor: pointer;
+}
+
+.statusMsg {
+  margin-top: 2rem;
+}
+
+@media only screen and (min-width: 610px) {
+  html {
+    font-size: 22px;
+  }
+
+  .Header h1 {
+    font-size: 2rem;
+  }
+
+  .Nav {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .Nav ul {
+    text-align: right;
+  }
+
+  .Nav li:hover, 
+  .Nav li:focus, 
+  .Nav li:hover a, 
+  .Nav li:focus a  {
+    background-color: #eee;
+    color: #333;
+  }
+
+  .searchForm {
+    width: 50%;
+    padding: .5rem 0;
+  }
+ 
+  .searchForm input[type="text"] {
+    margin-left: 0.5rem;
+  }
+
+  .newPostForm textarea {
+    height: 300px;
+  }
+}
+
+@media only screen and (min-width: 992px) {
+
+  .Header svg {
+    font-size: 3rem;
+  }
+
+}
+
+
+react js Blog project is open
+click on post width changes
+click on about, then width gets even larger
+so width is changing based upon content size in the main area
+
+File Tree
+About.js
+App.js
+Feed.js
+Footer.js
+Header.js
+Home.js
+index.css	<<<<<<<<<<<<<<<<<<<<<<<<<<<
+index.js	<<<<<<<<<<<<<<<<<<<<<<<<<<<
+Missing.js
+Nav.js
+NewPost.js
+Post.js
+PostPage.js
+
+
+Look at index.js
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Router>
+      <Route path="/" component={App} />
+    </Router>
+  </React.StrictMode>
+  document.getElementById('root')
+);
+
+
+Note that everything that is rendering has a <div>
+with an Id of 'root'				  document.getElementById('root')
+so eventhough we have a component with an App class
+which is our App component		          component={App}
+it (ie our component) is still being inserted into this other div with 'root'
+so we actually have another container to consider
+and this is why we are not seeing a consistent width here
+ie we have not anything for setting the container with Id 'root'
+
+so lets go back to the index.css
+hide file tree
+we should do something between the body and .App class
+b/c (1) the body will default to the width of the page
+without us even putting this in there
+but (2) the .App can not expand to 100% width of the page 
+b/c the .App is inside the <div> container with Id 'root'
+and the <div> container is not set to expand
+Right click on page, choose Inspect, choose DevTools
+with DevTools open we can 
+
+when highlight <body> we can see the highlight has whole width of the page
+but
+when hightlight <div with id="root"> the highlight does NOT have width of the page
+so this is what we need to change
+  justify-content: center;	<<<<<<<<<<<<<<DELETE THIS
+  align-items: center;		<<<<<<<<<<<<<<DELETE THIS
+
+and add this
+
+#root {
+  flex-grow: 1;
+  display: flex;			//1) we give the root id a display of flex
+
+  justify-content: center;
+  align-items: center;
+}
+
+why?
+1) we give the root id a display of flex that justifies everything in the center
+2a) we also know that the root div is a flex item b/c its inside the body
+2b) and we can set this to grow so it will expand up to the available width
+    which will expand it for the full page
+
+
+OLD
+
+body {
+  min-height: 100vh;
+  font-family: 'Open Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  justify-content: center;	<<<<<<<<<<<<<<DELETE THIS
+  align-items: center;		<<<<<<<<<<<<<<DELETE THIS
+  background-color: #efefef;
+}
+			<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<HERE   #root block
+.App {
+  width: 100%;		<<<<<<<<<<<<<<<<<<<defaults to here
+  max-width: 800px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  border: 1px solid #333;
+  box-shadow: 0px 0px 15px gray;
+}
+
+
+NEW
+
+body {
+  min-height: 100vh;
+  font-family: 'Open Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  background-color: #efefef;
+}
+
+#root {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.App {
+  width: 100%;
+  max-width: 800px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  border: 1px solid #333;
+  box-shadow: 0px 0px 15px gray;
+}
+
+
+
+
+now save this
+note rendered app immediately expands to the full width of the page
+expand browser to full page of the screen
+note max width is 800px
+so now when we highlight <div id="root" inside the DevTools
+we see the highlight is now the full width of the page
+
+so we needed to set that here and let it grow if we use the flexbox approach here
+and now the app can expand up to the full 800 pixels
+
+Now close DevTools
+bring VSCode to left of screen, rendered Chrome app to right pane
+
+if we go down the .App {} block inside index.css and we
+comment out the line of code 		max-width: 800px;
+and now save, then the application itself should expand?
+and it does after saving.
+So this is what the max-width: 800px;
+does. It gives a screen that is larger than the tablet.
+
+
+Now let try commenting out 
+#root
+  /* flex-grow: 1; */
+
+and then we can see a couple of things happen
+1) its no longer centered b/c we did not put any of this code in the body
+
+justify-content: center; or
+align-items: center;
+
+thus its no longer centered and so then it doesnt grow or expand
+to fill everything here
+so we need it to grow and then it will automatically be centered
+so lets uncomment it  
+#root
+  flex-grow: 1; 
+
+
+so now we understand how an item can be a flex-item, like this
+#root {
+  flex-grow: 1;
+  display: flex;
+
+we have now discussed the width
+
+next we discuss height		v05.58.18
+once we are into the .App component, all of these other components
+are within the .App component
+notice that now when we click on Home vs Post vs About, then all 
+of our widths stay consistent now that we have addressed the div with id root
+
+so now the height:
+flexbox defaults to a flex direction of row, so instantly inside
+the .App component, we want to 
+1) display a flex, and 
+2) tell it we are working with a column
+and then it begins to stack everything up on top of each other
+
+.App {
+  width: 100%;
+  max-width: 800px;
+  height: 100vh;
+  display: flex;			// 1) display a flex, and 
+  flex-direction: column;		// 2) tell it we are working with a column
+  justify-content: flex-start;
+  align-items: center;
+  border: 1px solid #333;
+  box-shadow: 0px 0px 15px gray;
+}
+
+note that the   height: 100vh; is the really attribute that takes over
+so we can comment this out and it still works
+b/c everything inside the .App component makes the containers grow
+so we kept the min-height: 100vh; out of habit but its not necessary
+
+body {
+  min-height: 100vh;
+
+body {
+  /* min-height: 100vh; */
+
+but the height that is really driving things is the 
+.App
+  height: 100vh;
+
+.App
+/*  height: 100vh; */
+
+notice if we comment this out, then the height will expand to the full screen 
+which pushes the footer down b/c it grows
+and if we go the About page which has very litte content, we can see that the About
+page shrinks to be very small
+and since we have justify-content: center and align-items: center
+therefore it is completely centered for height and width
+
+#root {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+so we really need the .App height: 100vh;
+
+.App
+/*  height: 100vh; */
+
+.App
+  height: 100vh;
+
+and notice the other thing we are doing is using flex-grow and applying it
+to all of these other classes that apply to the main elements on the page
+Home, Page, About or the Feed
+and we can the code here that contains all the different classes v06.00.54
+and it grows this body out b/c its flex-item and we set flex-grow: 1;
+Notice also that we   overflow-y: auto;  and this helps us with our feed
+as the footer stays in place while we can scroll the feed in the main area.
+
+.Home, .NewPost, .PostPage, .About, .Missing {
+  width: 100%;
+  flex-grow: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  background-color: #fff;
+}
+
+Notice the Footer class. 
+Its easy to center things when you only have 1 thing to center
+and that is with display: grid;
+and you can place-content: center;
+
+.Footer {
+  padding: 0.75rem;
+  display: grid;
+  place-content: center;
+}
+
+v06.01.09
+you will want that consistent width and not be an accordian that
+changes width based upon the page that you go t

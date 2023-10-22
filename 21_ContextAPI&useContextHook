@@ -1969,8 +1969,86 @@ const NewPost = ({
         <main className="NewPost">
 
 
-
 so lets look more closely at handleSubmit			v07.44.55
+clearly it uses posts	
+    const { handleSubmit } = useContext(DataContext);
+from #6 delete handleSubmit
+    const { } = useContext(DataContext);
+add posts given that handleSubmit uses posts
+    const { posts } = useContext(DataContext);
+it also uses setPosts so add that as well
+    const { posts, setPosts } = useContext(DataContext);
+it also uses setPostBody and setPostTitle are already contained within
+    const [postTitle, setPostTitle] = useState('');
+    const [postBody, setPostBody] = useState('');
+
+const NewPost = ({
+    const [postTitle, setPostTitle] = useState('');
+    const [postBody, setPostBody] = useState('');
+    const { posts, setPosts } = useContext(DataContext);
+    const history = useHistory();
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const id = posts.length ? posts[posts.length - 1].id + 1 : 1;		<<<<<USES posts
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const newPost = { id, title: postTitle, datetime, body: postBody };
+    try {
+        const response = await api.post('/posts', newPost);
+        const allPosts = [...posts, response.data];
+        setPosts(allPosts);							<<<<<<USES setPosts
+        setPostTitle('');
+        setPostBody('');
+        history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+
+we need to import useHistory from react-router-dom
+then we need to define our history to be able to use it
+
+BEFORE
+import ( useState, useContext } from 'react';
+import DataContext from './context/DataContext';
+
+AFTER
+import ( useState, useContext } from 'react';
+import DataContext from './context/DataContext';
+import { useHistory } from 'react-router-dom';
+
+
+it also has an api call inside here
+thus we need to import this into the function as well
+
+import ( useState, useContext } from 'react';
+import useHistory from 'react-router-dom';
+import api from './api/posts';
+import DataContext from './context/DataContext';
+
+so now we have our handleSubmit function in NewPost.js
+and we are containing the state within the component that really does not need to be shared
+and we are pulling in the state that does need to be shared between components
+and here that is posts
+    const { posts, setPosts } = useContext(DataContext);
+	    ^^^^^
+
+and we are pulling in the state that does need to be shared
+
+NewPost.js
+
+import ( useState, useContext } from 'react';
+import useHistory from 'react-router-dom';
+import api from './api/posts';
+import DataContext from './context/DataContext';
+
+const NewPost = ({
+    const [postTitle, setPostTitle] = useState('');
+    const [postBody, setPostBody] = useState('');
+    const { posts, setPosts } = useContext(DataContext);	// and we are pulling in the state that does need to be shared
+    const history = useHistory();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -1990,3 +2068,28 @@ so lets look more closely at handleSubmit			v07.44.55
   }
 
 
+now lets save this and go back to our DataContext.js
+we have already removed the function
+and we have already removed the state
+but now lets go down to the return block for DataContext.Provider
+and we need to remove it b/c it no longer needs to be passed thru the DataContext.Provider
+
+BEFORE
+        <DataContext.Provider value={{
+            width, search, setSearch,					
+            searchResults, fetchError, isLoading,
+            handleSubmit, postTitle, setPostTitle, postBody, setPostBody,	<<<<<<<<<<<<<delete here
+
+
+and we need to remove it b/c it no longer needs to be passed thru the DataContext.Provider
+
+AFTER
+        <DataContext.Provider value={{
+            width, search, setSearch,					
+            searchResults, fetchError, isLoading,
+
+
+reload app
+error due to extra dot in the Header.js import useWindowSize file		v07.47.12
+import useWindowSize from '../hooks/useWindowSize';
+import useWindowSize from './hooks/useWindowSize';

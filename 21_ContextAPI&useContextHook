@@ -453,8 +453,8 @@ function App() {
   const handleEdit = async (id) => {
     const newPost = { id, title: postTitle, datetime, body: postBody };
     const updatedPost = { id, title: editTitle, datetime, body: editBody };
-    try{
-      const response = await api.put(`/posts/${id}`, updatePost);
+    try {
+      const response = await api.put(`/posts/${id}`, updatedPost);
       setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 
       setEditTitle('');	
       setEditBody('');	
@@ -743,8 +743,8 @@ export const DataProvider = ({ children }) => {
     const handleEdit = async (id) => {
         const newPost = { id, title: postTitle, datetime, body: postBody };
         const updatedPost = { id, title: editTitle, datetime, body: editBody };
-    try{
-        const response = await api.put(`/posts/${id}`, updatePost);
+    try {
+        const response = await api.put(`/posts/${id}`, updatedPost);
         setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 
         setEditTitle('');	
         setEditBody('');	
@@ -2321,7 +2321,7 @@ export const DataProvider = ({ children }) => {
 
 now lets grab the state first and then we will come back to get the functions
 why? b/c those two state lines are no longer needed in DataContext.js and we can 
-just move those inside of EditPost.js
+just move those inside of EditPost.js at the top
 
 so its deleted here from DataContext.js 
 
@@ -2341,6 +2341,30 @@ we will also need to bring in posts, setPosts		v07.52.10
     AFTER
     const { posts, setPosts } = useContenxt(DataContext);
 
+useEffect with 3 dependencies [post, setEditTitle, setEditBody] is fine
+so we need to bring in that function handleEdit 
+cut this from DataContext.js
+in EditPost.js we can put the handleEdit function right under useEffect
+
+
+OLD HandleEdit.js in DataContext and move into EditPost.js
+
+    const handleEdit = async (id) => {
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const updatedPost = { id, title: editTitle, datetime, body: editBody };
+    try {
+        const response = await api.put(`/posts/${id}`, updatedPost);
+        setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 
+        setEditTitle('');	
+        setEditBody('');	
+        history.push('/');	
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+
+
 BEFORE EditPost.js
 
 import { useEffect, useContext } from "react";
@@ -2353,6 +2377,7 @@ const EditPost = () => {
     const post = posts.find(post => (post.id).toString() === id);
 
 
+
 AFTER EditPost.js
 
 import { useEffect, useContext } from "react";
@@ -2360,9 +2385,235 @@ import ( useParams, Link } from "react-router-dom";
 import DataContext from './context/DataContext';
 
 const EditPost = () => {
-    const [editTitle, setEditTitle] = useState('');		<<< added
-    const [editBody, setEditBody] = useState('');		<<< added
-    const { posts, setPosts } = useContext(DataContext);
+    const [editTitle, setEditTitle] = useState('');		<<< added at the top
+    const [editBody, setEditBody] = useState('');		<<< added at the top
+    const { posts, setPosts } = useContext(DataContext);	<<< added setPosts
     const { id } = useParams();
     const post = posts.find(post => (post.id).toString() === id);
 
+    useEffect(() => {
+        if (post) {
+            setEditTitle(post.title);
+            setEditBody(post.body);
+        }
+    }, [post, setEditTitle, setEditBody])			<<< useEffect here with these 3 are fine
+
+    return (
+        <main className="NewPost">			
+            {editTitle &&
+                <>
+                    <h2>Edit Post</h2>
+                    <form className="newPostForm" onSubmit=>{(e) => e.preventDefault()}>
+	                <label htmlFor="postTitle">Title:</label>
+	                <input
+	                    id="postTitle"
+       	                    type="text"
+	                    required
+	                    value={editTitle}
+	                    onChange={(e) => setEditTitle(e.target.value)}
+     	                />
+	                <label htmlFor="postBody">Post:</label>
+	                <textarea
+	                    id="postBody'
+	                    required
+	                    value={editBody} 
+	                    onChange={(e) => setEditBody(e.target.value)}
+	                />
+                        <button type="submit" onClick={() => handleEdit(post.id)} \>Submit</button>
+                    </form>
+                </>
+           }
+           {!editTitle &&
+                <>
+                    <h2>Post Not Found</h2>
+                    <p>Well, that's disappointing.</p>
+                    <p>
+                        <Link to='/'>Visit Our Homepage</Link>
+                    </p>
+                </>
+     )
+}
+
+export default EditPost
+
+
+now save
+and lets see what imports we need from handleEdit
+we will need format
+we will need api							<<<< add api see below
+we will need history							<<<< add useHistory see below
+still need format 
+format is not on PostPage
+so look on NewPost, yes found it, so copy import format
+
+
+
+
+BEFORE EditPost.js
+
+import { useEffect, useContext } from "react";
+import ( useParams, Link } from "react-router-dom";
+import DataContext from './context/DataContext';
+
+AFTER EditPost.js
+
+import { useEffect, useContext } from "react";
+import ( useParams, Link, useHistory } from "react-router-dom";		<<<< add useHistory
+import { format } from 'date-fns';					<<<< add format
+import api from './api/posts';						<<<< add api
+import DataContext from './context/DataContext';
+
+
+add useHistory above 
+then define inside the function
+
+const EditPost = () => {
+    const [editTitle, setEditTitle] = useState('');		<<< added at the top
+    const [editBody, setEditBody] = useState('');		<<< added at the top
+    const { posts, setPosts } = useContext(DataContext);	<<< added setPosts
+    const history = useHistory();
+    const { id } = useParams();
+    const post = posts.find(post => (post.id).toString() === id);
+
+
+
+so now handleEdit function inside EditPost.js 
+
+    const handleEdit = async (id) => {
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const updatedPost = { id, title: editTitle, datetime, body: editBody };
+        try {
+            const response = await api.put(`/posts/${id}`, updatedPost);
+            setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 
+            setEditTitle('');	
+            setEditBody('');	
+            history.push('/');	
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+    }
+
+
+now check JSX <DataContext.Provider value
+looks ok
+save
+reload app and check
+
+    return (
+        <DataContext.Provider value={{
+            search, setSearch,
+            searchResults, fetchError, isLoading,
+            posts, setPosts
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+
+
+Error shows useState is not defined
+so at the top of EditPost.js we need to add 		import useState
+
+import { useEffect, useContext } from "react";			<<<< before
+import { useState, useEffect, useContext } from "react";	<<<< after
+
+now save
+reload App
+try to edit 4th post
+now working
+VSCode Terminal shows warning some definitions inside DataContext are no longer being used
+
+so this is b/c we have shortened our Context
+so lets look at the import statements in EditPost.js
+add import useState			v07.54.21
+
+
+import { useState, useEffect, useContext } from "react";		<<<< NOW add useState
+import ( useParams, Link, useHistory } from "react-router-dom";			<<<< add useHistory
+import { format } from 'date-fns';						<<<< add format
+import api from './api/posts';							<<<< add api
+import DataContext from './context/DataContext';
+
+const EditPost = () => {
+    const [editTitle, setEditTitle] = useState('');			<<< added at the top
+    const [editBody, setEditBody] = useState('');			<<< added at the top
+    const { posts, setPosts } = useContext(DataContext);		<<< added setPosts
+    const history = useHistory();
+    const { id } = useParams();
+    const post = posts.find(post => (post.id).toString() === id);
+
+now save
+reload App
+try to edit 4th post
+its working
+
+still getting warning that some definitions inside DataContext.js are no longer being used
+this is b/c we have parred our DataContext down
+we longer need the import api nor import format
+
+
+from DataContext.js
+
+BEFORE
+
+import { createContext, useState, useEffect } from 'react';
+import { useHistory } from 'react-router'dom';
+import { format } from 'date-fns';				<<<< delete this
+import api from '../api/posts';					<<<< delete this
+import useAxiosFetch from '../hooks/useAxiosFetch';		
+
+
+from DataContext.js
+
+AFTER
+
+import { createContext, useState, useEffect } from 'react';
+import { useHistory } from 'react-router'dom';
+import useAxiosFetch from '../hooks/useAxiosFetch';		
+
+
+now we search DataContext to determine if we need useHistory
+so look inside DataContext.js code to see if history is used
+
+export const DataProvider = ({ children }) => {
+    const [posts, setPosts] = useState([])
+    const [search, setSearch] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const history = useHistory();				<<<< delete this and delete the import statement
+
+    const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+
+nope, useHistory is not needed
+so can delete the import { useHistory } statement			v07.55.19
+so can delete the const history = useHistory() statement
+
+AFTER
+
+import { createContext, useState, useEffect } from 'react';
+import useAxiosFetch from '../hooks/useAxiosFetch';		
+
+export const DataProvider = ({ children }) => {
+    const [posts, setPosts] = useState([])
+    const [search, setSearch] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+
+    const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+
+so now our Context is much smaller than it was v07.55.25
+    const [posts, setPosts] = useState([])
+    const [search, setSearch] = useState('');
+the posts and the search are tied into each other b/c 
+once we receive the posts 
+then we have set the searchResults 
+based on what (if anything) is being searched for
+
+so this DataContext.js is our data that we now have
+
+    const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+and we get a fetchError isLoading which is calling our useAxiosFetch right here inside
+the Context b/c it can be called inside of a react function (and not a traditional javascript function)
+
+and note that now we have contained much of the component logic
+(that is related to those components) within those components

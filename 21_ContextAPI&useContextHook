@@ -2238,13 +2238,17 @@ export default PostPage
 
 keep moving forward
 now lets look at App.js	now v07.51.10
+we have already handled the PostPage, and the NewPost
+now lets look at the logic in EditPost 
+that the rest of the Application would need?
+lets look at our DataContext to see
 
 function App() {
 
   return (
     <div className="App">
-      <Header title="React JS Blog" />			<<<<TO AFTER THIS
-      <DataProvider>					<<<<FROM HERE 
+      <Header title="React JS Blog" />
+      <DataProvider>
         <Nav />
         <Switch>
           <Route exact path="/" component={Home} />
@@ -2260,4 +2264,105 @@ function App() {
   );
 }
 
+
+we see handleEdit, editBody, setEditBody, editTitle, setEditTitle
+the rest of the Application does not need them
+so those 5 can be contained within a component without the rest of the App needing them
+so we delete those 5
+
+
+from DataContext.js
+
+    return (
+        <DataContext.Provider value={{
+            search, setSearch,
+            searchResults, fetchError, isLoading,
+            posts, setPosts, handleEdit, editBody, setEditBody, editTitle, setEditTitle, <<< 
+			     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  <<< 
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+}
+
+export default DataContext;
+
+
+from DataContext.js
+
+    return (
+        <DataContext.Provider value={{
+            search, setSearch,
+            searchResults, fetchError, isLoading,
+            posts, setPosts				<<<< deleted here
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+}
+
+export default DataContext;
+
+
+so we delete them here from the DataContext.Provider
+save
+
+from DataContext.js 
+
+export const DataProvider = ({ children }) => {
+    const [posts, setPosts] = useState([])
+    const [search, setSearch] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const [editTitle, setEditTitle] = useState('');		<<< delete
+    const [editBody, setEditBody] = useState('');		<<< delete
+    const history = useHistory();
+
+    const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+now lets grab the state first and then we will come back to get the functions
+why? b/c those two state lines are no longer needed in DataContext.js and we can 
+just move those inside of EditPost.js
+
+so its deleted here from DataContext.js 
+
+export const DataProvider = ({ children }) => {
+    const [posts, setPosts] = useState([])
+    const [search, setSearch] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
+    const history = useHistory();
+
+    const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+
+
+and its added here into EditPost.js
+we will also need to bring in posts, setPosts		v07.52.10
+    BEFORE
+    const { posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle } = useContenxt(DataContext);
+    AFTER
+    const { posts, setPosts } = useContenxt(DataContext);
+
+BEFORE EditPost.js
+
+import { useEffect, useContext } from "react";
+import ( useParams, Link } from "react-router-dom";
+import DataContext from './context/DataContext';
+
+const EditPost = () => {
+    const { posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle } = useContenxt(DataContext);
+    const { id } = useParams();
+    const post = posts.find(post => (post.id).toString() === id);
+
+
+AFTER EditPost.js
+
+import { useEffect, useContext } from "react";
+import ( useParams, Link } from "react-router-dom";
+import DataContext from './context/DataContext';
+
+const EditPost = () => {
+    const [editTitle, setEditTitle] = useState('');		<<< added
+    const [editBody, setEditBody] = useState('');		<<< added
+    const { posts, setPosts } = useContext(DataContext);
+    const { id } = useParams();
+    const post = posts.find(post => (post.id).toString() === id);
 

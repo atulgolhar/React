@@ -741,29 +741,29 @@ export const DataProvider = ({ children }) => {
   }
 
     const handleEdit = async (id) => {
-      const newPost = { id, title: postTitle, datetime, body: postBody };
-      const updatedPost = { id, title: editTitle, datetime, body: editBody };
+        const newPost = { id, title: postTitle, datetime, body: postBody };
+        const updatedPost = { id, title: editTitle, datetime, body: editBody };
     try{
-      const response = await api.put(`/posts/${id}`, updatePost);
-      setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 
-      setEditTitle('');	
-      setEditBody('');	
-      history.push('/');	
+        const response = await api.put(`/posts/${id}`, updatePost);
+        setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 
+        setEditTitle('');	
+        setEditBody('');	
+        history.push('/');	
     } catch (err) {
         console.log(`Error: ${err.message}`);
     }
   }
 
     const handleDelete = async (id) => {
-    try {
-      await api.delete(`/posts/${id}`)
-      const postsList = posts.filter(post => post.id !== id);
-      setPosts(postsList);
-      history.push('/');
-    } catch (err) {
-        console.log(`Error: ${err.message}`);
+        try {
+            await api.delete(`/posts/${id}`);
+            const postsList = posts.filter(post => post.id !== id);
+            setPosts(postsList);
+            history.push('/');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
     }
-  }
 
     return (
         <DataContent.Provider value={{
@@ -1703,9 +1703,10 @@ function App() {
     </div>
 
 
-so now we have this
+so now we have this for App.js
 
 function App() {
+
   return (
     <div className="App">
       <Header title="React JS Blog" />			<<<<TO AFTER THIS
@@ -1722,7 +1723,7 @@ function App() {
       </DataProvider>
       <Footer />
     </div>
-  )
+  );
 }
 
 
@@ -1839,6 +1840,7 @@ from DataContext.js
     )
 }
 
+export default DataContext;
 
 
 
@@ -1918,7 +1920,7 @@ export const DataProvider = ({ children }) => {
 
 BEFORE NewPost.js
 
-import { useContext } from 'react';
+import ( useState, useContext } from 'react';
 import DataContext from './context/DataContext';
 
 const NewPost = ({
@@ -1929,7 +1931,7 @@ const NewPost = ({
 
 AFTER NewPost.js
 
-import { useContext } from 'react';
+import ( useState, useContext } from 'react';
 import DataContext from './context/DataContext';
 
 const NewPost = ({
@@ -1967,6 +1969,7 @@ const NewPost = ({
     const { handleSubmit } = useContext(DataContext);		<<<<<<<is the only place that function is called
     return (
         <main className="NewPost">
+
 
 
 so lets look more closely at handleSubmit			v07.44.55
@@ -2093,3 +2096,168 @@ reload app
 error due to extra dot in the Header.js import useWindowSize file		v07.47.12
 import useWindowSize from '../hooks/useWindowSize';
 import useWindowSize from './hooks/useWindowSize';
+
+error now shows 'format' is not defined
+so grab import format from DataContext.js		import { format } from 'date-fns';
+and paste into NewPost.js component
+
+NewPost.js
+
+import ( useState, useContext } from 'react';
+import useHistory from 'react-router-dom';
+import { format } from 'date-fns';				<<<<ADD HERE
+import api from './api/posts';
+import DataContext from './context/DataContext';
+
+now reload app
+Blog seems to be working
+create 5th post
+Terminal shows new error		setPosts is not a function
+so go to DataContext.js
+search for JSX DataContext.Provider values to see if setPosts is a function listed?
+
+from DataContext.js
+
+    return (
+        <DataContext.Provider value={{
+            search, setSearch,
+            searchResults, fetchError, isLoading,
+            handleSubmit, postTitle, setPostTitle, postBody, setPostBody,
+            posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle,	 // setPosts should be added here
+
+            handleDelete
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+}
+
+export default DataContext;
+
+
+so we add setPosts
+
+from DataContext.js
+
+    return (
+        <DataContext.Provider value={{
+            search, setSearch,
+            searchResults, fetchError, isLoading,
+            handleSubmit, postTitle, setPostTitle, postBody, setPostBody,
+            posts, setPosts, handleEdit, editBody, setEditBody, editTitle, setEditTitle,		<<<<<ADDED
+
+            handleDelete
+        }}>
+            {children}
+        </DataContext.Provider>
+    )
+}
+
+export default DataContext;
+
+
+save
+reload app
+create new 5th post
+yes, now its working
+note that prior 5th post also did work, so we can delete the prior 5th post
+and thus most current 5th post remains from setPosts added in JSX
+
+now we look at the next change
+we did this for NewPost.js page
+so now we look at the PostPage.js page
+and ask: what is currently contained within this component but does not need to be sent here?
+
+we can see that posts needs to be shared among all components
+but handleDelete is really only needed in this component
+(so we dont need to deconstruct via useContext and
+rather that logic can just live right here so we add more room 
+we go to our DataContext.js component and cut (to paste) handleDelete from DataContext
+we paste in handleDelete and save
+ask: what imports are we missing? need import api		import api from './api/posts';
+are setPosts coming into here? no, so we need to add that
+    const { posts, handleDelete } = useContext(DataContext);		<<<< need to replate handleDelete
+    const { posts, setPosts } = useContext(DataContext);		<<<< with setPosts
+but now we will need history again from react-router-dom
+import { useParams, Link } from "react-router-dom";			<<<< need useHistory
+import { useParams, Link, useHistory } from "react-router-dom";		<<<< add useHistory here
+then we need to define useHistory inside the PostPage function		
+so we add 		const history = useHistory();
+so new we check again to see if we have everything imported that is newly defined
+we have history, we have setPosts, we have the api
+now save and reload app to see if its still working
+try to delete the 5th post? yes it works
+
+
+PostPage.js
+
+import { useParams, Link, useHistory } from "react-router-dom";		<<<< add here v07.50.26
+import { useContext } from 'react';
+import api from './api/posts';						<<<<< add here  v07.50.06
+import DataContext from './context/DataContext';
+
+const PostPage = () => {
+    const { posts, setPosts } = useContext(DataContext);		<<<< posts needs to be shared but handleDelete does not
+    const { id } = useParams();
+    const history = useHistory();					<<<< add const history = useHistory();
+    const post = posts.find(post => (post.id).toString() === id);
+									<<<< add more room here  v07.49.52
+    const handleDelete = async (id) => {
+        try {
+            await api.delete(`/posts/${id}`);
+            const postsList = posts.filter(post => post.id !== id);
+            setPosts(postsList);
+            history.push('/');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+    }
+    
+    return (
+      <main className="PostPage">
+          <article className="post">
+              {post && 
+                  <>
+                      <h2>{post.title}</h2>
+                      <p className="postDate">{post.datetime}</p>
+                      <p className="postBody">{post.body}</p>
+		      <Link to={`/edit/${post.id}`}><button className="editButton">Edit Post</button></Link>
+                      <button onClick={() => handleDelete(post.id)}>
+                      <button clasName="deleteButton" onClick={() => handleDelete(post.id)}>
+                          Delete Post
+                      </button>
+                  </>
+              }
+          </article>
+      </main>
+    )
+}
+
+export default PostPage
+
+
+keep moving forward
+now lets look at App.js	now v07.51.10
+
+function App() {
+
+  return (
+    <div className="App">
+      <Header title="React JS Blog" />			<<<<TO AFTER THIS
+      <DataProvider>					<<<<FROM HERE 
+        <Nav />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/post" component={NewPost} />
+          <Route path="/edit/:id" component={EditPost} />
+          <Route path="/post/:id" component={PostPage} />
+          <Route path="/about" component={About} />
+          <Route path="*" component={Missing} />
+        </Switch>
+      </DataProvider>
+      <Footer />
+    </div>
+  );
+}
+
+

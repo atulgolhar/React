@@ -279,7 +279,7 @@ now add a comma
 
 
 now after the comma
-we will create our thunk actions which are asynchronous actions
+we will create out thunk actions which are asynchronous actions
 the first thunk action will be savePost
 and it will start out with thunk()
 then we have async()
@@ -324,7 +324,7 @@ and now we have our posts
     })
 
 
-store.js is now
+store.js is now				v08.04.12
 
 import { createStore, action, thunk, computed } from "easy-peasy";
 import api from './api/posts';
@@ -366,3 +366,7 @@ export default createStore({
         const { posts } = helpers.getState()
     })
 });
+
+v08.04.12
+
+now the rest will be the try catch block that we previously had in the NewPost.js file

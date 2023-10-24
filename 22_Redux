@@ -75,3 +75,294 @@ once its running we are then ready to start making changes our blog application
 
 today we dont change the functionality
 we just refactor to use a different state management approach
+
+in file tree, highlight the src folder
+in the src folder at the same level as index.js
+create new file called store.js
+start with import statement to createStore 
+we need action
+we need thunk (which supports asynchronous actions)
+we need computed (which are computed values of state)
+
+import { createStore,
+import { createStore, action, 
+import { createStore, action, thunk, 
+import { createStore, action, thunk, computed } from "easy-peasy";
+
+we also need to import the api as our actions will contains the api actions
+as we will pull some of the logic back into our easy-peasy store
+
+import api from './api/posts';
+
+then we need 
+export default createStore({})
+this is where we will keep all of our state and actions
+
+so far we have store.js
+
+import { createStore, action, thunk, computed } from "easy-peasy";
+import api from './api/posts';
+
+export default createStore({
+    
+});
+
+
+we start with posts where the default state is the empty array
+then we have setPosts: 
+
+	action ( () => {} )		// in general
+
+and here we have an action() that receives state			action((state, ))
+action also receives a payload						action((state, payload))
+then we have an arrow function here					action((state, payload) => )
+
+
+export default createStore({
+    posts: [], 
+});
+
+export default createStore({
+    posts: [], 
+    setPosts: action()
+});
+
+export default createStore({
+    posts: [], 
+    setPosts: action((state, payload))
+});
+
+export default createStore({
+    posts: [], 
+    setPosts: action((state, payload) => {})
+});
+
+export default createStore({
+    posts: [], 
+    setPosts: action((state, payload) => {
+    })
+});
+
+now we have setPosts and an arrow function
+
+Inside the arrow function we have state.posts
+that equals the payload that is passed in
+now save
+
+export default createStore({
+    posts: [], 
+    setPosts: action((state, payload) => {
+        state.posts = payload;
+    })
+});
+
+now we will copy and paste in all the other state 
+b/c its very repetitive
+add comma then copy paste
+
+export default createStore({
+    posts: [], 
+    setPosts: action((state, payload) => {
+        state.posts = payload;
+    }), 
+    copy paste the other state in here		// same pieces of state over and over again
+});
+
+
+store.js so now we have 		v08.01.40
+
+import { createStore, action, thunk, computed } from "easy-peasy";
+import api from './api/posts';
+
+export default createStore({
+    posts: [], 
+    setPosts: action((state, payload) => {
+        state.posts = payload;
+    }), 
+    postTitle: '', 
+    setPostTitle: action((state, payload) => {
+        state.postTitle = payload;
+    }),
+    postBody: '', 
+    setPostBody: action((state, payload) => {
+        state.postBody = payload;
+    }), 
+    editTitle: '',
+    setEditTitle: action((state, payload) => {
+        state.editTitle = payload;
+    }),
+    editBody: '', 
+    setEditBody: action((state, payload) => {
+        state.editBody = payload;
+    }), 
+    search: '',
+    setSearch: action((state, payload) => {
+        state.search = payload;
+    }), 
+    searchResults: [],
+    setSearchResults: action((state, payload) => {
+        state.searchResults = payload;
+    }), 
+});
+
+
+Review this is (1) state that we were previously keeping in components
+and now (2) are pulling into our easy-peasy state store
+b/c (3) we will have actions as well. (ie so pulling into state store b/c of actions)
+
+now the first thing that we will define will still be state 
+and this state will be a postCount which we have not yet done			postCount: computed()
+Here easy-peasy lets us have computed values					postCount: computed(())
+										postCount: computed((state))
+so we pass in state and then add an arrow function
+and we have state.posts.length which tells us how many posts we have
+
+we also need a getPostById state
+you might think this is an action			this = getPostById
+but in fact its an action b/c it wont send the value 
+but in fact will send us an anonymous function that we define here		v08.02.46
+this anonymous function is returned and we get state.posts			return (id) => state.posts
+so now we have state.posts.find()			state.posts.find()
+and then we take each post				state.posts.find(post)
+with an anonymous function				state.posts.find(post => ())
+then we add each (post.id).toString			state.posts.find(post => (post.id).toString() === id);
+and this strictly equals the id
+    
+    postCount: computed()
+
+    postCount: computed(() => )
+
+    postCount: computed((state) => state.posts.length),
+
+    postCount: computed((state) => state.posts.length),
+    getPostById: computed()
+
+    postCount: computed((state) => state.posts.length),
+    getPostById: computed((state) => {})
+
+    postCount: computed((state) => state.posts.length),
+    getPostById: computed((state) => {
+    
+    })
+
+    postCount: computed((state) => state.posts.length),
+    getPostById: computed((state) => {
+        return ()    
+    })
+
+    postCount: computed((state) => state.posts.length),
+    getPostById: computed((state) => {
+        return (id) => state.posts.find(post => ())
+    })
+
+    postCount: computed((state) => state.posts.length),
+    getPostById: computed((state) => {
+        return (id) => state.posts.find(post => (post.id).toString() === id);
+    })
+
+
+so note that this 
+        return (id) => state.posts.find(post => (post.id).toString() === id);
+is also considered state b/c its returning 
+        return
+then anonymous function 
+               (id) => state.posts.find(post => (post.id).toString() === id);
+and that anonymous function will then take the id
+to return the specific post that we want
+
+now add a comma
+
+    postCount: computed((state) => state.posts.length),
+    getPostById: computed((state) => {
+        return (id) => state.posts.find(post => (post.id).toString() === id);
+    }),
+
+
+now after the comma
+we will create our thunk actions which are asynchronous actions
+the first thunk action will be savePost
+and it will start out with thunk()
+then we have async()
+then inside we pass actions, and we pass in whatever the payload is
+note we can name this seperately as newPost but in the documentation we see payload
+and then we also have helpers
+and then add another arrow function
+with the helpers we can deconstruct posts from the current state  	v08.03.56
+    const { posts }		// so here we deconstruct posts from the current state
+to use inside this thunk action
+and this is from helpers.getState
+    const { posts } = helpers.getState();
+and now we have our posts
+
+
+    }),
+    savePost
+
+    }),
+    savePost: thunk()
+
+    }),
+    savePost: thunk(async ())
+
+    }),
+    savePost: thunk(async (actions, newPost, ))
+
+
+    }),
+    savePost: thunk(async (actions, newPost, helpers) => {})
+
+
+    }),
+    savePost: thunk(async (actions, newPost, helpers) => {		// with the helpers we can deconstruct
+
+    })
+
+
+    }),
+    savePost: thunk(async (actions, newPost, helpers) => {		// with the helpers we can deconstruct
+        const { posts } = helpers.getState()
+    })
+
+
+store.js is now
+
+import { createStore, action, thunk, computed } from "easy-peasy";
+import api from './api/posts';
+
+export default createStore({
+    posts: [], 									// posts[]
+    setPosts: action((state, payload) => {					// setPosts
+        state.posts = payload;
+    }), 
+    postTitle: '', 								// postTitle
+    setPostTitle: action((state, payload) => {					// setPostTitle
+        state.postTitle = payload;
+    }),
+    postBody: '', 								// postBody
+    setPostBody: action((state, payload) => {					// setPostBody
+        state.postBody = payload;
+    }), 
+    editTitle: '',								// editTitle
+    setEditTitle: action((state, payload) => {					// setEditTitle
+        state.editTitle = payload;
+    }),
+    editBody: '', 								// editBody
+    setEditBody: action((state, payload) => {					// setEditBody
+        state.editBody = payload;
+    }), 
+    search: '',									// search
+    setSearch: action((state, payload) => {					// setSearch
+        state.search = payload;
+    }), 
+    searchResults: [],								// searchResults
+    setSearchResults: action((state, payload) => {				// setSearchResults
+        state.searchResults = payload;
+    }), 
+    postCount: computed((state) => state.posts.length),				// postCount
+    getPostById: computed((state) => {						// getPostById
+        return (id) => state.posts.find(post => (post.id).toString() === id);
+    }),
+    savePost: thunk(async (actions, newPost, helpers) => {			// savePost
+        const { posts } = helpers.getState()
+    })
+});

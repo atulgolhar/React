@@ -1,17 +1,77 @@
-tbd
+we refactor the blog
+move state management from Context api
+and move to Easy Peasy built on top of Redux
 
+easy-peasy.vercel.app/docs/introduction/alternatives.html
 
-rom DataContext.js
+package.json file
 
-    return (
-        <DataContext.Provider value={{
-            width, search, setSearch,					<<<<<<<<<<<<<HERE delete width
-            searchResults, fetchError, isLoading,
-            handleSubmit, postTitle, setPostTitle, postBody, setPostBody,
-            posts, handleEdit, editBody, setEditBody, editTitle, setEditTitle,
-            handleDelete
-        }}>
-            {children}
-        </DataContext.Provider>
-    )
+package.json
+
+{
+  "name": "22tut",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.14.1",		// we dont use these
+    "@testing-library/react": "^11.2.7",		// we dont use these
+    "@testing-library/user-event": "^12.8.3",		// we dont use these
+    "axios": "^0.21.1",
+    "date-fns": "^2.22.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.2.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.3",
+    "web-vitals": "^1.1.2"				// we dont use these
+    },
 }
+
+
+we will install easy-peasy
+but first clean up package.json file
+open VSCode terminal
+we will paste the title of each file to be uninstalled with space between each name
+
+$ npm uninstall @testing-library/jest-dom @testing-library/react @testing-library/user-event web-vitals
+
+enter
+this will remove them
+
+now lets add easy-peasy
+$ npm i easy-peasy
+enter
+
+package.json
+
+{
+  "name": "22tut",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.21.1",
+    "date-fns": "^2.22.1",
+    "easy-peasy": "^5.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.2.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.3",
+    },
+}
+
+
+now start json server by typing
+$ npx json-server -p 3500 -w data/db.json
+enter
+
+now it installs then launches
+
+now in seperate bash terminal
+$ npm start 
+enter
+
+once its running we are then ready to start making changes our blog application
+
+today we dont change the functionality
+we just refactor to use a different state management approach

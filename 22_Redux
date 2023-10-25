@@ -395,3 +395,107 @@ v08.04.12
     }), 
 
 now the rest will be the try catch block that we previously had in the NewPost.js file
+go to NewPost.js file
+copy the try, catch block
+and paste into savePost
+and fix tabs
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const newPost = { id, title: postTitle, datetime, body: postBody };
+    try {
+        const response = await api.post('/posts', newPost);
+        const allPosts = [...posts, response.data];
+        setPosts(allPosts);
+        setPostTitle('');
+        setPostBody('');
+        history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+  }
+
+
+we need to a few changes the try catch block
+our response line will be the same as we use the api and post the newPost that is passed id
+we dont really need to define the allPosts variable
+so we just cut the array we created and paste into setPosts(allPosts);
+now we need to add 		actions.setPosts
+        setPosts(allPosts);					<<<<<< replace here [...posts, response.data]
+        setPosts();
+        setPosts([...posts, response.data]);
+        actions.setPosts([...posts, response.data]);
+
+v08.05.02
+
+
+
+    try {
+        const response = await api.post('/posts', newPost);
+//      const allPosts = [...posts, response.data];		<<<<<< delete this
+        setPosts(allPosts);					<<<<<< replace here [...posts, response.data]
+        setPostTitle('');
+        setPostBody('');
+        history.push('/');
+    } catch (err) {
+        console.log(`Error: ${err.message}`);
+    }
+
+
+
+store.js is now				v08.04.34
+
+import { createStore, action, thunk, computed } from "easy-peasy";
+import api from './api/posts';
+
+export default createStore({
+    posts: [], 									// posts[]
+    setPosts: action((state, payload) => {					// setPosts
+        state.posts = payload;
+    }), 
+    postTitle: '', 								// postTitle
+    setPostTitle: action((state, payload) => {					// setPostTitle
+        state.postTitle = payload;
+    }),
+    postBody: '', 								// postBody
+    setPostBody: action((state, payload) => {					// setPostBody
+        state.postBody = payload;
+    }), 
+    editTitle: '',								// editTitle
+    setEditTitle: action((state, payload) => {					// setEditTitle
+        state.editTitle = payload;
+    }),
+    editBody: '', 								// editBody
+    setEditBody: action((state, payload) => {					// setEditBody
+        state.editBody = payload;
+    }), 
+    search: '',									// search
+    setSearch: action((state, payload) => {					// setSearch
+        state.search = payload;
+    }), 
+    searchResults: [],								// searchResults
+    setSearchResults: action((state, payload) => {				// setSearchResults
+        state.searchResults = payload;
+    }), 
+    postCount: computed((state) => state.posts.length),				// postCount
+    getPostById: computed((state) => {						// getPostById
+        return (id) => state.posts.find(post => (post.id).toString() === id);
+    }),
+    savePost: thunk(async (actions, newPost, helpers) => {			// savePost
+        const { posts } = helpers.getState()
+        try {
+            const response = await api.post('/posts', newPost);
+            const allPosts = [...posts, response.data];
+            setPosts(allPosts);
+            setPostTitle('');
+            setPostBody('');
+            history.push('/');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+    })
+});
+
+v08.05.02

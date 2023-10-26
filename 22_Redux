@@ -369,31 +369,6 @@ export default createStore({
 
 v08.04.12
 
-
-// added?
-
-
-  postTitle: '', 								// postTitle
-    setPostTitle: action((state, payload) => {					// setPostTitle
-        state.postTitle = payload;
-    }),
-    postBody: '', 								// postBody
-    setPostBody: action((state, payload) => {					// setPostBody
-        state.postBody = payload;
-    }), 
-    editTitle: '',								// editTitle
-    setEditTitle: action((state, payload) => {					// setEditTitle
-        state.editTitle = payload;
-    }),
-    editBody: '', 								// editBody
-    setEditBody: action((state, payload) => {					// setEditBody
-        state.editBody = payload;
-    }), 
-    search: '',									// search
-    setSearch: action((state, payload) => {					// setSearch
-        state.search = payload;
-    }), 
-
 now the rest will be the try catch block that we previously had in the NewPost.js file
 go to NewPost.js file
 copy the try, catch block

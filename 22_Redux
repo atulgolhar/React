@@ -396,15 +396,14 @@ and fix tabs
 we need to a few changes the try catch block
 our response line will be the same as we use the api and post the newPost that is passed id
 we dont really need to define the allPosts variable
-so we just cut the array we created and paste into setPosts(allPosts);
+so we just cut the array we created and paste into setPosts(allPosts);		v08.05.02
 now we need to add 		actions.setPosts
         setPosts(allPosts);					<<<<<< replace here [...posts, response.data]
         setPosts();
         setPosts([...posts, response.data]);
         actions.setPosts([...posts, response.data]);
 
-v08.05.02
-
+then it pulls the action from above in the createStore function
 
 
     try {
@@ -473,4 +472,126 @@ export default createStore({
     })
 });
 
-v08.05.02
+
+
+then it pulls the action from above in the createStore function
+ 
+    posts: [], 									
+    setPosts: action((state, payload) => {		<<<<<<<pulls from here setPosts
+        state.posts = payload;
+    }), 
+
+
+
+
+so we add delete the line above
+
+//      const allPosts = [...posts, response.data];		<<<<<< delete this
+
+and add actions.
+
+            setPosts(allPosts);						
+            actions.setPosts(allPosts);					<<<<< added actions.
+
+so then we also need to add actions. to setPostTitle and setPostBody
+from
+            actions.setPosts(allPosts);					<<<<< added actions.
+            setPostTitle('');
+            setPostBody('');
+to
+            actions.setPosts(allPosts);					<<<<< added actions.
+            actions.setPostTitle('');					<<<<< added actions.
+            actions.setPostBody('');					<<<<< added actions.
+
+so we have 	v08.05.18
+
+    savePost: thunk(async (actions, newPost, helpers) => {			// savePost
+        const { posts } = helpers.getState()
+        try {
+            const response = await api.post('/posts', newPost);
+            actions.setPosts(allPosts);
+            actions.setPostTitle('');
+            actions.setPostBody('');
+            history.push('/');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+    })
+});
+
+then we need to remove the history.push('/');
+b/c that is a useHistory hook from react-router and the rule is
+we can not call hooks inside of a store so that will need to occur back
+in the component after this thunk action occurs
+
+
+so we have 	v08.05.40
+
+    savePost: thunk(async (actions, newPost, helpers) => {			// savePost
+        const { posts } = helpers.getState()
+        try {
+            const response = await api.post('/posts', newPost);
+            actions.setPosts(allPosts);
+            actions.setPostTitle('');
+            actions.setPostBody('');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+    })
+});
+
+
+now we are ready for the next function which is deletePost
+and it starts the same as savePost so we copy thunk(async 1st two lines
+and change newPost payload to id
+    deletePost: thunk(async (actions, newPost, helpers) => {
+    deletePost: thunk(async (actions, id, helpers) => {	
+
+and then we need to closing )};							// add )}
+
+    }), 
+    deletePost: thunk(async (actions, id, helpers) => {				// deletePost
+        const { posts } = helpers.getState()
+    });										// add });
+
+v08.06.06
+
+now we go to the PostPage.js that has our handleDelete function
+and we copy paste the entire try,catch block into our store underneath deletePost
+
+    }), 
+    deletePost: thunk(async (actions, id, helpers) => {				// deletePost
+        const { posts } = helpers.getState()
+        // add try, catch block from handleDelete				// add try, catch block here
+    });										// add });
+
+
+
+    const handleDelete = async (id) => {
+        try {									// copy from try to }
+            await api.delete(`/posts/${id}`);
+            const postsList = posts.filter(post => post.id !== id);
+            setPosts(postsList);
+            history.push('/');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }									// to here }
+    }
+
+
+so we paste here
+
+    }), 
+    deletePost: thunk(async (actions, id, helpers) => {				// deletePost
+        const { posts } = helpers.getState()
+        try {									// copy from try to }
+            await api.delete(`/posts/${id}`);
+            const postsList = posts.filter(post => post.id !== id);
+            setPosts(postsList);
+            history.push('/');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }									// to here }
+    });										// add });
+
+v08.06.23

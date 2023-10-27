@@ -580,18 +580,28 @@ and we copy paste the entire try,catch block into our store underneath deletePos
 
 
 so we paste here
+we have the api, 
+we pass in an id
+we dont need to define postsList like this as we can use prior line
+		(post => post.id !== id)
+and that () replaces the postsList which is defined in the prior line
+from this
+            const postsList = posts.filter(post => post.id !== id);
+            setPosts(postsList);
+to this
+            setPosts(posts.filter(post => post.id !== id));			// paste into here
+
+and we need to remove the history line
+v08.06.46
 
     }), 
     deletePost: thunk(async (actions, id, helpers) => {				// deletePost
         const { posts } = helpers.getState()
         try {									// copy from try to }
             await api.delete(`/posts/${id}`);
-            const postsList = posts.filter(post => post.id !== id);
-            setPosts(postsList);
+            setPosts(posts.filter(post => post.id !== id));			// paste into here
             history.push('/');
         } catch (err) {
             console.log(`Error: ${err.message}`);
         }									// to here }
     });										// add });
-
-v08.06.23

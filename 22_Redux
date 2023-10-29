@@ -1070,3 +1070,107 @@ so notice you can mix State Management and Drilling Props
 Now look at the App.js component layout, we know that any component that will
 use data or any information will be the Nav.js component as the Header does not really use any
 So lets go directly to the Nav.js file
+
+and we can see we are importing useContext and DataContext
+
+import { Link } from 'react-router-dom';
+import { useContext } from 'react';				// see here so delete
+import DataContext from './context/DataContext';		// see here so delete
+
+note that we should not need either of those now so delete them
+but we will want to import useEffect from react
+and we also need to import useStoreState and useStoreActions from easy-peasy
+
+import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useStoreState, useStoreActions } from 'easy-peasy';
+
+then we need PULL IN SOME STATE from easy-peasy
+previously we pulled in search and setSearch from the Context hook
+we can delete that now
+and we need more than that now
+define const posts and set this equal to useStoreState 
+which receives (state)					    const posts = useStoreState((state))
+and then an arrow function with state.posts		                                        => state.posts)
+    const posts = useStoreState((state) => state.posts);
+
+const Nav = () => {
+    const { search, setSearch } = useContext(DataContext);
+
+const Nav = () => {
+    const posts = useStoreState((state) => state.posts);
+
+and we need a little more state so just copy that line a 2nd time
+    const posts = useStoreState((state) => state.posts);
+    const posts = useStoreState((state) => state.posts);
+
+and replace posts with search that was previously received
+    const search = useStoreState((state) => state.search);
+
+now copy again a 3rd time
+and change this to an action setSearch
+replace useStoreState with useStoreActions and then pass in (actions)
+    const setSearch = useStoreActions((actions) => actions.setSearch);
+
+now copy a 4th time and instead of setSearch we use setSearchResults
+
+    const setSearchResults = useStoreActions((actions) => actions.setSearchResults);
+
+so now its Nav.js
+
+import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useStoreState, useStoreActions } from 'easy-peasy';
+
+const Nav = () => {
+    const posts = useStoreState((state) => state.posts);
+    const search = useStoreState((state) => state.search);
+    const setSearch = useStoreActions((actions) => actions.setSearch);
+    const setSearchResults = useStoreActions((actions) => actions.setSearchResults);
+
+    return (    
+        <nav className="Nav">
+            <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
+                <label htmlFor="search">Search Posts</label>
+	        <input
+	            id="search"
+	            type="text"
+	            placeholder="Search Posts"
+	            value={search}
+	            onChange={(e) => setSearch(e.target.value)}
+            </form> 
+            <ul>
+                <li><Link to="/">Home</li>
+                <li><Link to="/post">Post</li>
+                <li><Link to="/about">About</li>
+            </ul> 
+        </nav>
+    )
+}
+
+
+v 08.16.04
+now we have all of the state and actions that we should need 
+pulled in from easy-peasy but we are not using them all yet
+and not using useEffect
+
+now in our store.js, we dont have any hooks in the store in our actions
+as we can not use hooks in the store
+but we did use hooks in the context
+
+so now if go back to the Nav.js 
+we need to pull our useEffect into the Nav.js
+that was previously in our DataContext
+so lets look at the DataContext.js
+here is our useEffect hook that was helping to filter and set our search results
+
+    useEffect(() => {
+        const filteredResults = posts.filter(post => 
+            ((post.body).toLowerCase()).includes(search.toLowerCase())
+            || ((post.title).toLowerCase()).includes(search.toLowerCase()));
+
+    setSearchResults(filterResults.reverse());
+    }, [posts, search])							
+
+so we can copy this
+v08.16.29

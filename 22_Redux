@@ -1174,3 +1174,204 @@ here is our useEffect hook that was helping to filter and set our search results
 
 so we can copy this
 v08.16.29
+Go back to Nav.js
+and underneath Nav.js state, we can paste the useEffect copied code
+Now inside useEffect dependencies we need to add setSearchResults as a dependency
+so now everything is being used that we imported and thus are finished with this component
+and check this visually for posts, search, setSearch, setSearchResults
+and below in JSX for {} we can check for {search} and setSearch as well  v08.17.08
+And now this is the end of the updates to the Nav.js component.
+And thus now (below), we can move on to the Home.js component.
+
+so now its Nav.js
+
+import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useStoreState, useStoreActions } from 'easy-peasy';
+
+const Nav = () => {
+    const posts = useStoreState((state) => state.posts);
+    const search = useStoreState((state) => state.search);
+    const setSearch = useStoreActions((actions) => actions.setSearch);
+    const setSearchResults = useStoreActions((actions) => actions.setSearchResults);
+
+    useEffect(() => {								// paste here
+        const filteredResults = posts.filter(post => 				//
+            ((post.body).toLowerCase()).includes(search.toLowerCase())		//
+            || ((post.title).toLowerCase()).includes(search.toLowerCase()));	//
+										//
+        setSearchResults(filterResults.reverse());				//
+    }, [posts, search, setSearchResults])					// add setSearchResults
+
+    return (    
+        <nav className="Nav">
+            <form className="searchForm" onSubmit={(e) => e.preventDefault()}>
+                <label htmlFor="search">Search Posts</label>
+	        <input
+	            id="search"
+	            type="text"
+	            placeholder="Search Posts"
+	            value={search}
+	            onChange={(e) => setSearch(e.target.value)}
+            </form> 
+            <ul>
+                <li><Link to="/">Home</li>
+                <li><Link to="/post">Post</li>
+                <li><Link to="/about">About</li>
+            </ul> 
+        </nav>
+    )
+}
+
+And thus now, we can move on to the Home.js component.  v08.17.18
+Looking at Home.js component
+
+we can remove the useContext and DataContext imports
+ 
+import Feed from './Feed';
+import ( useContext } from 'react';				// delete this
+import DataContext from './context/DataContext';		// delete this
+
+const Home = () => {
+    const { searchResults, fetchError, isLoading } = useContext(DataContext);  
+
+    return (
+        <main className="Home">
+            {isLoading && <p className="statusMsg">Loading posts...</p>}
+            {!isLoading && fetchError && <p className="statusMsg" style={{color: "red"}}>{fetchError}</p>}
+            {!isLoading && !fetchError && (searchResults.length ? <Feed posts={searchResults} /> : <p className="statusMsg">No posts to display.</p>)}
+        </main>
+    )
+}
+
+export default Home
+
+thus we have
+and we import useStoreState from easy-peasy
+
+import Feed from './Feed';
+import { useStoreState } from 'easy-peasy';
+
+const Home = () => {
+    const { searchResults, fetchError, isLoading } = useContext(DataContext);  
+
+    return (
+        <main className="Home">
+            {isLoading && <p className="statusMsg">Loading posts...</p>}
+            {!isLoading && fetchError && <p className="statusMsg" style={{color: "red"}}>{fetchError}</p>}
+            {!isLoading && !fetchError && (searchResults.length ? <Feed posts={searchResults} /> : <p className="statusMsg">No posts to display.</p>)}
+        </main>
+    )
+}
+
+export default Home
+
+
+and now we are sending some props down
+we are sending isLoading and fetchError
+
+const Home = () => {
+const Home = ({}) => {
+const Home = ({ isLoading, fetchError }) => {
+
+
+thus we have Home.js as
+
+import Feed from './Feed';
+import { useStoreState } from 'easy-peasy';
+
+const Home = ({ isLoading, fetchError }) => {
+    const { searchResults, fetchError, isLoading } = useContext(DataContext);  
+
+    return (
+        <main className="Home">
+            {isLoading && <p className="statusMsg">Loading posts...</p>}
+            {!isLoading && fetchError && <p className="statusMsg" style={{color: "red"}}>{fetchError}</p>}
+            {!isLoading && !fetchError && (searchResults.length ? <Feed posts={searchResults} /> : <p className="statusMsg">No posts to display.</p>)}
+        </main>
+    )
+}
+
+export default Home
+
+and then we need to change the const {} = useContext(DataContext) line
+as we pull in the searchResults from our DataStore
+and it uses useStoreState 
+using (state) with an arrow function
+and then it uses state.searchResults
+
+    const { searchResults, fetchError, isLoading } = useContext(DataContext);  
+    const { searchResults } = useContext(DataContext);
+    const { searchResults } = useStoreState();  
+    const { searchResults } = useStoreState((state) => );  
+    const { searchResults } = useStoreState((state) => state.searchResults);
+
+so we have Home.js as
+
+import Feed from './Feed';
+import { useStoreState } from 'easy-peasy';
+
+const Home = ({ isLoading, fetchError }) => {
+    const { searchResults } = useStoreState((state) => state.searchResults);
+
+    return (
+        <main className="Home">
+            {isLoading && <p className="statusMsg">Loading posts...</p>}
+            {!isLoading && fetchError && <p className="statusMsg" style={{color: "red"}}>{fetchError}</p>}
+            {!isLoading && !fetchError && (searchResults.length ? <Feed posts={searchResults} /> : <p className="statusMsg">No posts to display.</p>)}
+        </main>
+    )
+}
+
+export default Home
+
+we are finished now with Home.js
+then we head to the PostPage.js 
+where we will need to copy that import { useStoreState } from 'easy-peasy';
+
+
+PostPage.js
+
+import { useParams, Link, useHistory } from "react-router-dom";		<<<< add here v07.50.26
+import { useContext } from 'react';
+import api from './api/posts';						<<<<< add here  v07.50.06
+import DataContext from './context/DataContext';
+
+const PostPage = () => {
+    const { posts, setPosts } = useContext(DataContext);		<<<< posts needs to be shared but handleDelete does not
+    const { id } = useParams();
+    const history = useHistory();					<<<< add const history = useHistory();
+    const post = posts.find(post => (post.id).toString() === id);
+									<<<< add more room here  v07.49.52
+    const handleDelete = async (id) => {
+        try {
+            await api.delete(`/posts/${id}`);
+            const postsList = posts.filter(post => post.id !== id);
+            setPosts(postsList);
+            history.push('/');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+    }
+    
+    return (
+      <main className="PostPage">
+          <article className="post">
+              {post && 
+                  <>
+                      <h2>{post.title}</h2>
+                      <p className="postDate">{post.datetime}</p>
+                      <p className="postBody">{post.body}</p>
+		      <Link to={`/edit/${post.id}`}><button className="editButton">Edit Post</button></Link>
+                      <button onClick={() => handleDelete(post.id)}>
+                      <button clasName="deleteButton" onClick={() => handleDelete(post.id)}>
+                          Delete Post
+                      </button>
+                  </>
+              }
+          </article>
+      </main>
+    )
+}
+
+export default PostPage

@@ -596,7 +596,6 @@ and we need to remove the history line					v08.06.46
 so we leave history inside the component
 and so now we have completed our deletePost thunk function
 
-
     }), 
     deletePost: thunk(async (actions, id, helpers) => {	
         const { posts } = helpers.getState();
@@ -669,20 +668,405 @@ and copy the try/catch block
         }
 
 
-and then we go back to the store.js to paste this into editPost
+and then we go back to the store.js to paste this into editPost		v08.07.37
+now we have our updatedPost passed in  
+note we are also referencing an id which we dont have but we can get
+from updatedPost or updatedPost.id				
+or we can deconstruct from updatedPost 			// const { id } = updatedPost;
+so updatedPost delivers the id thru deconstruction
+and then just continue to reference like we have already inside our try/catch block
+we need to add actions. to the setPosts line
 
-so we have 
+           setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 	
+           actions.setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 	
+then copy paste actions. and apply to setEditTitle and setEditBody
 
-    }),
-    editPost: thunk(async (actions, updatedPost, helpers) => {	
-        const { posts } = helpers.getState();
-        try {
-            const response = await api.put(`/posts/${id}`, updatedPost);
-            setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 
+            actions.setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 	// need id here
             setEditTitle('');	
             setEditBody('');	
-            history.push('/');	
+
+            actions.setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 	// need id here
+            actions.setEditTitle('');	
+            actions.setEditBody('');	
+
+we can remove the history line
+            history.push('/');			// delete this line
+
+
+so now we have completed our editPost thunk action
+
+    }),
+    editPost: thunk(async (actions, updatedPost, helpers) => {			// updatedPost passed in
+        const { posts } = helpers.getState();
+        const { id } = updatedPost;						// deconstructed from updatedPost
+        try {
+            const response = await api.put(`/posts/${id}`, updatedPost);		// can see it here
+            actions.setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 	// need id here
+            actions.setEditTitle('');	
+            actions.setEditBody('');	
         } catch (err) {
             console.log(`Error: ${err.message}`);
         }
     })
+
+
+so our complete store.js file is
+
+
+import { createStore, action, thunk, computed } from "easy-peasy";
+import api from './api/posts';
+
+export default createStore({
+    posts: [], 								
+    setPosts: action((state, payload) => {			
+        state.posts = payload;
+    }), 
+    postTitle: '', 							
+    setPostTitle: action((state, payload) => {				
+        state.postTitle = payload;
+    }),
+    postBody: '', 						
+    setPostBody: action((state, payload) => {					
+        state.postBody = payload;
+    }), 
+    editTitle: '',								
+    setEditTitle: action((state, payload) => {				
+        state.editTitle = payload;
+    }),
+    editBody: '', 				
+    setEditBody: action((state, payload) => {					
+        state.editBody = payload;
+    }), 
+    search: '',							
+    setSearch: action((state, payload) => {				
+        state.search = payload;
+    }), 
+    searchResults: [],					
+    setSearchResults: action((state, payload) => {				
+        state.searchResults = payload;
+    }), 
+    postCount: computed((state) => state.posts.length),	
+    getPostById: computed((state) => {			
+        return (id) => state.posts.find(post => (post.id).toString() === id);
+    }),
+    savePost: thunk(async (actions, newPost, helpers) => {
+        const { posts } = helpers.getState()
+        try {
+            const response = await api.post('/posts', newPost);
+            actions.setPosts(allPosts);
+            actions.setPostTitle('');
+            actions.setPostBody('');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+    }), 
+    deletePost: thunk(async (actions, id, helpers) => {	
+        const { posts } = helpers.getState();
+        try {					
+            await api.delete(`/posts/${id}`);
+            setPosts(posts.filter(post => post.id !== id));
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+    }),
+    editPost: thunk(async (actions, updatedPost, helpers) => {
+        const { posts } = helpers.getState();
+        const { id } = updatedPost;
+        try {
+            const response = await api.put(`/posts/${id}`, updatedPost);
+            actions.setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 
+            actions.setEditTitle('');	
+            actions.setEditBody('');	
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+    })
+});
+
+
+so now we have the store.js file
+and now we can remove the context api and context hooks
+
+note that here we are only using 1 store but you can get more complex
+and create individula models and then pull those individual models into a store
+see documentation for more complex Easy-Peasy functionality
+
+
+we need to add to index.js   v08.09.07
+add import { StoreProvider } from 'easy-peasy';
+we also need to import the store we just created from './store';
+then right underneath <React.StrictMode>
+we need to add the <StoreProvider store={store}></StoreProvider>
+need to move the ending tag </StoreProvider> to just before </React.StrictMode> 
+Then need to tab everything over
+    <Router>
+      <Route path="/" component={App} />
+    </Router>
+
+      <Router>
+        <Route path="/" component={App} />
+      </Router>
+
+
+so our index.js now is
+
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { StoreProvider } from 'easy-peasy';					// add
+import store from './store';							// add
+
+ReactDOM.render(
+  <React.StrictMode>
+    <StoreProvider store={store}>						// add
+      <Router>									// tab over
+        <Route path="/" component={App} />					// tab over
+      </Router>									// tab over
+    </StoreProvider>								// add
+  </React.StrictMode>
+  document.getElementById('root')
+);
+
+
+what is happening with StoreProvider?
+StoreProvider provides all the store state that we have in the Application
+
+save
+
+now ready to move onto the App.js
+remove import { DataProvider } context
+remove       <DataProvider>
+remove       </DataProvider>
+
+
+BEFORE 
+
+App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home'; 
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import EditPost from './EditPost';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch } from 'react-router'dom';
+import { DataProvider } from './context/DataContext';
+
+function App() {
+
+  return (
+    <div className="App">
+      <Header title="React JS Blog" />
+      <DataProvider>
+        <Nav />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/post" component={NewPost} />
+          <Route path="/edit/:id" component={EditPost} />
+          <Route path="/post/:id" component={PostPage} />
+          <Route path="/about" component={About} />
+          <Route path="*" component={Missing} />
+        </Switch>
+      </DataProvider>
+      <Footer />
+    </div>
+  );
+}
+
+
+AFTER
+
+App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home'; 
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import EditPost from './EditPost';
+import About from './About';
+import Missing from './Missing';
+import { Route, Switch } from 'react-router'dom';
+
+function App() {
+
+  return (
+    <div className="App">
+      <Header title="React JS Blog" />
+        <Nav />
+        <Switch>
+           <Route exact path="/" component={Home} />
+          <Route exact path="/post" component={NewPost} />
+          <Route path="/edit/:id" component={EditPost} />
+          <Route path="/post/:id" component={PostPage} />
+          <Route path="/about" component={About} />
+          <Route path="*" component={Missing} />
+        </Switch>
+      <Footer />
+    </div>
+  );
+}
+
+
+ok so now we go back to the App context and move a couple things back into the App.js component
+b/c we can not put the hook for the useAxiosFetch into our DataStore with easy-peasy
+
+so we need to put our request for the initial data back into the App compenent
+and we were doing this using our useAxiosFetch hook 
+and useEffect hook to setPosts
+from inside our DataContext.js
+
+and so we can copy this
+
+    const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');
+ 
+    useEffect(() => {
+        setPosts(data);  
+    }, [data])
+
+
+and so we also need to import useEffect and useAxiosFetch
+
+import { createContext, useState, useEffect } from 'react';
+import useAxiosFetch from './hooks/useAxiosFetch';		
+
+and we have one other import from easy-peasy store which is 
+useStoreActions from setPosts
+
+import { useEffect } from 'react';								// add here
+import useAxiosFetch from './hooks/useAxiosFetch';						// add here
+import { Route, Switch } from 'react-router'dom';						// add here
+import { useStoreActions } from 'easy-peasy';							// add here
+
+now we need to add const setPosts with an arrow function
+here we have const setPosts that is equal to useStoreActions
+and it accepts the actions with arrow function
+
+    const setPosts = useStoreActions((actions) => actions.setPosts);				// add here
+
+so now we have import in
+setPosts from our easy-peasy store
+and we have useAxiosFetch hook
+
+note we need to add setPosts as a dependency for useEffect
+
+    useEffect(() => {	
+        setPosts(data); 
+    }, [data])		
+
+    useEffect(() => {	
+        setPosts(data); 
+    }, [data, setPosts])					// add dependency here setPosts
+
+
+now go to App.js to paste this in
+
+App.js
+
+import Header from './Header';
+import Nav from './Nav';
+import Footer from './Footer';
+import Home from './Home'; 
+import NewPost from './NewPost';
+import PostPage from './PostPage';
+import EditPost from './EditPost';
+import About from './About';
+import Missing from './Missing';
+import { useEffect } from 'react';								// add here
+import useAxiosFetch from './hooks/useAxiosFetch';						// add here
+import { Route, Switch } from 'react-router'dom';						// add here
+import { useStoreActions } from 'easy-peasy';							// add here
+
+function App() {
+    const setPosts = useStoreActions((actions) => actions.setPosts);				// add here
+    const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');	// paste here
+ 
+    useEffect(() => {										// paste here
+        setPosts(data); 									// paste here 
+    }, [data])											// paste here
+
+  return (
+    <div className="App">
+      <Header title="React JS Blog" />
+        <Nav />
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/post" component={NewPost} />
+          <Route path="/edit/:id" component={EditPost} />
+          <Route path="/post/:id" component={PostPage} />
+          <Route path="/about" component={About} />
+          <Route path="*" component={Missing} />
+        </Switch>
+      <Footer />
+    </div>
+  );
+}
+
+
+so now we have imported in setPosts from our easy-peasy store
+and we have our useAxiosFetch custom hook
+
+function App() {
+    const setPosts = useStoreActions((actions) => actions.setPosts);				// add here
+    const { data, fetchError, isLoading } = useAxiosFetch('http://localhost:3500/posts');	// paste here
+
+
+State Management vs Drilling Props
+
+note that we are NOT using fetchError and NOT using isLoading YET
+(and we dont want to set fetchError and isLoading back to the store as
+those two can just be passed down. So notice you can still drill props 
+eventhough you are using a state management library or package).
+
+we edit the Home component from an exact path
+           <Home
+and inside the <Home component 
+we pass isLoading equal to isLoading 
+and we also pass the fetchError equal to fetchError			v08.13.24
+then we close the Home tag
+
+BEFORE
+          <Route exact path="/" component={Home} />
+
+AFTER
+          <Route exact path="/">
+            <Home
+              isLoading={isLoading}
+              fetchError={fetchError}
+            />
+
+also note that 
+
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route exact path="/post" component={NewPost} />
+
+
+        <Switch>
+          <Route exact path="/">
+            <Home
+              isLoading={isLoading}
+              fetchError={fetchError}
+            />
+          </Route>
+          <Route exact path="/post" component={NewPost} />
+
+
+so now "everything" else we keep in State Management (ie easy-peasy) 
+but these (ie isLoading and fetchError) we keep as Drilled Props
+
+why "everything" is in quotes? b/c once we create ListItems then 
+we will drill those props as well
+
+so notice you can mix State Management and Drilling Props
+
+
+Now look at the App.js component layout, we know that any component that will
+use data or any information will be the Nav.js component as the Header does not really use any
+So lets go directly to the Nav.js file

@@ -561,7 +561,7 @@ and we copy paste the entire try,catch block into our store underneath deletePos
 
     }), 
     deletePost: thunk(async (actions, id, helpers) => {				// deletePost
-        const { posts } = helpers.getState()
+        const { posts } = helpers.getState();
         // add try, catch block from handleDelete				// add try, catch block here
     });										// add });
 
@@ -591,17 +591,98 @@ from this
 to this
             setPosts(posts.filter(post => post.id !== id));			// paste into here
 
-and we need to remove the history line
-v08.06.46
+and we need to remove the history line					v08.06.46
+            history.push('/');		// delete this line
+so we leave history inside the component
+and so now we have completed our deletePost thunk function
+
 
     }), 
-    deletePost: thunk(async (actions, id, helpers) => {				// deletePost
-        const { posts } = helpers.getState()
-        try {									// copy from try to }
+    deletePost: thunk(async (actions, id, helpers) => {	
+        const { posts } = helpers.getState();
+        try {					
             await api.delete(`/posts/${id}`);
-            setPosts(posts.filter(post => post.id !== id));			// paste into here
-            history.push('/');
+            setPosts(posts.filter(post => post.id !== id));
         } catch (err) {
             console.log(`Error: ${err.message}`);
-        }									// to here }
-    });										// add });
+        }
+    });	
+
+
+
+store.js so we have 	v08.06.53
+
+    savePost: thunk(async (actions, newPost, helpers) => {			// savePost
+        const { posts } = helpers.getState()
+        try {
+            const response = await api.post('/posts', newPost);
+            actions.setPosts(allPosts);
+            actions.setPostTitle('');
+            actions.setPostBody('');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+    }), 
+    deletePost: thunk(async (actions, id, helpers) => {	
+        const { posts } = helpers.getState();
+        try {					
+            await api.delete(`/posts/${id}`);
+            setPosts(posts.filter(post => post.id !== id));
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+    }),
+
+and now we before we finish we need to create the editPost thunk action
+so copy paste the thunk( and const posts
+
+	      thunk(async (actions, id, helpers) => {	
+        const { posts } = helpers.getState();
+
+and replace id with the payload called updatedPost
+b/c its supposed to be edited and updated
+
+    editPost: thunk(async (actions, id, helpers) => {	
+    editPost: thunk(async (actions, updatedPost, helpers) => {	
+
+add closing curly brace and parenthesis at the end of editPost
+    })
+
+so we have 
+
+    }),
+    editPost: thunk(async (actions, updatedPost, helpers) => {	
+        const { posts } = helpers.getState();
+    })
+
+now we go to EditPost.js and find our handleEdit function
+and copy the try/catch block
+
+        try {
+            const response = await api.put(`/posts/${id}`, updatedPost);
+            setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 
+            setEditTitle('');	
+            setEditBody('');	
+            history.push('/');	
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+
+
+and then we go back to the store.js to paste this into editPost
+
+so we have 
+
+    }),
+    editPost: thunk(async (actions, updatedPost, helpers) => {	
+        const { posts } = helpers.getState();
+        try {
+            const response = await api.put(`/posts/${id}`, updatedPost);
+            setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 
+            setEditTitle('');	
+            setEditBody('');	
+            history.push('/');	
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+    })

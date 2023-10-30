@@ -1328,14 +1328,33 @@ export default Home
 we are finished now with Home.js
 then we head to the PostPage.js 
 where we will need to copy that import { useStoreState } from 'easy-peasy';
-
-
-PostPage.js
-
-import { useParams, Link, useHistory } from "react-router-dom";		<<<< add here v07.50.26
-import { useContext } from 'react';
-import api from './api/posts';						<<<<< add here  v07.50.06
+so we paste that useStoreState and useStoreActions 
+and delete the DataContext line
 import DataContext from './context/DataContext';
+import { useStoreState, useStoreActions } from 'easy-peasy';
+
+we dont need import useContext nor import api as that is now in a Thunk action
+
+BEFORE
+
+import { useParams, Link, useHistory } from "react-router-dom";		
+import { useContext } from 'react';
+import api from './api/posts';						
+import DataContext from './context/DataContext';
+
+AFTER
+
+import { useParams, Link, useHistory } from "react-router-dom";		
+import { useStoreState } from 'easy-peasy';				<<<<< add here 
+
+
+so now we have PostPage.js	v08.18.48
+so we have parred down the imports
+next look at the state
+
+
+import { useParams, Link, useHistory } from "react-router-dom";		
+import { useStoreState } from 'easy-peasy';				<<<<< add here 
 
 const PostPage = () => {
     const { posts, setPosts } = useContext(DataContext);		<<<< posts needs to be shared but handleDelete does not
@@ -1375,3 +1394,44 @@ const PostPage = () => {
 }
 
 export default PostPage
+
+
+
+
+now we look at the state
+
+the posts and setPosts can be eliminated
+    const { posts, setPosts } = useContext(DataContext);		
+and then we set our state underneath history and then we change how we get the individual posts as well
+    const history = useHistory()
+so right now in place of const history we add
+const deletePost that receives useStoreActions using (actions) with an arrow function
+    const deletePost = useStoreActions((actions) => actions.deletePost);
+
+so we have 
+and we need to address the second part of that "how we get the individual posts as well"
+wherein we define v08.19.28
+
+    const { id } = useParams();
+    const history = useHistory();
+    const deletePost = useStoreActions((actions) => actions.deletePost);
+
+    const post = posts.find(post => (post.id).toString() === id);
+
+
+
+
+BEFORE
+
+    const { posts, setPosts } = useContext(DataContext);		
+    const { id } = useParams();
+    const history = useHistory();
+    const post = posts.find(post => (post.id).toString() === id);
+
+AFTER
+
+    const { id } = useParams();
+    const history = useHistory();
+    const deletePost = useStoreActions((actions) => actions.deletePost);
+    const post = posts.find(post => (post.id).toString() === id);
+

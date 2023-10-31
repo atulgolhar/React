@@ -1,1 +1,286 @@
-tbd
+today we deploy the Netlify and then GitHub pages
+
+in package.json file
+
+we 11 Tutorial covering useEffect
+it was the last tutorial to use local storage instead of json server
+
+json server was used as a dev environment only
+so dont try to deploy json server
+
+You would want to create a real REST API using the MERN stack for example
+Mongo, Express, React, Node
+
+This will be the grocery list application using local storage only
+
+
+package.json
+
+{
+  "name": "11tut",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.14.1",		// we dont use these
+    "@testing-library/react": "^11.2.7",		// we dont use these
+    "@testing-library/user-event": "^12.8.3",		// we dont use these
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-icons": "^4.2.0",
+    "react-scripts": "4.0.3",
+    "web-vitals": "^1.1.2"				// we dont use these
+    },
+}
+
+"scripts": {
+  "start": "react-scripts start",
+  "build": "react-scripts build", 
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
+},
+"eslintConfig": {
+  "extends": [
+    "react-app",
+    "react-app/jest"
+  ]
+},
+
+
+
+
+
+
+
+
+
+first thing we do is uninstall any dependencies we are not using
+so in terminal
+$ npm uninstall @testing-library/jest-dom @testing-library/react @testing-library/user-event web-vitals
+
+press return
+uninstall will remove those dependencies
+
+next we initialize our git repository
+
+$ git init
+
+after repository is initialized, we want to add all the files
+so we type		git add .
+
+the period will all the files unless they are listed in the gitignore file
+
+$ git add .
+
+then we need to commit the files
+-m means message
+
+$ git commit -m "first commit"
+
+now we need to go to GitHub
+and create a new repository
+so we can push our code to the repository on GitHub
+Your Repositories
+click New button
+now we need a respository name
+and this will be our Netlify deployment		Repository name		react_deploy_netlify
+
+choose public 
+we dont need any checkboxes as we already have a repository on GitHub
+so click button Create Repository		v08.37.23
+
+with the respository on GitHub now created
+we need to use the commands "...or push an existing repository from the command line"
+
+we need to copy these 3 lines of code so copy all at once using icon on the right
+go back to VSCode
+
+expand terminal window 
+right click and it will execute the 1st and 2nd line of code
+just need to press enter to execute the 3rd line of code
+
+$ git remote add origin https://github.com/...
+
+$ git branch -M main
+
+$ git push -u origin main
+
+then once process is complete
+go to GitHub and click on your new repository
+add a README if needed
+
+now we go to Netlify			app.netlify.com
+just login using GitHub so click on GitHub button
+
+once logged into Netlify, we may see your team page
+even if you are a team of 1
+
+Choose New site from Git button
+Choose Continuous Deployment GitHub button				buttons for each
+									GitHub GitLab Bitbucket
+
+this will allow Netlify to search my repositories
+Netlify will run your build tool of choice on Netlify servers and deploy the result
+
+in search bar type react_deploy_netlify
+
+click the found repository
+
+here are the settings
+
+Branch to deploy 			main
+Base directory				leave alone
+Build command				npm run build
+Publish directory			build
+
+Show Advanceds button
+
+Deploy Site button
+then we can see Site deploy in progress
+
+this produces a clickable link to launch our application
+
+new test your app 
+reload the app to make sure local storage is working
+
+Now your app is live on Netlify
+
+======
+
+Next deploy on GitHub Pages
+
+start again
+open terminal window
+remove any unnecessary dependencies like before with Netlify
+so in terminal
+$ npm uninstall @testing-library/jest-dom @testing-library/react @testing-library/user-event web-vitals
+
+with that complete our dependencies are cleaned up
+
+note that in package.json file we have no "devDependencies: {} listed
+its empty 
+so in terminal 
+$ npm i gh-pages -D	
+enter								github pages 		-D means dev
+
+now we check package.json and underneath version in package.json
+we need to add
+
+  "name": "11tut",
+  "version": "0.1.0",		<<<<< next line need to add
+  "private": true,
+  "dependencies": {
+  ...
+
+
+  "name": "11tut",
+  "version": "0.1.0",		<<<<< next line need to add
+  "homepage": https://addGitHubusername.github.io/react_deploy_gh",
+  "private": true,
+  "dependencies": {
+  ...
+
+
+now once you have completed that you need to add
+a couple of scripts
+
+add 
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d build",
+
+
+
+BEFORE
+
+"scripts": {
+  "start": "react-scripts start",
+  "build": "react-scripts build", 
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
+},
+
+
+AFTER
+
+"scripts": {
+  "predeploy": "npm run build",				<<<< added here
+  "deploy": "gh-pages -d build",			<<<< added here
+  "start": "react-scripts start",
+  "build": "react-scripts build", 
+  "test": "react-scripts test",
+  "eject": "react-scripts eject"
+},
+
+
+need to add a dev dependency
+"devDependencies": {
+  "gh-pages": "^3.2.3"
+  }
+
+
+now save package.json 
+note: in our current file tree, we do not have git respository initialized locally yet
+and we need this so we can push our code to something
+	
+$ git init			// to initialize our local repository
+$ git add .			// to add all the files except those listed the gitignore file
+$ git commit -m "first commit"
+
+now that we have created that local respository, we still need to push to GitHub
+so go to Chrome
+click New Repositories
+Create a new respository
+name it as you want		react_deploy_gh
+Click button Create Repository
+
+or push an existing repository
+click on icon to right to copy all 3 lines
+
+Go to terminal
+Right click on windows to paste in.
+1st and 2nd lines automatically entered
+3rd line needs a return by user (you)
+
+1st line is
+$ git remote add origin https://github.com/...
+2nd line is
+$ git branch -M main
+3rd line is
+$ git push -u origin main		// this will push our local repository to GitHub
+
+now with our code at GitHub
+lets now verify in GitHub		v08.46.09
+its there in GitHub
+
+now go back to VSCode terminal
+$ npm run deploy
+this will deploye our react app onto GitHub Pages
+
+You should see in terminal output
+> gh-pages -d build
+
+Published
+
+now go back to package.json
+you will see your 'homepage" url
+
+copy that address and go to Chrome
+paste into Chrome and it should work
+
+Netlify invovles 1 more site while GitHub offers it all on GitHub
+Netlify offers additional hosting features including (1) environment variables and (2) serverless functions
+and overall you dont need to add any extra scripts for Netlify 
+but you do need to add 2 scripts for GitHub pages and 1 dev dependency in package.json {} scripts
+
+"scripts": {
+  "predeploy": "npm run build",				<<<< added here
+  "deploy": "gh-pages -d build",			<<<< added here
+
+need to add a dev dependency
+"devDependencies": {
+  "gh-pages": "^3.2.3"
+  }
+
+Also
+Netlify provides the user the home page url
+vs
+GitHub pages wants user to define the url before actually making it

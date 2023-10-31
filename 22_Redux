@@ -1354,7 +1354,7 @@ next look at the state
 
 
 import { useParams, Link, useHistory } from "react-router-dom";		
-import { useStoreState } from 'easy-peasy';				<<<<< add here 
+import { useStoreState, useStoreActions } from 'easy-peasy';		<<<<< add here 
 
 const PostPage = () => {
     const { posts, setPosts } = useContext(DataContext);		<<<< posts needs to be shared but handleDelete does not
@@ -1411,15 +1411,19 @@ const deletePost that receives useStoreActions using (actions) with an arrow fun
 so we have 
 and we need to address the second part of that "how we get the individual posts as well"
 wherein we define v08.19.28
+we getPostById using useStoreState and passing in the (state) into an arrow function
+using state.getPostById
+    const getPostById = useStoreState((state) => state.getPostById);
 
-    const { id } = useParams();
-    const history = useHistory();
-    const deletePost = useStoreActions((actions) => actions.deletePost);
-
+with the next line for how to get the individual posts, we already have that
+logic inside our easy-peasy state, so we can delete this line
     const post = posts.find(post => (post.id).toString() === id);
+so we just use
+    const post = getPostById(id);
+and for the (id) we get this from the statement useParams above
+    const { id } = useParams();
 
-
-
+so our state so far is -- see AFTER
 
 BEFORE
 
@@ -1433,5 +1437,648 @@ AFTER
     const { id } = useParams();
     const history = useHistory();
     const deletePost = useStoreActions((actions) => actions.deletePost);
+    const getPostById = useStoreState((state) => state.getPostById);
+    const post = getPostById(id);
+
+
+we still need to resolve the const handleDelete function
+we took the entire try catch block and moved it here but now we can eliminate all of it
+but we need to keep our history here at the very end
+        history.push('/');
+and when the history push is complete, we will redirect the user to
+the correct component or page
+but before that history push we need to call deletePost(id) to pass in the id
+that is passed into handleDelete
+
+    const handleDelete = async (id) => {
+        deletePost(id);
+        history.push('/');
+    }
+
+
+BEFORE 
+
+    const handleDelete = async (id) => {
+        try {	
+            await api.delete(`/posts/${id}`);
+            const postsList = posts.filter(post => post.id !== id);
+            setPosts(postsList);
+            history.push('/');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }				
+    }
+
+AFTER
+
+    const handleDelete = async (id) => {
+        deletePost(id);
+        history.push('/');
+    }
+
+
+save
+v08.20.36
+
+before we test the delete function in Chrome app version
+we need to update the NewPost.js component
+
+so we copy these imports
+import { useStoreState, useStoreActions } from 'easy-peasy';		<<<<< copy
+
+and navigate to NewPost.js
+we need to replace this DataContext import with the import from easy-peasy
+copy and paste this into NewPost.js
+import DataContext from './context/DataContext';			<<<<< replace this 
+import { useStoreState, useStoreActions } from 'easy-peasy';		<<<<< with this copy
+
+we should no longer need the API import
+we will not need these either 	import ( useState, useContext } from 'react';		
+so delete that line and move remove the empty line
+
+Now we look at the state that should be inside the NewPost.js component
+we previously had postTitle, postBody and posts all in the component
+some of these are coming from the Context as in setPosts
+while others postTitle and postBody were inside the component
+we can delete these 3 as it all comes from easy-peasy
+
+const NewPost = ({
+    const [postTitle, setPostTitle] = useState('');		<<<<< delete this line
+    const [postBody, setPostBody] = useState('');		<<<<< delete this line
+    const { posts, setPosts } = useContext(DataContext);	<<<<< delete this line
+    const history = useHistory();
+
+so then we have 
+
+const NewPost = ({
+    const history = useHistory();
+
+and then we need to add useStoreState which will have the state
+and now you should be seeing the pattern
+    const posts = useStoreState()
+    const posts = useStoreState((state))
+    const posts = useStoreState((state) => state.)
+    const posts = useStoreState((state) => state.posts)
+
+then we copy this line so we can more easily replace terms as needed
+
+    const posts = useStoreState((state) => state.posts)
+    const posts = useStoreState((state) => state.posts)
+    const posts = useStoreState((state) => state.posts)
+
+so far we have 
+and then the 2nd posts line we change to postTitle
+and then the 3rd posts line we change to postBody
+
+const NewPost = ({
+    const history = useHistory();
+
+    const posts = useStoreState((state) => state.posts)				<<<< note the 2 cursor references
+    const postTitle = useStoreState((state) => state.postTitle)			<<<< note change 2 cursor references
+    const postBody = useStoreState((state) => state.postBody)			<<<< note change 2 cursor references
+
+so now these 3 lines are the pieces of state
+
+now we address our Store Actions
+1st we create our savePost thunk action using useStoreAction
+			       const savePost =
+				     ^^^^^^^^
+using the same pattern 				useStoreActions()
+which receives (actions)			useStoreActions((actions))
+then we add an arrow function with actions	useStoreActions((actions) =>)
+						useStoreActions((actions) => actions.savePost)
+										     ^^^^^^^^
+so this results in the single line
+    const savePost = useStoreActions((actions) => actions.savePost)
+
+and now copy this line 3 times
+    const savePost = useStoreActions((actions) => actions.savePost)
+    const savePost = useStoreActions((actions) => actions.savePost)
+    const savePost = useStoreActions((actions) => actions.savePost)
+
+for 2nd line, we change savePost to setPostTitle
+    const setPostTitle = useStoreActions((actions) => actions.setPostTitle)
+thus its
+    const savePost = useStoreActions((actions) => actions.savePost)
+    const setPostTitle = useStoreActions((actions) => actions.setPostTitle)
+    const savePost = useStoreActions((actions) => actions.savePost)
+
+for 3rd line, we change savePost to setPostBody
+    const setPostBody = useStoreActions((actions) => actions.setPostBody)
+thus its 
+    const savePost = useStoreActions((actions) => actions.savePost)
+    const setPostTitle = useStoreActions((actions) => actions.setPostTitle)
+    const setPostBody = useStoreActions((actions) => actions.setPostBody)
+
+
+BEFORE
+
+NewPost.js
+
+import ( useState, useContext } from 'react';				<<<< we will not need these either
+import useHistory from 'react-router-dom';
+import { format } from 'date-fns';
+import api from './api/posts';						<<<<< we no longer need this
+import DataContext from './context/DataContext';			<<<<< we need to replace this
+
+const NewPost = ({
+    const [postTitle, setPostTitle] = useState('');
+    const [postBody, setPostBody] = useState('');
+    const { posts, setPosts } = useContext(DataContext);
+    const history = useHistory();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const newPost = { id, title: postTitle, datetime, body: postBody };
+        try {
+            const response = await api.post('/posts', newPost);
+            const allPosts = [...posts, response.data];
+            setPosts(allPosts);
+            setPostTitle('');
+            setPostBody('');
+            history.push('/');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+     }
+
+
+AFTER
+
+NewPost.js
+
+import useHistory from 'react-router-dom';
+import { format } from 'date-fns';
+import { useStoreState, useStoreActions } from 'easy-peasy';		<<<<< copy into this line
+
+const NewPost = ({
+    const history = useHistory();
+
+    const posts = useStoreState((state) => state.posts)				<<<< note the 2 cursor references
+    const postTitle = useStoreState((state) => state.postTitle)			<<<< note change 2 cursor references
+    const postBody = useStoreState((state) => state.postBody)			<<<< note change 2 cursor references
+
+    const savePost = useStoreActions((actions) => actions.savePost)
+    const setPostTitle = useStoreActions((actions) => actions.setPostTitle)
+    const setPostBody = useStoreActions((actions) => actions.setPostBody)
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const newPost = { id, title: postTitle, datetime, body: postBody };
+        try {
+            const response = await api.post('/posts', newPost);
+            const allPosts = [...posts, response.data];
+            setPosts(allPosts);
+            setPostTitle('');
+            setPostBody('');
+            history.push('/');
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+     }
+
+
+now we need to look at the handleSubmit function to see what we just eliminated
+we removed our try/catch block so we can remove all of it			v08.23.03
+we need to add history.push('/'); to redirect the user as 
+that could not be inside our state with easy-peasy
+        history.push('/');
+and now in line before history.push we can add savePost and pass in the new post
+        savePost(newPost);
+and once we save this
+we can check the rendered App
+
+
+BEFORE
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const newPost = { id, title: postTitle, datetime, body: postBody };
+        try {									<<<<< delete this try catch
+            const response = await api.post('/posts', newPost);			<<<<< delete this try catch
+            const allPosts = [...posts, response.data];				<<<<< delete this try catch
+            setPosts(allPosts);							<<<<< delete this try catch
+            setPostTitle('');							<<<<< delete this try catch
+            setPostBody('');							<<<<< delete this try catch
+            history.push('/');							<<<<< delete this try catch
+        } catch (err) {								<<<<< delete this try catch
+            console.log(`Error: ${err.message}`);				<<<<< delete this try catch
+        }									<<<<< delete this try catch
+     }
+
+
+AFTER
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const id = posts.length ? posts[posts.length - 1].id + 1 : 1;
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const newPost = { id, title: postTitle, datetime, body: postBody };
+
+        savePost(newPost);
+        history.push('/');
+     }
+
+
+
+save
+check rendered App
+reload
+go to individual post
+create new post checking one two
+go to Home
+delete the post
+
+its all working
+
+so now we need to work on the EditPost.js component
+look in file tree
+open
+
+EditPost.js
+
+notice that its missing the import { useStoreState, useStoreActions } from 'easy-peasy';
+from the PostPage.js component
+
+we can copy that line from PostPage.js to EditPost.js
+so go back to EditPost.js
+adn paste over the DataContext line using import with useStoreState and useStoreActions from easy-peasy
+
+EditPost.js is
+
+BEFORE
+
+import { useState, useEffect, useContext } from "react";	
+import ( useParams, Link, useHistory } from "react-router-dom";	
+import api from './api/posts';					
+import { format } from 'date-fns';				
+import DataContext from './context/DataContext';			<<<<< need to delete his
+
+AFTER
+
+import { useState, useEffect, useContext } from "react";		
+import ( useParams, Link, useHistory } from "react-router-dom";	
+import api from './api/posts';					
+import { format } from 'date-fns';					
+import { useStoreState, useStoreActions } from 'easy-peasy';		<<<< add this using copy paste
+
+
+now can eliminate useState and useContext b/c we get state now from easy-peasy
+we can also remove the api import as well
+
+
+thus
+
+import { useEffect } from "react";
+import ( useParams, Link, useHistory } from "react-router-dom";	
+import { format } from 'date-fns';					
+import { useStoreState, useStoreActions } from 'easy-peasy';
+
+
+lets now look at the state we need inside EditPost.js
+we can move history and id to the top of the state
+
+    const history = useHistory();
+    const { id } = useParams();
+
+
+BEFORE
+
+const EditPost = () => {
+    const [editTitle, setEditTitle] = useState('');		
+    const [editBody, setEditBody] = useState('');		
+    const { posts, setPosts } = useContext(DataContext);
+    const history = useHistory();
+    const { id } = useParams();
+
     const post = posts.find(post => (post.id).toString() === id);
 
+
+AFTER
+
+const EditPost = () => {
+    const history = useHistory();
+    const { id } = useParams();
+
+    const [editTitle, setEditTitle] = useState('');		
+    const [editBody, setEditBody] = useState('');		
+    const { posts, setPosts } = useContext(DataContext);
+
+    const post = posts.find(post => (post.id).toString() === id);
+
+
+then we look at the rest of the state for if any changes needed
+
+    const [editTitle, setEditTitle] = useState('');		
+    const [editBody, setEditBody] = useState('');		
+    const { posts, setPosts } = useContext(DataContext);
+
+    const post = posts.find(post => (post.id).toString() === id);
+
+
+we will need getPostById
+so to make this more efficient, we go to NewPost that just updated with 
+const posts, postTitle, postBody using useStoreState() and useStoreActions()
+and with 
+const savePost, setPostTitle, setPostBody
+copy all 6 lines
+    const posts = useStoreState((state) => state.posts)	
+    const postTitle = useStoreState((state) => state.postTitle)	
+    const postBody = useStoreState((state) => state.postBody)	
+
+    const savePost = useStoreActions((actions) => actions.savePost)
+    const setPostTitle = useStoreActions((actions) => actions.setPostTitle)
+    const setPostBody = useStoreActions((actions) => actions.setPostBody)
+
+and now go back to EditPost.js
+and inside EditPost we can see editTitle, editBody, posts 
+we see this here
+const EditPost = () => {
+    const history = useHistory();
+    const { id } = useParams();
+
+    const [editTitle, setEditTitle] = useState('');				<<<<< paste over this
+    const [editBody, setEditBody] = useState('');				<<<<< paste over this
+    const { posts, setPosts } = useContext(DataContext);			<<<<< paste over this
+
+    const post = posts.find(post => (post.id).toString() === id);
+
+
+paste it here
+change postTitle to editTitle
+    const postTitle = useStoreState((state) => state.postTitle)			
+    const editTitle = useStoreState((state) => state.editTitle)			<<< changed postTitle to editTitle
+
+change postBody to editBody
+    const postBody = useStoreState((state) => state.postBody)			
+    const editBody = useStoreState((state) => state.editBody)			<<< changed postBody to editBody
+
+change savePost to editPost
+    const savePost = useStoreActions((actions) => actions.savePost)		
+    const editPost = useStoreActions((actions) => actions.editPost)		<<< changed savePost to editPost
+
+then we will also need setEditTitle and setEditBody
+    const setPostTitle = useStoreActions((actions) => actions.setPostTitle)	
+    const setEditTitle = useStoreActions((actions) => actions.setEditTitle)	<<< changed setPostTitle to setEditTitle
+
+    const setPostBody = useStoreActions((actions) => actions.setPostBody)	<<< 
+    const setEditBody = useStoreActions((actions) => actions.setEditBody)	<<< changed setPostBody to setEditBody
+
+
+const EditPost = () => {
+    const history = useHistory();
+    const { id } = useParams();
+
+    const posts = useStoreState((state) => state.posts)			
+    const editTitle = useStoreState((state) => state.editTitle)			<<< changed postTitle to editTitle
+    const editBody = useStoreState((state) => state.editBody)			<<< changed postBody to editBody
+
+    const editPost = useStoreActions((actions) => actions.editPost)		<<< changed savePost to editPost
+    const setEditTitle = useStoreActions((actions) => actions.setEditTitle)	<<< changed setPostTitle to setEditTitle
+    const setEditBody = useStoreActions((actions) => actions.setEditBody)	<<< changed setPostBody to setEditBody
+
+    const post = posts.find(post => (post.id).toString() === id);
+
+Refactor opprtunity here
+note that we will getPostById so we dont need this line const posts at all so we can delete it
+
+    const posts = useStoreState((state) => state.posts)			
+
+go to PostPage.js to copy getPostById
+    const getPostById = useStoreState((state) => state.getPostById);
+    const post = getPostById(id);
+ 
+thus we have 
+
+const EditPost = () => {
+    const history = useHistory();
+    const { id } = useParams();
+
+    const editTitle = useStoreState((state) => state.editTitle)			<<< changed postTitle to editTitle
+    const editBody = useStoreState((state) => state.editBody)			<<< changed postBody to editBody
+
+    const editPost = useStoreActions((actions) => actions.editPost)		<<< changed savePost to editPost
+    const setEditTitle = useStoreActions((actions) => actions.setEditTitle)	<<< changed setPostTitle to setEditTitle
+    const setEditBody = useStoreActions((actions) => actions.setEditBody)	<<< changed setPostBody to setEditBody
+
+    const getPostById = useStoreState((state) => state.getPostById);		<<< pasted into here
+    const post = getPostById(id);						<<< pasted into here
+
+
+now we scroll down EditPost.js to look at our handleEdit function
+we can remove the try/catch block	v08.27.20
+we can still use history.push() thus add it
+        history.push()
+but instead of pushing back to the home page
+lets instead push back to the id page to see if we like individual changes of that post
+        history.push('')
+        history.push('/post/$')
+        history.push('/post/${id}');
+
+still need to call editPost thunk async action
+	// add line, need to call editPost thunk async action from easy-peasy
+	editPost(updatedPost);
+
+thus we have 
+
+  const handleEdit = async (id) => {
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const updatedPost = { id, title: editTitle, datetime, body: editBody };
+	// add line, need to call editPost thunk async action from easy-peasy
+        history.push('/post/${id}');
+
+  const handleEdit = async (id) => {
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const updatedPost = { id, title: editTitle, datetime, body: editBody };
+	editPost(updatedPost);
+        history.push('/post/${id}');
+
+
+thus 
+
+BEFORE
+    const handleEdit = async (id) => {
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const updatedPost = { id, title: editTitle, datetime, body: editBody };
+        try {
+            const response = await api.put(`/posts/${id}`, updatedPost);
+            setPosts(posts.map(post => post.id === id ? { ...response.data } : post)); 
+            setEditTitle('');	
+            setEditBody('');	
+            history.push('/');	
+        } catch (err) {
+            console.log(`Error: ${err.message}`);
+        }
+    }
+
+
+AFTER
+    const handleEdit = async (id) => {
+        const datetime = format(new Date(), 'MMMM dd, yyyy pp');
+        const updatedPost = { id, title: editTitle, datetime, body: editBody };
+	editPost(updatedPost);
+        history.push('/post/${id}');
+    }
+
+
+now save
+reload app
+check for errors  v08.27.52
+app should be working with easy-peasy
+go to testing post
+try to edit 4th post
+add comments
+ok
+open dev tools
+yes, see error Form submission canceled b/c the form is not working
+try to add 5th post
+add 5th post
+try to edit it now
+yes, still getting that DevTools form warning
+
+lets go fix that 
+scroll down to Edit Post button in EditPost.js
+ie search for <textarea
+try changing button type from "submit" to "button"
+
+                        <button type="submit" onClick={() => handleEdit(post.id)} \>Submit</button>
+                        <button type="button" onClick={() => handleEdit(post.id)} \>Submit</button>
+				      ^^^^^^
+
+
+                    <h2>Edit Post</h2>
+                    <form className="newPostForm" onSubmit=>{(e) => e.preventDefault()}>
+	                <label htmlFor="postTitle">Title:</label>
+	                <input
+	                    id="postTitle"
+       	                    type="text"
+	                    required
+	                    value={editTitle}
+	                    onChange={(e) => setEditTitle(e.target.value)}
+     	                />
+	                <label htmlFor="postBody">Post:</label>
+	                <textarea
+	                    id="postBody'
+	                    required
+	                    value={editBody} 
+	                    onChange={(e) => setEditBody(e.target.value)}
+	                />
+                        <button type="button" onClick={() => handleEdit(post.id)} \>Submit</button>
+                    </form>
+
+save
+clear DevTools console
+retry reloaded app	v08.29.10
+Try to edit 5th post now
+add Post text
+save
+no more DevTools warning
+go back to Home
+try deleting
+all works
+
+now the only thing left to clean up is the DataContext
+as we are no longer using DataContext at all
+so we can delete the entire file
+so we can also select the Context folder and delete it as well
+
+if you want to organize your project even more, you could
+create seperate folder for store and models 
+and would need to import to those correctly
+could also
+create seperate components folder but not recommended to put
+index.js or index.css in there
+but all other components could be in a seperate folder
+just need to route to those folders correctly
+
+Next
+thinking about handleFunctions that we created:
+handleSubmit
+handleEdit
+handleDelete
+and while it doesnt really make an impact on how it works,
+we dont need to have the async keyword with those functions
+
+so in PostPage.js can remove async keyword
+b/c the thunk in easy-peasy store already has the async so we dont need it twice
+also for NewPost.js handleSubmit function
+also for EditPost.js handleEdit function
+
+
+BEFORE 
+
+const PostPage = () => {							
+    const handleDelete = async (id) => {			<<<< remove async keyword
+
+const NewPost 
+    const handleSubmit = async (e) => {
+
+
+
+AFTER 
+
+const PostPage = () => {							
+    const handleDelete = (id) => {
+
+const NewPost 
+    const handleSubmit = (e) => {
+
+
+Now with all those changes,
+we have one final change for the Footer	v08.31.37
+and this change will allow us to use our last piece of state
+add this 
+import { useStoreState } from 'easy-peasy';
+
+then we delete this			
+and instead we add			
+    const today = new Date();
+    const postCount = useStoreState((state) => state.postCount);
+
+and instead of the copyright
+we just the total postCount for the blog like this
+            <p>Copyright &copy; {today.getFullYear()}</p>
+	    <p>{postCount} Blog Posts</p>
+
+
+BEFORE Footer.js
+
+import { useStoreState } from 'easy-peasy';
+
+const Footer = () => {
+    const today = new Date();						<<< replace this
+    return {
+        <footer className='Footer'>
+            <p>Copyright &copy; {today.getFullYear()}</p>		<<< replace this
+        </footer>
+    }
+}
+export default footer
+
+
+AFTER Footer.js
+
+import { useStoreState } from 'easy-peasy';
+
+const Footer = () => {
+    const postCount = useStoreState((state) => state.postCount);	<<<<< HERE
+    return {
+        <footer className='Footer'>
+	    <p>{postCount} Blog Posts</p>				<<<<< HERE
+        </footer>
+    }
+}
+export default footer
+
+
+save
+reload App
+Footer now shows count
+add post
+it works

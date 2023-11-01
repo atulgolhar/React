@@ -4,7 +4,7 @@ my learning journey for React...
 This contains the code, logical components/explanations and script(s) if I decide to launch a learning channel for React!
 
 Table of Contents
-(00:00:00) Intro
+(00:00:00) Intro/n
 (00:00:48) Chapter 1: Start Here
 (00:13:56) Chapter 2: App & JSX
 (00:25:28) Chapter 3: Functional Components

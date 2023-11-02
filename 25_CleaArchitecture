@@ -1,0 +1,7 @@
+Clean Architecture
+
+1 core indpendent of presentation
+2 core indepedent of infrastructure
+3 business logic 1st
+4 easily testable
+5 enables cross platform (via business logic/application logic build once, share across domains)

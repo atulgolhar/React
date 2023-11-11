@@ -51,3 +51,6 @@ Table of Contents
 (07:56:10) Chapter 22: Easy Peasy Redux
 
 (08:33:39) Chapter 23: Build & Deploy Your React Apps
+
+Additional
+- connectivity issues TBD

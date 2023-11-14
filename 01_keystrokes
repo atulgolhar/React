@@ -1,0 +1,6 @@
+$ node -v
+$ npx create-react-app 01tut
+Shift `
+$ cd 01tut
+$ code .
+// close original instance VScode thus only 01tut is open

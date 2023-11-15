@@ -4,3 +4,8 @@ Shift `
 $ cd 01tut
 $ code .
 // close original instance VScode thus only 01tut is open
+
+make change in App.js
+<p>
+    Edit <code>src/App.js</code> and save to see changes.
+</p>
